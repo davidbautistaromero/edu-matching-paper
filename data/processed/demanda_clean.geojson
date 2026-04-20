@@ -1,0 +1,6116 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::3857"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8242002.850099999,
+          531131.0238000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO AQUILEO PARRA (IED)",
+        "DTotal": 3064,
+        "DANE12_EST": "111001000132"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240325.387800001,
+          527100.8167999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO AGUSTIN FERNANDEZ (IED)",
+        "DTotal": 2398,
+        "DANE12_EST": "111001029955"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240226.3124,
+          529285.6992000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRIEDRICH NAUMANN (IED)",
+        "DTotal": 1496,
+        "DANE12_EST": "111001044806"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8242038.074899999,
+          528862.0967000015
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TOBERIN (IED)",
+        "DTotal": 2958,
+        "DANE12_EST": "111001046957"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240516.5956999995,
+          531256.9450000003
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVO HORIZONTE (IED)",
+        "DTotal": 3139,
+        "DANE12_EST": "111001086681"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240320.039999999,
+          530979.7914000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA ESTRELLITA (IED)",
+        "DTotal": 1387,
+        "DANE12_EST": "111001098612"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8242141.635399999,
+          530273.5868999995
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SALUDCOOP NORTE (IED)",
+        "DTotal": 2492,
+        "DANE12_EST": "111001107743"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8241497.846999999,
+          524594.5172000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO USAQUEN (IED)",
+        "DTotal": 2184,
+        "DANE12_EST": "111848002662"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240699.9857,
+          530418.8341000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO UNION COLOMBIA (IED)",
+        "DTotal": 1397,
+        "DANE12_EST": "111848002671"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240730.0152,
+          528252.6158999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DIVINO MAESTRO (IED)",
+        "DTotal": 2812,
+        "DANE12_EST": "111848002689"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240518.1965,
+          528440.6664000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CRISTOBAL COLON (IED)",
+        "DTotal": 2381,
+        "DANE12_EST": "111848003031"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240751.702500001,
+          527659.6246000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GENERAL SANTANDER (IED)",
+        "DTotal": 1137,
+        "DANE12_EST": "111848003910"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8244461.073899999,
+          518691.18400000036
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SIMON RODRIGUEZ (IED)",
+        "DTotal": 1007,
+        "DANE12_EST": "111001016314"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240028.705800001,
+          520540.436900001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CAMPESTRE MONTE VERDE (IED)",
+        "DTotal": 1849,
+        "DANE12_EST": "111001033901"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8244222.038699999,
+          515981.34800000116
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN MARTIN DE PORRES (IED)",
+        "DTotal": 634,
+        "DANE12_EST": "111001034665"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245194.6248,
+          514256.11659999937
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO POLICARPA SALAVARRIETA (IED)",
+        "DTotal": 1194,
+        "DANE12_EST": "111001009831"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245141.8983,
+          514898.66750000045
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EXTERNADO NACIONAL CAMILO TORRES (IED)",
+        "DTotal": 1264,
+        "DANE12_EST": "111001010839"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245561.730900001,
+          510479.65260000154
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO AULAS COLOMBIANAS SAN LUIS (IED)",
+        "DTotal": 1665,
+        "DANE12_EST": "111001013242"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245812.4980999995,
+          511251.8060999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JORGE SOTO DEL CORRAL (IED)",
+        "DTotal": 1331,
+        "DANE12_EST": "111001032409"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246805.5436,
+          511749.04569999874
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO JOSE URIBE (IED)",
+        "DTotal": 1450,
+        "DANE12_EST": "111001036544"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8244830.5309999995,
+          514595.5122999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUEL ELKIN PATARROYO (IED)",
+        "DTotal": 435,
+        "DANE12_EST": "111001094901"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246457.3674,
+          510730.34530000016
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA GIRALDA (IED)",
+        "DTotal": 1503,
+        "DANE12_EST": "111001100030"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8240313.986500001,
+          510722.129900001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL VERJON (IED)",
+        "DTotal": 218,
+        "DANE12_EST": "211001027485"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245223.674699999,
+          511247.31340000033
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LOS PINOS (IED)",
+        "DTotal": 791,
+        "DANE12_EST": "311001026441"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245449.3138,
+          509056.2468999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GRAN COLOMBIA (CED)",
+        "DTotal": 115,
+        "DANE12_EST": "111001011975"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248099.824200001,
+          509400.3443999998
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VEINTE DE JULIO (IED)",
+        "DTotal": 1075,
+        "DANE12_EST": "111001012033"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245966.553099999,
+          509175.9527999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PANTALEON GAITAN PEREZ (CED)",
+        "DTotal": 159,
+        "DANE12_EST": "111001012246"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247019.193600001,
+          506625.34270000085
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN JOSE SUR ORIENTAL (IED)",
+        "DTotal": 1108,
+        "DANE12_EST": "111001012301"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247172.2545,
+          504905.8277999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JUANA ESCOBAR (IED)",
+        "DTotal": 1865,
+        "DANE12_EST": "111001012335"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245149.599400001,
+          508366.2941999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO AGUAS CLARAS (CED)",
+        "DTotal": 187,
+        "DANE12_EST": "111001012475"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247103.5426,
+          506533.14090000093
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALTAMIRA SUR ORIENTAL (IED)",
+        "DTotal": 1789,
+        "DANE12_EST": "111001014168"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246486.5899,
+          509235.430399999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO SAN CRISTOBAL SUR (IED)",
+        "DTotal": 2143,
+        "DANE12_EST": "111001014176"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246957.0272,
+          508419.5069999993
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE ACEVEDO Y GOMEZ (IED)",
+        "DTotal": 635,
+        "DANE12_EST": "111001014451"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247440.1438,
+          508910.371199999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MONTEBELLO (IED)",
+        "DTotal": 1590,
+        "DANE12_EST": "111001015903"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247075.456700001,
+          507338.81870000064
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LOS ALPES (IED)",
+        "DTotal": 3348,
+        "DANE12_EST": "111001015911"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247905.3478999995,
+          504853.15459999815
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA BELLEZA LOS LIBERTADORES (IED)",
+        "DTotal": 964,
+        "DANE12_EST": "111001016004"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248879.1753,
+          508078.6323999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE MARIA CARBONELL (IED)",
+        "DTotal": 807,
+        "DANE12_EST": "111001018252"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248077.524700001,
+          507801.4974000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ATENAS (IED)",
+        "DTotal": 954,
+        "DANE12_EST": "111001018309"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247984.411499999,
+          508127.78510000184
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE JOAQUIN CASTRO MARTINEZ (IED)",
+        "DTotal": 1165,
+        "DANE12_EST": "111001018325"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248244.709799999,
+          507183.2289999984
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL RODEO (IED)",
+        "DTotal": 1628,
+        "DANE12_EST": "111001018333"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248040.041200001,
+          508735.1794000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRANCISCO JAVIER MATIZ (IED)",
+        "DTotal": 1239,
+        "DANE12_EST": "111001018341"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248042.5681,
+          507288.9353
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA VICTORIA (IED)",
+        "DTotal": 1931,
+        "DANE12_EST": "111001018368"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248897.2535999995,
+          508778.5800999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN ISIDRO SUR ORIENTAL (IED)",
+        "DTotal": 1197,
+        "DANE12_EST": "111001018384"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248497.484099999,
+          506816.498399999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ENTRE NUBES SUR ORIENTAL (IED)",
+        "DTotal": 1249,
+        "DANE12_EST": "111001020443"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246609.5067,
+          506088.91789999977
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MORALBA SURORIENTAL (IED)",
+        "DTotal": 1386,
+        "DANE12_EST": "111001024686"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248367.981699999,
+          508954.6933000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FLORENTINO GONZALEZ (IED)",
+        "DTotal": 1448,
+        "DANE12_EST": "111001027324"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247146.343800001,
+          509415.1543000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUELITA SAENZ (IED)",
+        "DTotal": 3141,
+        "DANE12_EST": "111001030066"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248225.946900001,
+          507693.27050000057
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALEMANIA UNIFICADA (IED)",
+        "DTotal": 1098,
+        "DANE12_EST": "111001030864"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247334.366900001,
+          508731.310800001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO TOMAS RUEDA VARGAS (IED)",
+        "DTotal": 1540,
+        "DANE12_EST": "111001032280"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246579.1599,
+          510042.9063999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA DEL ECUADOR (IED)",
+        "DTotal": 987,
+        "DANE12_EST": "111001032433"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247648.3836,
+          503972.4653000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JUAN REY (IED)",
+        "DTotal": 927,
+        "DANE12_EST": "111001034011"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247655.2108,
+          509784.4673999995
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO JOSE FELIX RESTREPO (IED)",
+        "DTotal": 4477,
+        "DANE12_EST": "111001035530"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248287.680299999,
+          507266.83100000024
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JUAN EVANGELISTA GOMEZ (IED)",
+        "DTotal": 2451,
+        "DANE12_EST": "111001035602"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247223.7465,
+          504617.5436999984
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVA DELHI (IED)",
+        "DTotal": 1094,
+        "DANE12_EST": "111001046621"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248018.316,
+          509969.8082999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RAFAEL NUÑEZ (IED)",
+        "DTotal": 820,
+        "DANE12_EST": "111001086789"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248303.0657,
+          506082.7578999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVA ROMA (IED)",
+        "DTotal": 1223,
+        "DANE12_EST": "111001098817"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247473.2223000005,
+          507621.6794000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN VICENTE (IED)",
+        "DTotal": 1283,
+        "DANE12_EST": "111001098825"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247759.0129,
+          510441.2243999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO ALDEMAR ROJAS PLAZAS (IED)",
+        "DTotal": 757,
+        "DANE12_EST": "111001102016"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247332.012499999,
+          505007.39730000123
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GLORIA VALENCIA DE CASTAÑO (IED)",
+        "DTotal": 1066,
+        "DANE12_EST": "111001801047"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250278.7084,
+          503049.9294000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SANTA LIBRADA (IED)",
+        "DTotal": 1541,
+        "DANE12_EST": "111001013820"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250513.825200001,
+          504279.82389999926
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SANTA MARTHA (IED)",
+        "DTotal": 1012,
+        "DANE12_EST": "111001013935"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251126.701300001,
+          503560.00180000067
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ORLANDO FALS BORDA (IED)",
+        "DTotal": 1795,
+        "DANE12_EST": "111001016039"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247775.8989,
+          502954.78830000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVA ESPERANZA (IED)",
+        "DTotal": 1328,
+        "DANE12_EST": "111001024643"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248831.207699999,
+          501285.5357000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ESTANISLAO ZULETA (IED)",
+        "DTotal": 2070,
+        "DANE12_EST": "111001030872"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247775.8422,
+          503234.8359999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PROVINCIA DE QUEBEC (IED)",
+        "DTotal": 1117,
+        "DANE12_EST": "111001041556"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249745.2687,
+          501288.2980999984
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LOS COMUNEROS - OSWALDO GUAYAZAMIN (IED)",
+        "DTotal": 2115,
+        "DANE12_EST": "111001044270"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251258.012700001,
+          504057.43719999865
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA AURORA (IED)",
+        "DTotal": 1601,
+        "DANE12_EST": "111001045705"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251005.020199999,
+          504281.86950000003
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVO SAN ANDRES DE LOS ALTOS (IED)",
+        "DTotal": 1436,
+        "DANE12_EST": "111001046485"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250641.5843,
+          502215.89460000023
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ATABANZHA (IED)",
+        "DTotal": 1368,
+        "DANE12_EST": "111001046931"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250691.759400001,
+          500899.98640000075
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO USMINIA (IED)",
+        "DTotal": 1176,
+        "DANE12_EST": "111001065234"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249185.6011,
+          502236.2318000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO OFELIA URIBE DE ACOSTA (IED)",
+        "DTotal": 2638,
+        "DANE12_EST": "111001077895"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250419.701199999,
+          503455.35759999976
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BRASILIA - USME (IED)",
+        "DTotal": 1325,
+        "DANE12_EST": "111001077917"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250071.051899999,
+          501764.5769000016
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL VIRREY JOSE SOLIS (IED)",
+        "DTotal": 1388,
+        "DANE12_EST": "111001078638"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249420.5242,
+          502828.7697999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MIGUEL DE CERVANTES SAAVEDRA (IED)",
+        "DTotal": 3061,
+        "DANE12_EST": "111001083011"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249987.9263,
+          502163.82550000027
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CHUNIZA (IED)",
+        "DTotal": 2234,
+        "DANE12_EST": "111001086614"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249554.927999999,
+          501767.4836000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FERNANDO GONZALEZ OCHOA (IED)",
+        "DTotal": 2201,
+        "DANE12_EST": "111001094439"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247383.5934999995,
+          503363.52540000156
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN CAYETANO (IED)",
+        "DTotal": 1927,
+        "DANE12_EST": "111001098833"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250814.313200001,
+          501648.75549999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN JOSE DE USME (IED)",
+        "DTotal": 1172,
+        "DANE12_EST": "111001098841"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249247.1897,
+          501121.184799999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CHUNIZA FAMACO (IED)",
+        "DTotal": 1236,
+        "DANE12_EST": "111001098850"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250138.8566,
+          501506.51359999925
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LUIS EDUARDO MORA OSEJO (IED)",
+        "DTotal": 776,
+        "DANE12_EST": "111001098868"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250960.6282,
+          502883.81060000136
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MIRAVALLE (IED)",
+        "DTotal": 1364,
+        "DANE12_EST": "111001100081"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250451.9683,
+          505047.0487000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JUAN LUIS LONDOÑO (IED)",
+        "DTotal": 1770,
+        "DANE12_EST": "111001102008"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250269.887399999,
+          500350.44029999897
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EDUARDO UMAÑA MENDOZA (IED)",
+        "DTotal": 1828,
+        "DANE12_EST": "111001104337"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250454.705600001,
+          501091.0080999993
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DIEGO MONTAÑA CUELLAR (IED)",
+        "DTotal": 2927,
+        "DANE12_EST": "111001104345"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249269.4980999995,
+          499829.5144999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDAD DE VILLAVICENCIO (IED)",
+        "DTotal": 2436,
+        "DANE12_EST": "111001104353"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250570.105,
+          505093.0309000015
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PAULO FREIRE (IED)",
+        "DTotal": 3275,
+        "DANE12_EST": "111001107760"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251346.276799999,
+          498656.945700001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE EUSTASIO RIVERA (IED)",
+        "DTotal": 748,
+        "DANE12_EST": "111001800562"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248707.727700001,
+          502704.2184999995
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDAD CHENGDU (IED)",
+        "DTotal": 578,
+        "DANE12_EST": "111001800660"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251128.227499999,
+          498589.7353999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRANCISCO ANTONIO ZEA DE USME (IED)",
+        "DTotal": 2374,
+        "DANE12_EST": "111850000740"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249520.5392,
+          503401.29190000147
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL CORTIJO - VIANEY (IED)",
+        "DTotal": 831,
+        "DANE12_EST": "111850001380"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250100.9991,
+          502825.3487999998
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALMIRANTE PADILLA (IED)",
+        "DTotal": 3460,
+        "DANE12_EST": "111850001428"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249136.5693,
+          502661.41600000113
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LOS TEJARES (IED)",
+        "DTotal": 989,
+        "DANE12_EST": "111850001461"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249566.058800001,
+          502254.3526000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FEDERICO GARCIA LORCA (IED)",
+        "DTotal": 2421,
+        "DANE12_EST": "111850001576"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247988.8542,
+          502473.929299999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GABRIEL GARCIA MARQUEZ (IED)",
+        "DTotal": 1258,
+        "DANE12_EST": "211001032501"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258075.758199999,
+          483964.90579999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL LA UNION USME (CED)",
+        "DTotal": 10,
+        "DANE12_EST": "211850000043"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249840.659499999,
+          502364.83999999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GRAN YOMASA (IED)",
+        "DTotal": 1715,
+        "DANE12_EST": "211850000051"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252639.4386,
+          494889.83669999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL OLARTE (CED)",
+        "DTotal": 174,
+        "DANE12_EST": "211850000108"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256080.468800001,
+          485118.5705000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL LOS ANDES (CED)",
+        "DTotal": 8,
+        "DANE12_EST": "211850000698"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253273.616800001,
+          486169.4723000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL LOS ARRAYANES (CED)",
+        "DTotal": 25,
+        "DANE12_EST": "211850000710"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254161.836100001,
+          488720.4743999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL LA ARGENTINA (CED)",
+        "DTotal": 46,
+        "DANE12_EST": "211850000736"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249643.9858,
+          501301.12959999964
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TENERIFE - GRANADA SUR (IED)",
+        "DTotal": 1192,
+        "DANE12_EST": "211850000787"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260267.7859000005,
+          483528.85759999976
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL CHIZACA (CED)",
+        "DTotal": 6,
+        "DANE12_EST": "211850000841"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252853.298900001,
+          484643.4664000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL EL CURUBITAL (CED)",
+        "DTotal": 27,
+        "DANE12_EST": "211850000868"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253049.6932,
+          491193.00670000166
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL DESTINO (IED)",
+        "DTotal": 520,
+        "DANE12_EST": "211850000876"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255895.9712000005,
+          488773.88980000094
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL EL HATO (CED)",
+        "DTotal": 35,
+        "DANE12_EST": "211850000884"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250986.8551,
+          500889.0122999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BRAZUELOS (IED)",
+        "DTotal": 795,
+        "DANE12_EST": "211850000931"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249358.6194,
+          498951.53079999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL UVAL (IED)",
+        "DTotal": 757,
+        "DANE12_EST": "211850000981"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258551.5989,
+          487002.9241000004
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL LA MAYORIA (CED)",
+        "DTotal": 38,
+        "DANE12_EST": "211850001007"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257259.299900001,
+          489422.21489999816
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL LAS MERCEDES (CED)",
+        "DTotal": 24,
+        "DANE12_EST": "211850001074"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249810.050000001,
+          505154.9525000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FABIO LOZANO SIMONELLI (IED)",
+        "DTotal": 3043,
+        "DANE12_EST": "211850001481"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252260.5516,
+          510232.2707999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CENTRO INTEGRAL JOSE MARIA CORDOBA (IED)",
+        "DTotal": 3007,
+        "DANE12_EST": "111001009652"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253625.2951,
+          511730.8280999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VENECIA (IED)",
+        "DTotal": 4480,
+        "DANE12_EST": "111001010251"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253001.037699999,
+          510998.379900001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO INDUSTRIAL PILOTO (IED)",
+        "DTotal": 4613,
+        "DANE12_EST": "111001011011"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251993.8946,
+          510389.3542999998
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RAFAEL URIBE URIBE (IED)",
+        "DTotal": 1980,
+        "DANE12_EST": "111001012271"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252466.5449,
+          510321.624400001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARCO FIDEL SUAREZ (IED)",
+        "DTotal": 2152,
+        "DANE12_EST": "111001014206"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253049.851299999,
+          510106.5203999989
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDAD DE BOGOTA (IED)",
+        "DTotal": 2953,
+        "DANE12_EST": "111001014214"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251539.8347,
+          508161.97480000183
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RUFINO JOSE CUERVO (IED)",
+        "DTotal": 2628,
+        "DANE12_EST": "111001018201"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252336.217599999,
+          509952.3310999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INEM SANTIAGO PEREZ (IED)",
+        "DTotal": 3584,
+        "DANE12_EST": "111001019411"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251725.975299999,
+          509415.6387999989
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BERNARDO JARAMILLO (IED)",
+        "DTotal": 1936,
+        "DANE12_EST": "111001032450"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254615.1458,
+          511440.19150000066
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ISLA DEL SOL (IED)",
+        "DTotal": 1142,
+        "DANE12_EST": "111001075736"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252375.6481,
+          508646.9626000002
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN CARLOS (IED)",
+        "DTotal": 2351,
+        "DANE12_EST": "111001075957"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252902.831599999,
+          508895.6125999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN BENITO ABAD (IED)",
+        "DTotal": 1203,
+        "DANE12_EST": "111001086631"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259566.331700001,
+          513197.78599999845
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CARLOS ALBAN HOLGUIN (IED)",
+        "DTotal": 5376,
+        "DANE12_EST": "111001002909"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258507.183599999,
+          512578.82930000126
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CEDID SAN PABLO (IED)",
+        "DTotal": 4525,
+        "DANE12_EST": "111001010031"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256144.6088,
+          512993.70870000124
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVO CHILE (IED)",
+        "DTotal": 4601,
+        "DANE12_EST": "111001013676"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257825.7546999995,
+          515755.88500000164
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BRASILIA - BOSA (IED)",
+        "DTotal": 3971,
+        "DANE12_EST": "111001014109"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257191.0065,
+          512385.54140000045
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MOTORISTA (CED)",
+        "DTotal": 498,
+        "DANE12_EST": "111001041599"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259869.7675,
+          513763.63170000166
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GRANCOLOMBIANO (IED)",
+        "DTotal": 3963,
+        "DANE12_EST": "111001046477"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257575.930299999,
+          513303.76619999856
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE ANTONIO GALAN (IED)",
+        "DTotal": 1887,
+        "DANE12_EST": "111001046591"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259882.140699999,
+          513000.83089999855
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LLANO ORIENTAL (IED)",
+        "DTotal": 1142,
+        "DANE12_EST": "111001086606"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259340.6537,
+          515118.35170000046
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA CONCEPCION (IED)",
+        "DTotal": 1834,
+        "DANE12_EST": "111001086754"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260447.897500001,
+          513718.6917999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA ESPERANZA (IED)",
+        "DTotal": 1144,
+        "DANE12_EST": "111001098876"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260143.603399999,
+          513731.5421999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LOS NARANJOS (IED)",
+        "DTotal": 1086,
+        "DANE12_EST": "111001098884"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258393.327099999,
+          513951.4957999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ARGELIA (IED)",
+        "DTotal": 1444,
+        "DANE12_EST": "111001100064"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259101.664100001,
+          515907.96460000053
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SANTIAGO DE LAS ATALAYAS (IED)",
+        "DTotal": 1635,
+        "DANE12_EST": "111001100072"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258782.4844,
+          516308.0694000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN IGNACIO (IED)",
+        "DTotal": 1432,
+        "DANE12_EST": "111001104051"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260072.0462,
+          515721.1215999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LEONARDO POSADA PEDRAZA (IED)",
+        "DTotal": 3564,
+        "DANE12_EST": "111001104183"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259897.4482,
+          514455.7269000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALFONSO REYES ECHANDIA (IED)",
+        "DTotal": 3410,
+        "DANE12_EST": "111001104299"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258711.5361,
+          515821.6556000002
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ORLANDO HIGUITA ROJAS (IED)",
+        "DTotal": 3657,
+        "DANE12_EST": "111001104302"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260441.090299999,
+          516592.02959999815
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CARLOS PIZARRO LEON GOMEZ (IED)",
+        "DTotal": 4363,
+        "DANE12_EST": "111001104329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260635.4608,
+          516159.2395000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALFONSO LOPEZ MICHELSEN (IED)",
+        "DTotal": 3493,
+        "DANE12_EST": "111001106950"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259285.1877,
+          515397.1389000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE FRANCISCO SOCARRAS (IED)",
+        "DTotal": 3764,
+        "DANE12_EST": "111001106968"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258272.475299999,
+          516032.1042000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GERMAN ARCINIEGAS (IED)",
+        "DTotal": 2206,
+        "DANE12_EST": "111001107832"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260720.52,
+          515099.3850999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO KIMI PERNIA DOMICO (IED)",
+        "DTotal": 3390,
+        "DANE12_EST": "111001107867"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258477.5503,
+          517183.2782000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDADELA EDUCATIVA DE BOSA (IED)",
+        "DTotal": 6997,
+        "DANE12_EST": "111001107875"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258067.413699999,
+          514723.3854999989
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DEBORA ARANGO PEREZ (IED)",
+        "DTotal": 3098,
+        "DANE12_EST": "111001107883"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260188.5787,
+          515640.21119999886
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JORGE ISAACS (IED)",
+        "DTotal": 1387,
+        "DANE12_EST": "111001800384"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258334.3367,
+          517399.92760000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SOLEDAD ACOSTA DE SAMPER (IED)",
+        "DTotal": 592,
+        "DANE12_EST": "111001800392"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260330.3441,
+          514293.62640000135
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BICENTENARIO DE LA INDEPENDENCIA (IED)",
+        "DTotal": 1816,
+        "DANE12_EST": "111001800457"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257941.4690000005,
+          514153.5273000002
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DE LA BICI (IED)",
+        "DTotal": 1179,
+        "DANE12_EST": "111001800643"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259047.049699999,
+          515434.44110000134
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PARQUES DE BOGOTA (IED)",
+        "DTotal": 1165,
+        "DANE12_EST": "111001800678"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8261239.2589,
+          515594.2478
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LAUREL DE CERA (IED)",
+        "DTotal": 1155,
+        "DANE12_EST": "111001800694"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259290.620100001,
+          514362.868999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ESMERALDA ARBOLEDA CADAVID (IED)",
+        "DTotal": 3109,
+        "DANE12_EST": "111001801080"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259812.192,
+          516412.77329999954
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDADELA EL RECREO SONIA OSORIO DE SAINT-MALO (IED)",
+        "DTotal": 2397,
+        "DANE12_EST": "111001801098"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258406.477299999,
+          515977.6897
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LAURA HERRERA DE VARELA (IED)",
+        "DTotal": 2361,
+        "DANE12_EST": "111001801101"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258330.082,
+          512688.7120000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LUIS LOPEZ DE MESA (IED)",
+        "DTotal": 3006,
+        "DANE12_EST": "111102000265"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258506.525699999,
+          513041.4666999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PABLO DE TARSO (IED)",
+        "DTotal": 3274,
+        "DANE12_EST": "111102000281"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258215.4953000005,
+          513831.8957999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRANCISCO DE PAULA SANTANDER (IED)",
+        "DTotal": 1459,
+        "DANE12_EST": "111102000621"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258868.031300001,
+          513391.16739999875
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FERNANDO MAZUERA VILLEGAS (IED)",
+        "DTotal": 5810,
+        "DANE12_EST": "111102000753"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259173.175799999,
+          513937.0421999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PORFIRIO BARBA JACOB (IED)",
+        "DTotal": 2074,
+        "DANE12_EST": "111102000958"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8259987.4879,
+          515473.2664999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VILLAS DEL PROGRESO (IED)",
+        "DTotal": 4332,
+        "DANE12_EST": "211001076958"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8260378.405200001,
+          514607.65900000185
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN BERNARDINO (IED)",
+        "DTotal": 2063,
+        "DANE12_EST": "211102000201"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258085.8782,
+          516624.5313999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL PORVENIR (IED)",
+        "DTotal": 4533,
+        "DANE12_EST": "211102000243"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8258624.6468,
+          515138.9199000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BOSANOVA (IED)",
+        "DTotal": 1421,
+        "DANE12_EST": "211102000995"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252777.130799999,
+          514430.65260000154
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CARLOS ARANGO VELEZ (IED)",
+        "DTotal": 2253,
+        "DANE12_EST": "111001000124"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255684.263800001,
+          517292.4387000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DARIO ECHANDIA (IED)",
+        "DTotal": 2143,
+        "DANE12_EST": "111001001279"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251492.515000001,
+          516395.7164000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NACIONAL NICOLAS ESGUERRA (IED)",
+        "DTotal": 1600,
+        "DANE12_EST": "111001010910"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253939.3597,
+          512571.0471000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CARLOS ARTURO TORRES (IED)",
+        "DTotal": 2616,
+        "DANE12_EST": "111001011321"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254142.992000001,
+          515231.0826999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA AMISTAD (IED)",
+        "DTotal": 2971,
+        "DANE12_EST": "111001011690"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254975.672900001,
+          514640.2050999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TOM ADAMS (IED)",
+        "DTotal": 2451,
+        "DANE12_EST": "111001012343"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254731.232000001,
+          515024.46730000153
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL JAPON (IED)",
+        "DTotal": 2350,
+        "DANE12_EST": "111001012360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255553.1238,
+          515056.43620000035
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN PEDRO CLAVER (IED)",
+        "DTotal": 2673,
+        "DANE12_EST": "111001013102"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257574.2728,
+          514196.69949999824
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CLASS (IED)",
+        "DTotal": 2928,
+        "DANE12_EST": "111001013129"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255275.6622,
+          515037.5229999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PAULO VI (IED)",
+        "DTotal": 3261,
+        "DANE12_EST": "111001013153"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255777.713099999,
+          515016.63809999824
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN JOSE (IED)",
+        "DTotal": 3006,
+        "DANE12_EST": "111001013161"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255606.0295,
+          514530.23970000073
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN RAFAEL (IED)",
+        "DTotal": 2275,
+        "DANE12_EST": "111001013170"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251823.081499999,
+          516202.3735000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARSELLA (IED)",
+        "DTotal": 2115,
+        "DANE12_EST": "111001014290"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254837.187000001,
+          514022.0150000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRANCISCO DE MIRANDA (IED)",
+        "DTotal": 1219,
+        "DANE12_EST": "111001014974"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254397.414899999,
+          514501.2039999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LAS AMERICAS (IED)",
+        "DTotal": 2631,
+        "DANE12_EST": "111001015598"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253406.817299999,
+          514619.1645000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO O.E.A. (IED)",
+        "DTotal": 2294,
+        "DANE12_EST": "111001015601"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254668.150599999,
+          516369.7382000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ISABEL II (IED)",
+        "DTotal": 2563,
+        "DANE12_EST": "111001016071"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252795.8157,
+          513174.0863999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALQUERIA DE LA FRAGUA (IED)",
+        "DTotal": 902,
+        "DANE12_EST": "111001016098"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255254.3123,
+          514571.86129999906
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LOS PERIODISTAS (IED)",
+        "DTotal": 1483,
+        "DANE12_EST": "111001016101"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254178.633099999,
+          513041.9321999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA CHUCUA (IED)",
+        "DTotal": 1693,
+        "DANE12_EST": "111001016136"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253313.452500001,
+          514882.30310000107
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO KENNEDY (IED)",
+        "DTotal": 1915,
+        "DANE12_EST": "111001016292"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254064.500600001,
+          514726.29890000075
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FERNANDO SOTO APARICIO (IED)",
+        "DTotal": 2373,
+        "DANE12_EST": "111001024660"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255058.5425,
+          515379.34530000016
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INEM FRANCISCO DE PAULA SANTANDER (IED)",
+        "DTotal": 6677,
+        "DANE12_EST": "111001024732"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254528.219799999,
+          515063.78290000185
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOHN F. KENNEDY (IED)",
+        "DTotal": 2546,
+        "DANE12_EST": "111001026964"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254459.3508,
+          515339.09120000154
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PROSPERO PINZON (IED)",
+        "DTotal": 1357,
+        "DANE12_EST": "111001027308"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257450.7772,
+          514467.85379999876
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUEL CEPEDA VARGAS (IED)",
+        "DTotal": 6074,
+        "DANE12_EST": "111001027391"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256239.042300001,
+          516718.34530000016
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JAIRO ANIBAL NIÑO (CED)",
+        "DTotal": 1658,
+        "DANE12_EST": "111001027405"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255769.895199999,
+          513622.9871999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JACKELINE (IED)",
+        "DTotal": 1630,
+        "DANE12_EST": "111001029114"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255487.7247,
+          517147.4620999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUEL ZAPATA OLIVELLA (IED)",
+        "DTotal": 2213,
+        "DANE12_EST": "111001033898"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251813.7574000005,
+          514932.39070000127
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA FLORESTA SUR (IED)",
+        "DTotal": 1402,
+        "DANE12_EST": "111001034045"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253676.8038,
+          516857.66380000114
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN JOSE DE CASTILLA (IED)",
+        "DTotal": 2655,
+        "DANE12_EST": "111001041475"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253437.357799999,
+          517138.2346000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CASTILLA (IED)",
+        "DTotal": 3545,
+        "DANE12_EST": "111001076767"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256245.7436999995,
+          513267.7283000015
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VILLA RICA (IED)",
+        "DTotal": 2036,
+        "DANE12_EST": "111001079154"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253632.636600001,
+          513487.4952000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALFONSO LOPEZ PUMAREJO (IED)",
+        "DTotal": 2065,
+        "DANE12_EST": "111001086649"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256285.217599999,
+          517119.0443000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO RODRIGO DE TRIANA (IED)",
+        "DTotal": 3099,
+        "DANE12_EST": "111001086771"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256922.639699999,
+          517686.1928000003
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BELLAVISTA (IED)",
+        "DTotal": 1714,
+        "DANE12_EST": "111001098892"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257108.166999999,
+          517272.94640000165
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EDUARDO UMAÑA LUNA (IED)",
+        "DTotal": 2003,
+        "DANE12_EST": "111001098906"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256820.206800001,
+          516512.5731999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO HERNANDO DURAN DUSSAN (IED)",
+        "DTotal": 2632,
+        "DANE12_EST": "111001100048"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257939.911699999,
+          516867.8984000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JAIME HERNANDO GARZON FORERO (IED)",
+        "DTotal": 1726,
+        "DANE12_EST": "111001100056"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254983.7959,
+          517630.1259999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GABRIEL BETANCOURT MEJIA (IED)",
+        "DTotal": 3098,
+        "DANE12_EST": "111001104281"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256090.0756,
+          518002.6821000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CODEMA (IED)",
+        "DTotal": 2982,
+        "DANE12_EST": "111001104558"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253189.363500001,
+          518048.23479999974
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GENERAL GUSTAVO ROJAS PINILLA (IED)",
+        "DTotal": 3701,
+        "DANE12_EST": "111001106984"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255872.358100001,
+          517347.9182000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SALUDCOOP SUR (IED)",
+        "DTotal": 2754,
+        "DANE12_EST": "111001107778"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257448.4684,
+          516652.069600001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NELSON MANDELA (IED)",
+        "DTotal": 1942,
+        "DANE12_EST": "111001110477"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257075.488,
+          516381.42920000106
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LAS MARGARITAS (IED)",
+        "DTotal": 682,
+        "DANE12_EST": "111001800431"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253840.2475000005,
+          516451.65359999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EMMA REYES (IED)",
+        "DTotal": 715,
+        "DANE12_EST": "111001800554"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253726.978800001,
+          520470.25869999826
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RODRIGO ARENAS BETANCOURT (IED)",
+        "DTotal": 2214,
+        "DANE12_EST": "111001014346"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254270.429400001,
+          520678.5155999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PABLO NERUDA (IED)",
+        "DTotal": 1964,
+        "DANE12_EST": "111001102199"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255422.9067,
+          520632.2093999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CARLO FEDERICI (IED)",
+        "DTotal": 2340,
+        "DANE12_EST": "111001104272"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252167.127800001,
+          518927.83509999886
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA FELICIDAD (IED)",
+        "DTotal": 2783,
+        "DANE12_EST": "111001800091"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255302.951099999,
+          522553.5903000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO VAN UDEN (IED)",
+        "DTotal": 2538,
+        "DANE12_EST": "111279000061"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253138.6197,
+          520756.242899999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VILLEMAR EL CARMEN (IED)",
+        "DTotal": 3412,
+        "DANE12_EST": "111279000125"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253808.1173,
+          522307.8286000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO INTERNACIONAL (IED)",
+        "DTotal": 3301,
+        "DANE12_EST": "111279000168"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253008.877900001,
+          521793.1444000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LUIS ANGEL ARANGO (IED)",
+        "DTotal": 1138,
+        "DANE12_EST": "111279000184"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253003.905300001,
+          521483.94839999825
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO COSTA RICA (IED)",
+        "DTotal": 2538,
+        "DANE12_EST": "111279000362"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254053.4199,
+          521359.49489999935
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INTEGRADO DE FONTIBON IBEP (IED)",
+        "DTotal": 4120,
+        "DANE12_EST": "111279000966"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254160.8398,
+          522479.2714000009
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ATAHUALPA (IED)",
+        "DTotal": 1332,
+        "DANE12_EST": "111279001296"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248930.171800001,
+          525800.2470000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO LAUREANO GOMEZ (IED)",
+        "DTotal": 2989,
+        "DANE12_EST": "111001000272"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249025.873199999,
+          520916.7960000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARCO TULIO FERNANDEZ (IED)",
+        "DTotal": 966,
+        "DANE12_EST": "111001001121"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251204.818700001,
+          525005.6726999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVA CONSTITUCION (IED)",
+        "DTotal": 2382,
+        "DANE12_EST": "111001001538"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249221.2601,
+          522199.7949000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO NARIÑO (IED)",
+        "DTotal": 2550,
+        "DANE12_EST": "111001006483"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248920.3846,
+          521444.48690000176
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ROBERT F. KENNEDY (IED)",
+        "DTotal": 1701,
+        "DANE12_EST": "111001009521"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246826.8747000005,
+          522363.4976999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO JUAN DEL CORRAL (IED)",
+        "DTotal": 1379,
+        "DANE12_EST": "111001009580"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247837.858200001,
+          521262.2564999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA DE COLOMBIA (IED)",
+        "DTotal": 2169,
+        "DANE12_EST": "111001009971"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248262.335000001,
+          520315.39730000123
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO INDUSTRIAL FRANCISCO JOSE DE CALDAS (IED)",
+        "DTotal": 4227,
+        "DANE12_EST": "111001010740"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249322.851299999,
+          524716.2952000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MIGUEL ANTONIO CARO (IED)",
+        "DTotal": 1399,
+        "DANE12_EST": "111001011070"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248612.5896000005,
+          525211.9693999998
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE ASUNCION SILVA (IED)",
+        "DTotal": 804,
+        "DANE12_EST": "111001011771"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247720.6611,
+          524420.1691000015
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MORISCO (IED)",
+        "DTotal": 1084,
+        "DANE12_EST": "111001012441"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248996.509400001,
+          523709.195700001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN JOSE NORTE (IED)",
+        "DTotal": 1249,
+        "DANE12_EST": "111001012459"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248550.0648,
+          523124.6651000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TABORA (IED)",
+        "DTotal": 1713,
+        "DANE12_EST": "111001012483"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247343.0053,
+          521642.43939999864
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NACIONES UNIDAS (IED)",
+        "DTotal": 1078,
+        "DANE12_EST": "111001013293"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250361.163899999,
+          523567.23039999977
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FLORIDABLANCA (IED)",
+        "DTotal": 1999,
+        "DANE12_EST": "111001015458"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248676.0929000005,
+          524777.2725999989
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JORGE GAITAN CORTES (IED)",
+        "DTotal": 1280,
+        "DANE12_EST": "111001015806"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249199.206599999,
+          524648.9888999984
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA DE CHINA (IED)",
+        "DTotal": 2014,
+        "DANE12_EST": "111001015814"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246906.27,
+          522297.49130000174
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MAGDALENA ORTEGA DE NARIÑO (IED)",
+        "DTotal": 1781,
+        "DANE12_EST": "111001017795"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251654.578299999,
+          525012.3524999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VILLA AMALIA (IED)",
+        "DTotal": 1454,
+        "DANE12_EST": "111001025216"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250689.4473,
+          524952.7358000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GARCES NAVAS (IED)",
+        "DTotal": 2118,
+        "DANE12_EST": "111001033979"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249720.006999999,
+          524285.6722000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GUILLERMO LEON VALENCIA (IED)",
+        "DTotal": 463,
+        "DANE12_EST": "111001034002"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248052.5601,
+          521977.1928999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NESTOR FORERO ALCALA (IED)",
+        "DTotal": 822,
+        "DANE12_EST": "111001035521"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247305.3759,
+          522690.79129999876
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO DISTRITAL REPUBLICA DE GUATEMALA (IED)",
+        "DTotal": 1172,
+        "DANE12_EST": "111001036625"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248723.204399999,
+          522470.0390000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUELA AYALA DE GAITAN (IED)",
+        "DTotal": 1683,
+        "DANE12_EST": "111001046299"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251578.044,
+          523816.99329999834
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LAS MERCEDES (IED)",
+        "DTotal": 1328,
+        "DANE12_EST": "111001098922"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253662.7742,
+          526202.8922999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TORQUIGUA (IED)",
+        "DTotal": 1203,
+        "DANE12_EST": "111001098931"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246778.3104,
+          522044.33630000055
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BOLIVIA (IED)",
+        "DTotal": 459,
+        "DANE12_EST": "111001104035"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252623.2093,
+          524697.9847999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TOMAS CIPRIANO DE MOSQUERA (IED)",
+        "DTotal": 2208,
+        "DANE12_EST": "111001108456"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251034.816,
+          525355.2593999989
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CHARRY (IED)",
+        "DTotal": 3033,
+        "DANE12_EST": "111001108901"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249783.4246,
+          525993.3451000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RODOLFO LLINAS (IED)",
+        "DTotal": 2777,
+        "DANE12_EST": "111001109550"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252076.954500001,
+          525588.7041000016
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ABEL RODRIGUEZ CESPEDES (IED)",
+        "DTotal": 1349,
+        "DANE12_EST": "111001801055"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252830.0765,
+          526598.0315000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LUCILA RUBIO DE LAVERDE (IED)",
+        "DTotal": 1340,
+        "DANE12_EST": "111001801071"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248059.0144,
+          523474.1779999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA PALESTINA (IED)",
+        "DTotal": 1419,
+        "DANE12_EST": "111265000017"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253275.595000001,
+          525633.8695
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GENERAL SANTANDER (IED)",
+        "DTotal": 4379,
+        "DANE12_EST": "111265000025"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252585.5265,
+          524358.4926999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO VILLAVICENCIO (IED)",
+        "DTotal": 1882,
+        "DANE12_EST": "111265000343"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248755.8489,
+          525071.9743999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SIMON BOLIVAR (IED)",
+        "DTotal": 1608,
+        "DANE12_EST": "111265000394"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249682.522399999,
+          524011.38760000095
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NIDIA QUINTERO DE TURBAY (IED)",
+        "DTotal": 1451,
+        "DANE12_EST": "111265000408"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249732.772,
+          528505.0282999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA GAITANA (IED)",
+        "DTotal": 2421,
+        "DANE12_EST": "111001002330"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245892.5890999995,
+          523337.6158000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INSTITUTO TECNICO DISTRITAL JULIO FLOREZ (IED)",
+        "DTotal": 1429,
+        "DANE12_EST": "111001015776"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249050.3245,
+          528646.5815999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALBERTO LLERAS CAMARGO (IED)",
+        "DTotal": 3602,
+        "DANE12_EST": "111001025020"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249939.7272,
+          528951.2994999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TIBABUYES UNIVERSAL (IED)",
+        "DTotal": 4238,
+        "DANE12_EST": "111001045225"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248703.273800001,
+          526974.4219000004
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVA COLOMBIA (IED)",
+        "DTotal": 3124,
+        "DANE12_EST": "111001075272"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8244810.1774,
+          525653.4184000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GUSTAVO MORALES MORALES (IED)",
+        "DTotal": 2481,
+        "DANE12_EST": "111001075515"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247916.985300001,
+          526664.6512999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RAMON DE ZUBIRIA (IED)",
+        "DTotal": 3637,
+        "DANE12_EST": "111001086665"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248439.0046,
+          527176.9243000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALVARO GOMEZ HURTADO (IED)",
+        "DTotal": 3667,
+        "DANE12_EST": "111001093084"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250269.177200001,
+          528655.1876000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA TOSCANA - LISBOA (IED)",
+        "DTotal": 2853,
+        "DANE12_EST": "111001094889"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249594.7915,
+          529352.5731999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BILBAO (IED)",
+        "DTotal": 1660,
+        "DANE12_EST": "111001098949"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250175.0956,
+          528774.9023999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE MARIA VELAZ (IED)",
+        "DTotal": 1576,
+        "DANE12_EST": "111001104043"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250257.8148,
+          529733.2978000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DELIA ZAPATA OLIVELLA (IED)",
+        "DTotal": 2521,
+        "DANE12_EST": "111001104256"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250535.507999999,
+          529269.761500001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GERARDO MOLINA RAMIREZ (IED)",
+        "DTotal": 3682,
+        "DANE12_EST": "111001104264"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248180.484099999,
+          527160.3740000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GONZALO ARANGO (IED)",
+        "DTotal": 2831,
+        "DANE12_EST": "111001104388"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247803.1644,
+          527285.4776999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VIRGINIA GUTIERREZ DE PINEDA (IED)",
+        "DTotal": 2254,
+        "DANE12_EST": "111001107069"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246586.3455,
+          529313.1917000003
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VEINTIUN ANGELES (IED)",
+        "DTotal": 3237,
+        "DANE12_EST": "111001107077"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247775.2611,
+          529825.9483999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NICOLAS BUENAVENTURA (IED)",
+        "DTotal": 2367,
+        "DANE12_EST": "111001107786"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249119.3816,
+          529221.2492000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FILARMONICO JORGE MARIO BERGOGLIO (IED)",
+        "DTotal": 964,
+        "DANE12_EST": "111001800163"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249487.8157,
+          529928.1006000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO COMPARTIR SUBA (IED)",
+        "DTotal": 1503,
+        "DANE12_EST": "111001800813"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247012.619000001,
+          528409.9796999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FILARMONICO SIMON BOLIVAR (IED)",
+        "DTotal": 2212,
+        "DANE12_EST": "111769000174"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246226.863700001,
+          530450.2157999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL SALITRE - SUBA (IED)",
+        "DTotal": 3681,
+        "DANE12_EST": "111769000247"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8243712.3212,
+          525681.6587000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PRADO VERANIEGO (IED)",
+        "DTotal": 1624,
+        "DANE12_EST": "111769000956"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8244025.565300001,
+          526366.4222999997
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANIBAL FERNANDEZ DE SOTO (IED)",
+        "DTotal": 1592,
+        "DANE12_EST": "111769001502"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8243169.2568,
+          530400.0881000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NUEVA ZELANDIA (IED)",
+        "DTotal": 1741,
+        "DANE12_EST": "111769001871"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8243766.3301,
+          529236.2113999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VISTA BELLA (IED)",
+        "DTotal": 1559,
+        "DANE12_EST": "111769003114"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247425.6611,
+          527408.1253999993
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VILLA ELISA (IED)",
+        "DTotal": 2220,
+        "DANE12_EST": "111769003122"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249772.6711,
+          528174.2333000004
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA DOMINICANA (IED)",
+        "DTotal": 5687,
+        "DANE12_EST": "111769003360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247999.039999999,
+          528357.7498999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JUAN LOZANO Y LOZANO (IED)",
+        "DTotal": 4080,
+        "DANE12_EST": "111769003416"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248066.847999999,
+          526679.5520000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GERARDO PAREDES (IED)",
+        "DTotal": 6708,
+        "DANE12_EST": "111769003424"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246898.1269000005,
+          526394.9056000002
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO HUNZA (IED)",
+        "DTotal": 1831,
+        "DANE12_EST": "111769004188"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245651.1928,
+          520731.6620000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FEMENINO LORENCITA VILLEGAS DE SANTOS (IED)",
+        "DTotal": 680,
+        "DANE12_EST": "111001000612"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245050.9191,
+          522091.5012000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO DOMINGO FAUSTINO SARMIENTO (IED)",
+        "DTotal": 1284,
+        "DANE12_EST": "111001008389"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8244960.822699999,
+          518552.75569999963
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO HELADIA MEJIA (IED)",
+        "DTotal": 1293,
+        "DANE12_EST": "111001009148"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246668.514900001,
+          519888.35060000047
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JORGE ELIECER GAITAN (IED)",
+        "DTotal": 1522,
+        "DANE12_EST": "111001010421"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246203.8105999995,
+          520815.80000000075
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA DE PANAMA (IED)",
+        "DTotal": 815,
+        "DANE12_EST": "111001011088"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246071.476199999,
+          518443.9340999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRANCISCO PRIMERO S.S. (IED)",
+        "DTotal": 1256,
+        "DANE12_EST": "111001024830"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245824.439300001,
+          520644.93829999864
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RAFAEL BERNAL JIMENEZ (IED)",
+        "DTotal": 1285,
+        "DANE12_EST": "111001028258"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245086.626,
+          520554.62640000135
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JUAN FRANCISCO BERBEO (IED)",
+        "DTotal": 1221,
+        "DANE12_EST": "111001029912"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246608.9333999995,
+          521104.07840000093
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TOMAS CARRASQUILLA (IED)",
+        "DTotal": 1628,
+        "DANE12_EST": "111001032255"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245036.465399999,
+          517585.3427999988
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUELA BELTRAN (IED)",
+        "DTotal": 1777,
+        "DANE12_EST": "111001010731"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245905.625700001,
+          516876.6466999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO PALERMO (IED)",
+        "DTotal": 1428,
+        "DANE12_EST": "111001094897"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247906.4166,
+          511995.7696999982
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EDUARDO SANTOS (IED)",
+        "DTotal": 1324,
+        "DANE12_EST": "111001014001"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246489.1614,
+          514312.2021000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA BOLIVARIANA DE VENEZUELA (IED)",
+        "DTotal": 951,
+        "DANE12_EST": "111001016250"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247910.7391,
+          511971.8238000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN FRANCISCO DE ASIS (IED)",
+        "DTotal": 1305,
+        "DANE12_EST": "111001016772"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247437.839400001,
+          513547.94409999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LICEO NACIONAL ANTONIA SANTOS (IED)",
+        "DTotal": 1751,
+        "DANE12_EST": "111001019526"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247205.686000001,
+          513234.3687000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LICEO NACIONAL AGUSTIN NIETO CABALLERO (IED)",
+        "DTotal": 911,
+        "DANE12_EST": "111001025313"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247958.927100001,
+          511964.11459999904
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO MENORAH (IED)",
+        "DTotal": 1569,
+        "DANE12_EST": "111001026069"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8246415.950999999,
+          515193.7335000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PANAMERICANO (IED)",
+        "DTotal": 1552,
+        "DANE12_EST": "111001030856"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248105.233200001,
+          513308.3751000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RICAURTE (IED)",
+        "DTotal": 1041,
+        "DANE12_EST": "111001041459"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248895.874299999,
+          511184.6616999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GUILLERMO LEON VALENCIA (IED)",
+        "DTotal": 1858,
+        "DANE12_EST": "111001011053"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248437.6109,
+          510968.2520999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ESCUELA NORMAL SUPERIOR DISTRITAL MARIA MONTESSORI (IED)",
+        "DTotal": 3086,
+        "DANE12_EST": "111001011908"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249285.0940000005,
+          511989.6627999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ATANASIO GIRARDOT (IED)",
+        "DTotal": 2586,
+        "DANE12_EST": "111001012602"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248503.236,
+          511560.2879000008
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FRANCISCO DE PAULA SANTANDER (IED)",
+        "DTotal": 947,
+        "DANE12_EST": "111001014630"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247483.3747000005,
+          511067.3392000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO JAIME PARDO LEAL (IED)",
+        "DTotal": 1293,
+        "DANE12_EST": "111001086720"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251051.1688,
+          513321.00499999896
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DE CULTURA POPULAR (IED)",
+        "DTotal": 1078,
+        "DANE12_EST": "111001000078"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248924.236300001,
+          515118.8154999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA MERCED (IED)",
+        "DTotal": 1499,
+        "DANE12_EST": "111001006122"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250153.417199999,
+          515960.78269999847
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SILVERIA ESPINOSA DE RENDON (IED)",
+        "DTotal": 1743,
+        "DANE12_EST": "111001011045"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252148.6154,
+          512548.6158999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANDRES BELLO (IED)",
+        "DTotal": 1838,
+        "DANE12_EST": "111001011274"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250437.2841,
+          513752.14350000024
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL JAZMIN (IED)",
+        "DTotal": 1636,
+        "DANE12_EST": "111001012530"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8247998.818399999,
+          515055.97729999945
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ESPAÑA (IED)",
+        "DTotal": 662,
+        "DANE12_EST": "111001012556"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251433.5145,
+          512999.96709999815
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO TECNICO BENJAMIN HERRERA (IED)",
+        "DTotal": 1740,
+        "DANE12_EST": "111001012963"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249754.4726,
+          516201.05270000175
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE JOAQUIN CASAS (IED)",
+        "DTotal": 397,
+        "DANE12_EST": "111001014729"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250798.956700001,
+          516359.5042999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO JOSE DE SUCRE (IED)",
+        "DTotal": 467,
+        "DANE12_EST": "111001014745"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250196.766100001,
+          512382.73600000143
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARCO ANTONIO CARREÑO SILVA (IED)",
+        "DTotal": 1237,
+        "DANE12_EST": "111001014826"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251650.0844,
+          513686.31060000136
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LUIS VARGAS TEJADA (IED)",
+        "DTotal": 662,
+        "DANE12_EST": "111001014869"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252584.395500001,
+          512578.5106000006
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JULIO GARAVITO ARMERO (IED)",
+        "DTotal": 1560,
+        "DANE12_EST": "111001014885"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250252.9023,
+          515188.3020000011
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SORRENTO (IED)",
+        "DTotal": 2437,
+        "DANE12_EST": "111001020168"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251303.0726,
+          514600.4134000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE MANUEL RESTREPO (IED)",
+        "DTotal": 1270,
+        "DANE12_EST": "111001045535"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250908.345899999,
+          513901.0117999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LUIS CARLOS GALAN SARMIENTO (IED)",
+        "DTotal": 1426,
+        "DANE12_EST": "111001065056"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245353.334100001,
+          512424.0003999993
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO INTEGRADA LA CANDELARIA (IED)",
+        "DTotal": 1644,
+        "DANE12_EST": "111001013323"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8245433.6866999995,
+          511830.3513999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ESCUELA NACIONAL DE COMERCIO (IED)",
+        "DTotal": 1140,
+        "DANE12_EST": "111001013374"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251088.6512,
+          510310.93400000036
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RESTREPO MILLAN (IED)",
+        "DTotal": 2637,
+        "DANE12_EST": "111001010928"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250531.944700001,
+          508924.38369999826
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REINO DE HOLANDA (IED)",
+        "DTotal": 2033,
+        "DANE12_EST": "111001011029"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249201.3517,
+          510477.1127000004
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LICEO FEMENINO DE CUNDINAMARCA MERCEDES NARIÑO (IED)",
+        "DTotal": 4119,
+        "DANE12_EST": "111001011819"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250890.1118,
+          510368.08509999886
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BRAVO PAEZ (IED)",
+        "DTotal": 1911,
+        "DANE12_EST": "111001012611"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250699.516100001,
+          510353.26359999925
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO QUIROGA ALIANZA (IED)",
+        "DTotal": 1318,
+        "DANE12_EST": "111001012815"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251041.5942,
+          510919.2093000002
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RAFAEL DELGADO SALGUERO (IED)",
+        "DTotal": 897,
+        "DANE12_EST": "111001012971"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250336.3541,
+          506755.30680000037
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN AGUSTIN (IED)",
+        "DTotal": 2873,
+        "DANE12_EST": "111001013811"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251592.330700001,
+          510238.96079999954
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA FEDERAL DE ALEMANIA (IED)",
+        "DTotal": 508,
+        "DANE12_EST": "111001014028"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251672.8726,
+          510123.10819999874
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MANUEL DEL SOCORRO RODRIGUEZ (IED)",
+        "DTotal": 1874,
+        "DANE12_EST": "111001014591"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250585.5605999995,
+          510867.5760000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL LIBERTADOR (IED)",
+        "DTotal": 1823,
+        "DANE12_EST": "111001014664"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249947.0776,
+          510292.1772999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CLEMENCIA HOLGUIN DE URDANETA (IED)",
+        "DTotal": 842,
+        "DANE12_EST": "111001014958"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249761.2642,
+          509998.08989999816
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALEJANDRO OBREGON (IED)",
+        "DTotal": 1721,
+        "DANE12_EST": "111001015172"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249804.421700001,
+          510802.1365999989
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO BARAYA (IED)",
+        "DTotal": 1208,
+        "DANE12_EST": "111001015733"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8251084.2129,
+          509489.0403999984
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALEXANDER FLEMING (IED)",
+        "DTotal": 1914,
+        "DANE12_EST": "111001018058"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249702.3785,
+          508674.9904000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MISAEL PASTRANA BORRERO (IED)",
+        "DTotal": 1497,
+        "DANE12_EST": "111001020095"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249685.823000001,
+          510274.8002000004
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GUSTAVO RESTREPO (IED)",
+        "DTotal": 2172,
+        "DANE12_EST": "111001027332"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250118.6065,
+          507941.8669999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ALFREDO IRIARTE (IED)",
+        "DTotal": 2155,
+        "DANE12_EST": "111001027383"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249858.485099999,
+          506271.9990000017
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PALERMO SUR (CED)",
+        "DTotal": 1366,
+        "DANE12_EST": "111001028380"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8248923.3891,
+          509103.96240000054
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ENRIQUE OLAYA HERRERA (IED)",
+        "DTotal": 4793,
+        "DANE12_EST": "111001030015"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249362.761600001,
+          510865.91259999946
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA EE.UU. DE AMERICA (IED)",
+        "DTotal": 662,
+        "DANE12_EST": "111001032395"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250414.9835,
+          510463.2954999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CLEMENCIA DE CAYCEDO (IED)",
+        "DTotal": 927,
+        "DANE12_EST": "111001034134"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249894.8476,
+          509606.91429999843
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE MARTI (IED)",
+        "DTotal": 2268,
+        "DANE12_EST": "111001036765"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249898.3442,
+          506763.4611000009
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO DIANA TURBAY (IED)",
+        "DTotal": 2084,
+        "DANE12_EST": "111001041611"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250773.447799999,
+          507624.57140000165
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARRUECOS Y MOLINOS (IED)",
+        "DTotal": 4075,
+        "DANE12_EST": "111001076376"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250640.376499999,
+          506320.248300001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA PAZ (IED)",
+        "DTotal": 790,
+        "DANE12_EST": "111001078930"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250699.801100001,
+          509713.74170000106
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SANTA LUCIA (IED)",
+        "DTotal": 1225,
+        "DANE12_EST": "111001098965"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8249627.3914,
+          507427.45270000026
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO COLOMBIA VIVA (IED)",
+        "DTotal": 1650,
+        "DANE12_EST": "111001102091"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8250497.083799999,
+          508071.3856999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARIA CANO (IED)",
+        "DTotal": 1859,
+        "DANE12_EST": "111001107794"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252835.828400001,
+          507623.0020999983
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO REPUBLICA DE MEXICO (IED)",
+        "DTotal": 2583,
+        "DANE12_EST": "111001014486"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254150.796599999,
+          506725.1746999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RAFAEL URIBE URIBE (IED)",
+        "DTotal": 1855,
+        "DANE12_EST": "111001014524"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256022.5537,
+          511197.6462999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ISMAEL PERDOMO (IED)",
+        "DTotal": 2662,
+        "DANE12_EST": "111001020320"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253058.252599999,
+          507153.2745999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LEON DE GREIFF (IED)",
+        "DTotal": 2102,
+        "DANE12_EST": "111001027251"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253018.423599999,
+          507415.06430000067
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDAD DE MONTREAL (IED)",
+        "DTotal": 891,
+        "DANE12_EST": "111001028266"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253551.704,
+          507327.997299999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SANTA BARBARA (IED)",
+        "DTotal": 1559,
+        "DANE12_EST": "111001030821"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253406.8573,
+          507689.08359999955
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO UNION EUROPEA (IED)",
+        "DTotal": 2090,
+        "DANE12_EST": "111001030830"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254622.043199999,
+          509811.7613000013
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ARBORIZADORA BAJA (IED)",
+        "DTotal": 2608,
+        "DANE12_EST": "111001030848"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254233.652799999,
+          505798.8198999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL TESORO DE LA CUMBRE (IED)",
+        "DTotal": 2153,
+        "DANE12_EST": "111001033928"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254241.8815,
+          508555.7302000001
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO NICOLAS GOMEZ DAVILA (IED)",
+        "DTotal": 2780,
+        "DANE12_EST": "111001034240"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253853.096000001,
+          506934.8680000007
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO COMPARTIR RECUERDO (IED)",
+        "DTotal": 1644,
+        "DANE12_EST": "111001034754"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253488.1072,
+          508230.2886000015
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ACACIA II (IED)",
+        "DTotal": 2952,
+        "DANE12_EST": "111001035572"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254446.231799999,
+          505921.9893999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE JAIME ROJAS (IED)",
+        "DTotal": 1099,
+        "DANE12_EST": "111001036561"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254794.734200001,
+          509638.37970000133
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RODRIGO LARA BONILLA (IED)",
+        "DTotal": 4029,
+        "DANE12_EST": "111001036781"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252719.647600001,
+          507877.07449999824
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CEDID GUILLERMO CANO ISAZA (IED)",
+        "DTotal": 3156,
+        "DANE12_EST": "111001044385"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255243.7313,
+          509539.16479999945
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL PARAISO DE MANUELA BELTRAN (IED)",
+        "DTotal": 2528,
+        "DANE12_EST": "111001045730"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254638.4427000005,
+          507424.6083999984
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO VILLAMAR (IED)",
+        "DTotal": 560,
+        "DANE12_EST": "111001046663"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254033.3267,
+          505230.3665000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA ARABIA (IED)",
+        "DTotal": 961,
+        "DANE12_EST": "111001047457"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255157.5956999995,
+          509168.77639999986
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ARBORIZADORA ALTA (IED)",
+        "DTotal": 2734,
+        "DANE12_EST": "111001047571"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255701.432600001,
+          507167.81639999896
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO PARAISO MIRADOR (IED)",
+        "DTotal": 3414,
+        "DANE12_EST": "111001047678"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255874.4264,
+          511107.66899999976
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARIA MERCEDES CARRANZA (IED)",
+        "DTotal": 3176,
+        "DANE12_EST": "111001075329"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253496.0766,
+          506467.88800000027
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ESTRELLA DEL SUR (IED)",
+        "DTotal": 2112,
+        "DANE12_EST": "111001075663"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8252944.5364,
+          506430.9697000012
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SOTAVENTO (IED)",
+        "DTotal": 997,
+        "DANE12_EST": "111001075752"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253986.682700001,
+          508825.38219999894
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SAN FRANCISCO (IED)",
+        "DTotal": 3792,
+        "DANE12_EST": "111001076937"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254096.545,
+          506770.1592999995
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CONFEDERACION BRISAS DEL DIAMANTE (IED)",
+        "DTotal": 2272,
+        "DANE12_EST": "111001086584"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253203.315199999,
+          505851.9252000004
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL MINUTO DE BUENOS AIRES (IED)",
+        "DTotal": 1233,
+        "DANE12_EST": "111001086762"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255978.1194,
+          510161.1853
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CEDID CIUDAD BOLIVAR (IED)",
+        "DTotal": 5167,
+        "DANE12_EST": "111001086801"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256519.710999999,
+          509812.7974999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO SIERRA MORENA (IED)",
+        "DTotal": 5603,
+        "DANE12_EST": "111001086835"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8257244.967499999,
+          511804.9875999987
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA ESTANCIA - SAN ISIDRO LABRADOR (IED)",
+        "DTotal": 2705,
+        "DANE12_EST": "111001092410"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256003.946599999,
+          510195.7336000018
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CIUDAD BOLIVAR - ARGENTINA (IED)",
+        "DTotal": 2091,
+        "DANE12_EST": "111001096555"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253850.768300001,
+          505555.7459000014
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO LA JOYA (IED)",
+        "DTotal": 982,
+        "DANE12_EST": "111001098973"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253152.1216,
+          505962.38800000027
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO BUENAVISTA (IED)",
+        "DTotal": 1259,
+        "DANE12_EST": "111001100013"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255870.889799999,
+          509040.67489999905
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GIMNASIO SABIO CALDAS (IED)",
+        "DTotal": 1174,
+        "DANE12_EST": "111001100021"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255598.1203000005,
+          506181.57250000164
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO JOSE MARIA VARGAS VILA (IED)",
+        "DTotal": 3247,
+        "DANE12_EST": "111001107115"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253036.9081999995,
+          508374.5377999991
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CUNDINAMARCA (IED)",
+        "DTotal": 3925,
+        "DANE12_EST": "111001107816"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8253134.5031,
+          506406.1886
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANTONIO GARCIA (IED)",
+        "DTotal": 2912,
+        "DANE12_EST": "111001107859"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254662.5122,
+          506981.72260000184
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO FANNY MIKEY (IED)",
+        "DTotal": 2007,
+        "DANE12_EST": "111001109304"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255337.744000001,
+          510818.3610999994
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL ENSUEÑO (IED)",
+        "DTotal": 1553,
+        "DANE12_EST": "111001800414"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254894.699100001,
+          511203.80579999834
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ROGELIO SALMONA (IED)",
+        "DTotal": 2148,
+        "DANE12_EST": "111001800422"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255929.853499999,
+          510677.0166000016
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO ANGELA RESTREPO MORENO (IED)",
+        "DTotal": 1178,
+        "DANE12_EST": "111001800571"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255965.1173,
+          509990.3359999992
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO EL NOGAL (IED)",
+        "DTotal": 1163,
+        "DANE12_EST": "111001800635"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254684.972100001,
+          510554.75769999996
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MARIA CURREA MANRIQUE (IED)",
+        "DTotal": 248,
+        "DANE12_EST": "111001801276"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255742.1588,
+          511105.5896999985
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO AGUDELO RESTREPO (IED)",
+        "DTotal": 973,
+        "DANE12_EST": "111001801314"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255091.0834,
+          495275.23220000044
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL PASQUILLA (IED)",
+        "DTotal": 1042,
+        "DANE12_EST": "211850001121"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8255983.8412,
+          502995.5142999999
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL QUIBA ALTA (IED)",
+        "DTotal": 1460,
+        "DANE12_EST": "211850001171"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254142.468800001,
+          500198.2820000015
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO MOCHUELO ALTO (CED)",
+        "DTotal": 349,
+        "DANE12_EST": "211850001180"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254562.8813000005,
+          502681.82030000165
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO RURAL JOSE CELESTINO MUTIS (IED)",
+        "DTotal": 1711,
+        "DANE12_EST": "211850001317"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8254852.7127,
+          506055.39090000093
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CANADA (IED)",
+        "DTotal": 827,
+        "DANE12_EST": "311001075034"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8256734.3661,
+          464720.80260000005
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO CAMPESTRE JAIME GARZON (IED)",
+        "DTotal": 288,
+        "DANE12_EST": "211001076346"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8278129.733999999,
+          444035.93879999965
+        ]
+      },
+      "properties": {
+        "NOMBRE_EST": "COLEGIO GIMNASIO DEL CAMPO JUAN DE LA CRUZ VARELA (IED)",
+        "DTotal": 557,
+        "DANE12_EST": "211850001473"
+      }
+    }
+  ]
+}
