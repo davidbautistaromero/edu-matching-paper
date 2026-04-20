@@ -19,7 +19,7 @@ FILTER_MAIN = "cole_cod_depto_ubicacion='11' AND periodo >= '20201'"
 BASE_URL_2020 = "https://www.datos.gov.co/resource/rnvb-vnyh.json"
 FILTER_2020 = "cole_cod_depto_ubicacion='11'"
 
-OUTPUT_PATH = Path(__file__).parent.parent / "data" / "raw" / "saber11_bogota.csv"
+OUTPUT_PATH = Path(__file__).parent.parent / "data" / "raw" / "saber11_bogota_2020_2022.csv"
 PAGE_SIZE = 10_000
 
 SELECT = ",".join([
