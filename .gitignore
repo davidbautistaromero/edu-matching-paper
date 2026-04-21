@@ -1,6 +1,23 @@
 ﻿.venv/
-venv/
 .env
-data/images/mapillary/
+
 __pycache__/
 *.pyc
+
+# Imágenes y catálogos pesados — se reproducen con los scripts
+data/images/gsv/**/*.jpg
+data/images/mapillary/**/*.jpg
+data/images/mapillary/*.jpg
+data/images/gsv/gsv_catalog.csv
+data/images/gsv/gsv_catalog_muestra.csv
+data/images/mapillary/mapillary_catalog.csv
+data/images/mapillary/resumen_fechas.csv
+
+# Archivos auxiliares temporales
+scripts/_*.py
+_*.py
+_*.txt
+
+# Parquet y outputs grandes
+data/embeddings/
+

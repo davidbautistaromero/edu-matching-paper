@@ -30,7 +30,7 @@ import math
 import pandas as pd
 
 # Rango de captura (YYYY-MM-DD). "" o None para no filtrar cada extremo.
-FECHA_DESDE = "2021-01-01"
+FECHA_DESDE = "2020-01-01"
 FECHA_HASTA = "2024-12-31"
 
 # True → excluir panorámicas incompatibles con VGG19 (distorsión equirectangular).
@@ -42,7 +42,7 @@ DEDUP_POR_SECUENCIA = True
 # Máxima diferencia angular (grados) entre la dirección de la cámara y el
 # rumbo imagen→colegio. 30° es más estricto que 45° — la cámara debe apuntar
 # casi directamente al edificio. None desactiva el filtro.
-ANGULO_MAX_DEG = 65
+ANGULO_MAX_DEG = 90
 
 # Distancia mínima en metros entre dos imágenes seleccionadas del mismo colegio.
 # Elimina tomas capturadas desde el mismo punto físico por distintas secuencias
