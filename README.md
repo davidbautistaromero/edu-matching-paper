@@ -9,7 +9,7 @@ Analisis de mecanismos de asignacion escolar en Bogota con modelos de matching y
 ```
 paper-AI/
 ├── data/
-│   ├── raw/                  <- Datos descargados tal como vienen de la fuente (no modificar)
+│   ├── raw/                        <- Datos crudos, tal como vienen de la fuente (no modificar)
 │   │   ├── colegios_dataset.csv
 │   │   ├── saber11_bogota_2020_2022.csv
 │   │   ├── pruebassaber2023.geojson
@@ -21,32 +21,42 @@ paper-AI/
 │   │   ├── paraderos_sitp.geojson
 │   │   ├── parques_bogota.geojson
 │   │   └── delitos_alto_impacto.geojson
-│   ├── primary/              <- (reservado) dataset maestro de colegios con todas las variables
-│   ├── processed/            <- Datos limpios y cruzados, output de los scripts
+│   ├── processed/                  <- Intermedios limpios, output de scripts 00_*
 │   │   ├── colegios_dataset.geojson
 │   │   ├── saber_bogota_merged.geojson
 │   │   ├── demanda_clean.geojson
 │   │   ├── matriculas_clean.geojson
-│   │   └── em2021_por_upz.csv
+│   │   ├── em2021_por_upz.csv
+│   │   ├── sitp_clean.geojson
+│   │   ├── parques_clean.geojson
+│   │   └── delitos_por_localidad.csv
+│   ├── primary/                    <- Dataset maestro, output de 01_build_dataset.py
+│   │   └── colegios_features.geojson
 │   └── images/
-│       └── embeddings/       <- Embeddings VGG19 por colegio (entregado por equipo de imagenes)
-├── docs/                     <- Diccionarios de variables y documentacion de referencia
+│       └── embeddings/             <- Embeddings VGG19 por colegio (equipo de imagenes)
+├── docs/                           <- Diccionarios de variables y documentacion de referencia
 │   ├── em2021_diccionario.ods
 │   └── em2021_variablesadicionales_diccionario.ods
 ├── models/
-│   └── regretnet/            <- Arquitectura y pesos del modelo RegretNet
-├── notebooks/                <- Exploracion y analisis
+│   └── regretnet/                  <- Arquitectura y pesos del modelo RegretNet
+├── notebooks/
+│   └── 01_eda.ipynb                <- Analisis exploratorio de datos
 ├── reports/
-│   ├── figures/              <- Graficas del paper
-│   └── paper/                <- Documento final
-├── scripts/                  <- Scripts de descarga, limpieza y procesamiento
-│   ├── fetch_colegios_geo.py
-│   ├── colegios_csv_to_geojson.py
-│   ├── fetch_saber11_bogota.py
-│   ├── merge_saber_geojson.py
-│   ├── demand_capacity_colegios.py
-│   ├── fetch_em2021_variables.py
-│   └── build_em2021_por_upz.py
+│   ├── figures/
+│   │   └── eda/                    <- Figuras del analisis exploratorio (7 figuras)
+│   └── paper/                      <- Documento final
+├── scripts/
+│   ├── 00_fetch_geodata.py         <- Descarga geodatos SED, ICFES y parques
+│   ├── 00_fetch_saber11_bogota.py  <- Descarga resultados ICFES
+│   ├── 00_fetch_em2021_variables.py <- Descarga EM2021 (dos tablas)
+│   ├── 00_colegios_csv_to_geojson.py <- Geocodificacion directorio SED
+│   ├── 00_merge_saber_geojson.py   <- Unifica Saber 11 multi-ano
+│   ├── 00_demand_capacity_colegios.py <- Limpia demanda y matricula
+│   ├── 00_build_em2021_por_upz.py  <- Agrega EM2021 por UPZ
+│   ├── 00_clean_sitp.py            <- Normaliza GeoJSON SITP (formato ESRI)
+│   ├── 00_clean_parques.py         <- Convierte MAGNA-SIRGAS a WGS84
+│   ├── 00_clean_delitos.py         <- Agrega delitos por localidad
+│   └── 01_build_dataset.py         <- Integra todas las fuentes -> primary/
 ├── requirements.txt
 └── README.md
 ```
