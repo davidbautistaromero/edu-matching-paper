@@ -47,38 +47,56 @@ def main():
     df = pd.DataFrame(rows)
     print(f"Filas raw: {len(df):,} | Columnas: {len(df.columns)}")
 
-    # Columnas de conteo por tipo de delito (patron: CM**TOTAL o CM**CONT)
-    delito_cols = {
-        "homicidios":          "CMHTOTAL",
-        "lesiones_personales": "CMLPTOTAL",
-        "hurto_personas":      "CMHPTOTAL",
-        "hurto_residencias":   "CMHRTOTAL",
-        "hurto_automotores":   "CMHATOTAL",
-        "hurto_bicicletas":    "CMHBTOTAL",
-        "hurto_comercio":      "CMHCTOTAL",
-        "hurto_entidades":     "CMHCETOTAL",
-        "violencia_intrafam":  "CMVITOTAL",
-        "delitos_sexuales":    "CMDSTOTAL",
+    # El GeoJSON tiene una fila por localidad con columnas CM**TOTAL que son
+    # totales de Bogota entera (no por localidad). Los valores correctos por
+    # localidad estan en las columnas CM**[18-26]CONT (periodos anuales).
+    # Prefijos por tipo de delito:
+    #   CMH    = homicidios
+    #   CMLP   = lesiones personales
+    #   CMHP   = hurto a personas
+    #   CMHR   = hurto a residencias
+    #   CMHA   = hurto de automotores
+    #   CMHB   = hurto de bicicletas
+    #   CMHC   = hurto a comercio
+    #   CMHCE  = hurto a entidades
+    #   CMVI   = violencia intrafamiliar
+    #   CMDS   = delitos sexuales
+
+    PREFIXES = {
+        "homicidios":          "CMH",
+        "lesiones_personales": "CMLP",
+        "hurto_personas":      "CMHP",
+        "hurto_residencias":   "CMHR",
+        "hurto_automotores":   "CMHA",
+        "hurto_bicicletas":    "CMHB",
+        "hurto_comercio":      "CMHC",
+        "hurto_entidades":     "CMHCE",
+        "violencia_intrafam":  "CMVI",
+        "delitos_sexuales":    "CMDS",
     }
 
     # Normalizar nombre de localidad
     df["localidad_norm"] = df["CMNOMLOCAL"].apply(normalize)
     df["localidad_norm"] = df["localidad_norm"].replace(NOMBRE_MAP)
+    df = df[df["localidad_norm"] != "SIN LOCALIZACION"].copy()
 
-    # Convertir columnas numericas
-    for col in delito_cols.values():
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce")
+    # Para cada tipo de delito, sumar todas las columnas de periodo (CM**[0-9]+CONT)
+    import re
+    result_rows = []
+    for loc, grp in df.groupby("localidad_norm"):
+        row = {"localidad_norm": loc}
+        for out_col, prefix in PREFIXES.items():
+            # Columnas del tipo CM<PREFIX>[YY]CONT (exactamente ese prefijo)
+            pat = re.compile(rf"^{re.escape(prefix)}\d+CONT?$", re.IGNORECASE)
+            cols = [c for c in grp.columns if pat.match(c)]
+            if cols:
+                vals = pd.to_numeric(grp[cols].iloc[0], errors="coerce")
+                row[out_col] = vals.sum()
+            else:
+                row[out_col] = None
+        result_rows.append(row)
 
-    # Agregar por localidad (suma de todos los meses)
-    agg_dict = {
-        out_col: (src_col, "sum")
-        for out_col, src_col in delito_cols.items()
-        if src_col in df.columns
-    }
-    result = df.groupby("localidad_norm").agg(**agg_dict).reset_index()
-    result = result[result["localidad_norm"] != "SIN LOCALIZACION"]
-    result = result.sort_values("localidad_norm").reset_index(drop=True)
+    result = pd.DataFrame(result_rows).sort_values("localidad_norm").reset_index(drop=True)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     result.to_csv(OUT, index=False, encoding="utf-8")

@@ -337,7 +337,42 @@ def join_delitos(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ── Paso 9: Output GeoJSON ────────────────────────────────────────────────────
+# ── Paso 9: Competencia sector privado ───────────────────────────────────────
+
+def join_competencia_privada(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Une el porcentaje de sedes no oficiales por localidad desde
+    data/processed/competencia_privada_localidad.csv
+    (generado por scripts/00_build_competencia_privada.py).
+    """
+    import unicodedata
+
+    def normalize_str(s):
+        s = str(s).strip().upper()
+        s = unicodedata.normalize("NFD", s)
+        return "".join(c for c in s if unicodedata.category(c) != "Mn")
+
+    print("Paso 9 - Uniendo competencia sector privado por localidad...")
+    path = PROC / "competencia_privada_localidad.csv"
+    if not path.exists():
+        print(f"  AVISO: {path.name} no encontrado -- corre 00_build_competencia_privada.py primero")
+        return df
+
+    comp = pd.read_csv(path, encoding="utf-8")
+    comp = comp.rename(columns={"localidad_norm": "_loc_key"})
+
+    df["_loc_key"] = df["nombre_localidad"].apply(normalize_str)
+    df = df.merge(
+        comp[["_loc_key", "pct_no_oficial", "n_sedes_total", "n_sedes_no_oficial"]],
+        on="_loc_key", how="left"
+    ).drop(columns=["_loc_key"])
+
+    matched = df["pct_no_oficial"].notna().sum()
+    print(f"  {matched} / {len(df)} colegios con dato de competencia privada")
+    return df
+
+
+# ── Paso 10: Output GeoJSON ───────────────────────────────────────────────────
 
 def save_geojson(df: pd.DataFrame, path: Path) -> None:
     features = []
@@ -385,6 +420,9 @@ def main():
 
     # Paso 8: delitos
     df = join_delitos(df)
+
+    # Paso 9: competencia del sector privado por localidad
+    df = join_competencia_privada(df)
 
     # Placeholder para indice visual (se completa en 02_visual_index.py)
     df["v_j"] = np.nan
