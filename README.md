@@ -156,11 +156,47 @@ Estas fuentes se descargan **manualmente** desde el portal de datos abiertos de 
 
 ---
 
-### 6. Embeddings visuales de colegios (pendiente - equipo de imagenes)
+### 6. Imagenes de entorno de colegios - Mapillary
+
+| | |
+|---|---|
+| **Fuente** | Mapillary Graph API v4 (imagenes publicas con licencia CC) |
+| **Script** | `scripts/fetch_mapillary_colegios.py` |
+| **Output catalogo** | `data/images/mapillary/mapillary_catalog.csv` |
+| **Output resumen** | `data/images/mapillary/resumen_fechas.csv` |
+| **Output imagenes** | `data/images/mapillary/*.jpg` |
+| **Convencion de nombre** | `{DANE12_EST}_{YYYY-MM-DD}_{image_id}.jpg` |
+
+**Parametros de busqueda:**
+- Radio: 100 m alrededor del punto de cada colegio (bounding box)
+- Fecha minima: 2021-01-01
+
+**Criterios de seleccion para descarga:**
+- Se excluyen imagenes panoramicas (`is_pano = True`): representan el 55 % del catalogo
+  y tienen distorsion equirectangular incompatible con VGG19 sin preprocesado adicional.
+- Deduplicacion por secuencia: de cada recorrido de captura (`sequence`) se conserva
+  unicamente la imagen mas cercana al colegio, eliminando pseudorreplicacion
+  (los recorridos tienen ~47 fotogramas consecutivos casi identicos en promedio).
+
+**Cobertura resultante:**
+- Imagenes descargadas: ~2 200 (regulares, no redundantes)
+- Colegios cubiertos: 244 / 407 (60 %)
+
+**Limitacion documentada — colegios sin indice visual:**
+163 colegios quedan fuera del indice visual `v_j`: 37 no tienen ninguna imagen
+de Mapillary dentro de 100 m, y 102 solo tienen imagenes panoramicas que se
+excluyen por incompatibilidad metodologica con VGG19. Estos colegios se tratan
+como `v_j = NaN` en la regresion. Se verifica que la ausencia de cobertura no
+este correlacionada sistematicamente con el nivel socioeconomico de la UPZ
+(ver Apendice X), de modo que el sesgo de seleccion potencial es aleatorio
+respecto a las variables de interes.
+
+### 7. Embeddings visuales de colegios (pendiente - equipo de imagenes)
 
 | | |
 |---|---|
 | **Responsable** | Otro miembro del grupo |
+| **Input** | `data/images/mapillary/*.jpg` |
 | **Output esperado** | `data/images/embeddings/embeddings.parquet` |
 | **Contenido** | Embeddings VGG19 por colegio, usados para construir el indice visual `v_j` en `scripts/02_visual_index.py` |
 
