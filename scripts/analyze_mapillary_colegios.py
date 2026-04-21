@@ -37,7 +37,7 @@ REANUDABILIDAD
   regenera el resumen y los mapas.
 
 REQUISITOS
-  pip install geopandas aiohttp pandas pyproj matplotlib
+  pip install geopandas aiohttp pandas pyproj matplotlib requests
 """
 
 # ---------------------------------------------------------------------------
@@ -46,8 +46,6 @@ REQUISITOS
 import asyncio
 import csv
 import math
-import os
-import signal
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -59,6 +57,7 @@ import aiohttp
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import pandas as pd
+import requests
 
 
 # =============================================================================
@@ -109,18 +108,66 @@ RUTA_CATALOGO = RUTA_SALIDA / "mapillary_catalog.csv"
 RUTA_RESUMEN  = RUTA_SALIDA / "resumen_fechas.csv"
 
 # Rutas de salida de mapas.
-RUTA_MAPA_TOTAL_PNG     = RUTA_SALIDA / "mapa_cobertura_total.png"
-RUTA_MAPA_FILTRADA_PNG  = RUTA_SALIDA / "mapa_cobertura_filtrada.png"
+RUTA_MAPA_TOTAL_PNG    = RUTA_SALIDA / "mapa_cobertura_total.png"
+RUTA_MAPA_FILTRADA_PNG = RUTA_SALIDA / "mapa_cobertura_filtrada.png"
+
+# Cache local de los polígonos de localidades de Bogotá.
+RUTA_LOCALIDADES = _ROOT / "data" / "raw" / "localidades_bogota.geojson"
 
 # Columnas del catálogo (orden fijo para compatibilidad con pipeline posterior).
 COLUMNAS_CSV = [
     "dane_est", "nombre_est", "image_id",
     "lon_img", "lat_img", "lon_colegio", "lat_colegio",
-    "distancia_m", "fecha", "compass_angle", "is_pano",
+    "distancia_m", "fecha", "compass_angle", "is_pano", "camera_type",
     "sequence", "url_descarga", "nombre_archivo", "descargada",
 ]
 
 # =============================================================================
+
+
+# ---------------------------------------------------------------------------
+# Localidades de Bogotá
+# ---------------------------------------------------------------------------
+
+_URL_LOCALIDADES = (
+    "https://serviciosgis.catastrobogota.gov.co/arcgis/rest/services/social"
+    "/localidades/MapServer/0/query"
+    "?where=1%3D1&outFields=NOMBRE&returnGeometry=true&f=geojson"
+)
+_URL_LOCALIDADES_ALT = (
+    "https://www.datos.gov.co/api/geospatial/93mr-j3n7"
+    "?method=export&type=GeoJSON"
+)
+
+
+def cargar_localidades():
+    """
+    Devuelve los polígonos de localidades de Bogotá en WGS84.
+    Carga desde cache local (RUTA_LOCALIDADES) si existe; si no, descarga
+    desde el portal de catastro de Bogotá y guarda para usos futuros.
+    Devuelve None si no hay conexión y el cache no existe.
+    """
+    if RUTA_LOCALIDADES.exists():
+        try:
+            return gpd.read_file(RUTA_LOCALIDADES).to_crs("EPSG:4326")
+        except Exception:
+            pass  # archivo corrupto → re-descarga
+
+    for url in (_URL_LOCALIDADES, _URL_LOCALIDADES_ALT):
+        try:
+            print(f"  Descargando localidades desde {url[:60]}…")
+            resp = requests.get(url, timeout=20)
+            resp.raise_for_status()
+            RUTA_LOCALIDADES.parent.mkdir(parents=True, exist_ok=True)
+            RUTA_LOCALIDADES.write_bytes(resp.content)
+            gdf = gpd.read_file(RUTA_LOCALIDADES).to_crs("EPSG:4326")
+            print(f"  Localidades guardadas en {RUTA_LOCALIDADES.name}")
+            return gdf
+        except Exception as e:
+            print(f"  [aviso] No se pudo obtener localidades desde {url[:60]}: {e}")
+
+    print("  [aviso] Mapas se generarán sin límites de localidades.")
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -187,6 +234,7 @@ def construir_fila(imagen: dict, dane: str, nombre_est: str,
         "fecha":          fecha,
         "compass_angle":  imagen.get("compass_angle"),
         "is_pano":        imagen.get("is_pano", False),
+        "camera_type":    imagen.get("camera_type", "perspective"),
         "sequence":       imagen.get("sequence"),
         "url_descarga":   imagen.get("thumb_2048_url"),
         "nombre_archivo": nombre_archivo(dane, fecha, iid),
@@ -201,8 +249,9 @@ def aplicar_filtros(df: pd.DataFrame) -> pd.DataFrame:
 
     Los filtros se aplican en este orden:
       1. Fecha mínima (FECHA_DESDE).
-      2. Exclusión de panorámicas (EXCLUIR_PANORAMICAS).
-      3. Deduplicación por secuencia (DEDUP_POR_SECUENCIA): por cada par
+      2. Solo imágenes perspective (excluye fisheye, equirectangular, spherical).
+      3. Exclusión de panorámicas (EXCLUIR_PANORAMICAS).
+      4. Deduplicación por secuencia (DEDUP_POR_SECUENCIA): por cada par
          (colegio, secuencia) se conserva la imagen más cercana al colegio.
 
     is_pano se lee desde CSV como string ("True"/"False"); se normaliza
@@ -215,6 +264,10 @@ def aplicar_filtros(df: pd.DataFrame) -> pd.DataFrame:
 
     if FECHA_DESDE:
         sel = sel[sel["fecha"] >= FECHA_DESDE]
+
+    # Excluir fisheye y otros tipos de cámara no perspectiva
+    if "camera_type" in sel.columns:
+        sel = sel[sel["camera_type"].astype(str).str.lower() == "perspective"]
 
     if EXCLUIR_PANORAMICAS:
         sel = sel[~sel["is_pano"]]
@@ -236,8 +289,11 @@ async def paginar_imagenes(session: aiohttp.ClientSession,
                            semaforo: asyncio.Semaphore,
                            lon: float, lat: float) -> list:
     """
-    Recupera metadatos de TODAS las imágenes dentro del radio RADIO_M
-    alrededor de (lon, lat), siguiendo la paginación de la API.
+    Recupera metadatos de TODAS las imágenes perspective dentro del radio
+    RADIO_M alrededor de (lon, lat), siguiendo la paginación de la API.
+
+    camera_types=perspective filtra en la API antes de que lleguen al
+    catálogo, evitando descargar metadatos de imágenes fisheye o esféricas.
 
     El semáforo se adquiere por página para que MAX_CONCURRENT refleje
     exactamente el número de peticiones HTTP en vuelo en cada instante.
@@ -245,13 +301,14 @@ async def paginar_imagenes(session: aiohttp.ClientSession,
     campos = ",".join([
         "id", "geometry", "computed_geometry",
         "captured_at", "thumb_2048_url",
-        "compass_angle", "is_pano", "sequence",
+        "compass_angle", "is_pano", "camera_type", "sequence",
     ])
     w, s, e, n = bbox_desde_punto(lon, lat, RADIO_M)
     url_base = (
         f"https://graph.mapillary.com/images"
         f"?fields={campos}"
         f"&bbox={w},{s},{e},{n}"
+        f"&camera_types=perspective"
         f"&limit={LIMIT_POR_PAGINA}"
         f"&access_token={MAPILLARY_TOKEN}"
     )
@@ -399,34 +456,45 @@ def generar_resumen(df: pd.DataFrame) -> pd.DataFrame:
 # =============================================================================
 
 def _scatter_base(ax, df_fotos, col_fotos, df_colegios_ok,
-                  col_ok, df_colegios_pano, df_colegios_sin,
-                  titulo, mostrar_leyenda_colegios=True):
+                  df_colegios_pano, df_colegios_sin,
+                  titulo, localidades=None):
     """Dibuja una figura base de scatter reutilizable para ambos mapas PNG."""
     ax.set_facecolor("#f5f5f5")
     ax.set_aspect("equal")
 
+    # Límites de localidades como capa base
+    if localidades is not None:
+        localidades.boundary.plot(ax=ax, linewidth=0.8, edgecolor="#555555", zorder=1)
+        for _, row in localidades.iterrows():
+            nombre = (row.get("NOMBRE") or row.get("nombre")
+                      or row.get("LocNombre") or "")
+            if nombre:
+                ax.text(row.geometry.centroid.x, row.geometry.centroid.y,
+                        nombre.title(), fontsize=5, ha="center", va="center",
+                        color="#444444", zorder=2, clip_on=True)
+
     # Fotos
     if len(df_fotos) > 0:
         ax.scatter(df_fotos["lon_img"], df_fotos["lat_img"],
-                   s=2, color=col_fotos, alpha=0.4, zorder=2,
+                   s=2, color=col_fotos, alpha=0.4, zorder=3,
                    label=f"Fotos ({len(df_fotos):,})")
 
     # Colegios con imágenes regulares
     if len(df_colegios_ok) > 0:
         ax.scatter(df_colegios_ok["lon_colegio"], df_colegios_ok["lat_colegio"],
-                   s=35, color="#27ae60", marker="o", zorder=4,
+                   s=35, color="#27ae60", marker="o", zorder=5,
                    label=f"Colegio con imágenes ({len(df_colegios_ok)})")
 
     # Colegios solo panorámicas
     if len(df_colegios_pano) > 0:
         ax.scatter(df_colegios_pano["lon_colegio"], df_colegios_pano["lat_colegio"],
-                   s=35, color="#f39c12", marker="^", zorder=4,
+                   s=35, color="#f39c12", marker="^", zorder=5,
                    label=f"Solo panorámicas ({len(df_colegios_pano)})")
 
     # Colegios sin cobertura
     if len(df_colegios_sin) > 0:
         ax.scatter(df_colegios_sin["lon"], df_colegios_sin["lat"],
-                   s=35, color="#e74c3c", marker="x", zorder=4,
+                   s=35, color="#e74c3c", marker="x", zorder=5,
                    label=f"Sin cobertura ({len(df_colegios_sin)})")
 
     ax.set_title(titulo, fontsize=12, pad=10)
@@ -437,13 +505,14 @@ def _scatter_base(ax, df_fotos, col_fotos, df_colegios_ok,
 
 
 def generar_mapas_png(df_total: pd.DataFrame, df_filtrada: pd.DataFrame,
-                      colegios: gpd.GeoDataFrame) -> None:
+                      colegios: gpd.GeoDataFrame, localidades=None) -> None:
     """
     Genera dos mapas estáticos PNG:
       mapa_cobertura_total.png    — todas las fotos del catálogo, sin filtros.
       mapa_cobertura_filtrada.png — fotos seleccionadas tras aplicar filtros.
 
     En ambos mapas:
+      · Límites grises: localidades de Bogotá (si están disponibles).
       · Puntos azules: ubicación exacta de cada foto.
       · Puntos verdes (círculo): colegios con imágenes regulares disponibles.
       · Triángulos naranjas: colegios cuyas únicas fotos son panorámicas.
@@ -455,8 +524,8 @@ def generar_mapas_png(df_total: pd.DataFrame, df_filtrada: pd.DataFrame,
     # Clasificar colegios según estado post-filtro
     danes_ok   = set(df_filtrada["dane_est"].unique())
     danes_cat  = set(df_total["dane_est"].unique())
-    danes_pano = danes_cat - danes_ok   # tienen imgs en catálogo pero solo panorámicas
-    danes_sin  = set(colegios["DANE12_EST"]) - danes_cat  # sin ninguna imagen
+    danes_pano = danes_cat - danes_ok
+    danes_sin  = set(colegios["DANE12_EST"]) - danes_cat
 
     col_ok   = df_total[df_total["dane_est"].isin(danes_ok)].drop_duplicates("dane_est")
     col_pano = df_total[df_total["dane_est"].isin(danes_pano)].drop_duplicates("dane_est")
@@ -465,17 +534,17 @@ def generar_mapas_png(df_total: pd.DataFrame, df_filtrada: pd.DataFrame,
     col_sin["lat"] = col_sin.geometry.y
 
     # --- Mapa 1: catálogo total ---
-    fig, ax = plt.subplots(figsize=(10, 12))
+    _, ax = plt.subplots(figsize=(10, 12))
     _scatter_base(
         ax,
         df_fotos=df_total,
         col_fotos="#3498db",
         df_colegios_ok=col_ok,
-        col_ok="#27ae60",
         df_colegios_pano=col_pano,
         df_colegios_sin=col_sin,
-        titulo=f"Cobertura Mapillary — catálogo completo\n"
-               f"radio={RADIO_M} m | {len(df_total):,} fotos | {len(danes_cat)} colegios",
+        titulo=(f"Cobertura Mapillary — catálogo completo\n"
+                f"radio={RADIO_M} m | {len(df_total):,} fotos | {len(danes_cat)} colegios"),
+        localidades=localidades,
     )
     plt.tight_layout()
     plt.savefig(RUTA_MAPA_TOTAL_PNG, dpi=150)
@@ -483,18 +552,18 @@ def generar_mapas_png(df_total: pd.DataFrame, df_filtrada: pd.DataFrame,
     print(f"  PNG total     → {RUTA_MAPA_TOTAL_PNG.name}")
 
     # --- Mapa 2: selección filtrada ---
-    fig, ax = plt.subplots(figsize=(10, 12))
+    _, ax = plt.subplots(figsize=(10, 12))
     _scatter_base(
         ax,
         df_fotos=df_filtrada,
         col_fotos="#3498db",
         df_colegios_ok=col_ok,
-        col_ok="#27ae60",
         df_colegios_pano=col_pano,
         df_colegios_sin=col_sin,
-        titulo=f"Cobertura Mapillary — imágenes seleccionadas\n"
-               f"fecha≥{FECHA_DESDE} | sin panorámicas | dedup por secuencia\n"
-               f"{len(df_filtrada):,} fotos | {len(danes_ok)} colegios cubiertos",
+        titulo=(f"Cobertura Mapillary — imágenes seleccionadas\n"
+                f"fecha≥{FECHA_DESDE} | perspective | sin panorámicas | dedup secuencia\n"
+                f"{len(df_filtrada):,} fotos | {len(danes_ok)} colegios cubiertos"),
+        localidades=localidades,
     )
     plt.tight_layout()
     plt.savefig(RUTA_MAPA_FILTRADA_PNG, dpi=150)
@@ -516,7 +585,7 @@ def main() -> None:
     # Cargar y reproyectar colegios
     print(f"Cargando {RUTA_GEOJSON.name} ...")
     colegios = gpd.read_file(RUTA_GEOJSON).to_crs("EPSG:4326")
-    print(f"  {len(colegios)} colegios | CRS: {colegios.crs.to_string()}")
+    print(f"  {len(colegios)} colegios | CRS: {colegios.crs}")
     print(f"  Radio de búsqueda: {RADIO_M} m\n")
 
     # Fase 1: construir catálogo
@@ -529,20 +598,22 @@ def main() -> None:
 
     # Resumen
     print("\n=== RESUMEN DEL CATÁLOGO ===")
-    resumen = generar_resumen(df)
+    generar_resumen(df)
 
     # Aplicar filtros
     df_filtrada = aplicar_filtros(df)
     n_sin_regular = df["dane_est"].nunique() - df_filtrada["dane_est"].nunique()
     print(f"\n=== SELECCIÓN TRAS FILTROS ===")
-    print(f"  fecha >= {FECHA_DESDE}  |  sin panorámicas  |  dedup por secuencia")
+    print(f"  fecha >= {FECHA_DESDE}  |  perspective  |  sin panorámicas  |  dedup secuencia")
     print(f"  {len(df_filtrada):,} imágenes  |  {df_filtrada['dane_est'].nunique()} colegios cubiertos")
-    print(f"  {n_sin_regular} colegios excluidos (solo tienen panorámicas)")
+    print(f"  {n_sin_regular} colegios excluidos (solo tienen panorámicas o fisheye)")
     print(f"  {407 - df['dane_est'].nunique()} colegios sin cobertura Mapillary en {RADIO_M} m")
 
     # Mapas
     print("\n=== GENERANDO MAPAS ===")
-    generar_mapas_png(df, df_filtrada, colegios)
+    print("Cargando localidades de Bogotá …")
+    localidades = cargar_localidades()
+    generar_mapas_png(df, df_filtrada, colegios, localidades=localidades)
 
     print(f"\nTodos los archivos guardados en: {RUTA_SALIDA}")
 
