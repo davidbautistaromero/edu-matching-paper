@@ -1,11 +1,11 @@
 """
-Descarga los GeoJSON de colegios de Bogotá (Datos Abiertos Bogotá, abril 2024)
-y los guarda en data/raw/ como archivos .geojson.
+Descarga los GeoJSON de Bogotá (Datos Abiertos Bogotá) y los guarda en data/raw/.
 
 Fuentes:
   - demandacupos04_2024.geojson  : demanda de cupos por colegio y nivel educativo
   - matriculatotal04_2024.geojson: matrícula total con desagregación por discapacidad y etnia
   - pruebassaber2023.geojson     : resultados Saber 11° 2023 por colegio (puntajes y categorías)
+  - parques_bogota.geojson       : ubicación de parques en Bogotá (formato ESRI JSON, requiere 00_clean_parques.py)
 """
 
 import requests
@@ -25,6 +25,10 @@ SOURCES = {
     "pruebassaber2023.geojson": (
         "https://datosabiertos.bogota.gov.co/dataset/9f0b67b8-f38a-4824-9458-fff7152e13ea"
         "/resource/52ed105f-e99c-43c2-a08c-7f6cb7a6ed4d/download/pruebassaber2023.geojson"
+    ),
+    "parques_bogota.geojson": (
+        "https://datosabiertos.bogota.gov.co/dataset/1ca41514-3671-41d6-8c3b-a970dc8c24a7"
+        "/resource/16288e7f-0345-4680-84aa-40e987706ea8/download/parque.json"
     ),
 }
 
