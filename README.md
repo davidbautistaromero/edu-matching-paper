@@ -44,7 +44,7 @@ paper-AI/
 │   └── 01_eda.ipynb                <- Analisis exploratorio de datos
 ├── reports/
 │   ├── figures/
-│   │   └── eda/                    <- Figuras del analisis exploratorio (7 figuras)
+│   │   └── eda/                    <- Figuras del analisis exploratorio (8 figuras)
 │   └── paper/                      <- Documento final
 ├── scripts/
 │   ├── 00_fetch_geodata.py         <- Descarga geodatos SED, ICFES y parques
@@ -56,7 +56,8 @@ paper-AI/
 │   ├── 00_build_em2021_por_upz.py  <- Agrega EM2021 por UPZ
 │   ├── 00_clean_sitp.py            <- Normaliza GeoJSON SITP (formato ESRI)
 │   ├── 00_clean_parques.py         <- Convierte MAGNA-SIRGAS a WGS84
-│   ├── 00_clean_delitos.py         <- Agrega delitos por localidad
+│   ├── 00_clean_delitos.py         <- Agrega delitos por localidad (suma CMH*CONT por localidad)
+│   ├── 00_build_competencia_privada.py <- Calcula % sedes no oficiales por localidad
 │   └── 01_build_dataset.py         <- Integra todas las fuentes -> primary/
 ├── requirements.txt
 └── README.md
@@ -71,9 +72,9 @@ paper-AI/
 | | |
 |---|---|
 | **Fuente** | Secretaria de Educacion del Distrito via datos abiertos Bogota |
-| **Script** | `scripts/fetch_colegios_geo.py` |
+| **Script** | `scripts/00_fetch_geodata.py` |
 | **Output raw** | `data/raw/colegios_dataset.csv` |
-| **Output processed** | `data/processed/colegios_dataset.geojson` <- generado por `colegios_csv_to_geojson.py` |
+| **Output processed** | `data/processed/colegios_dataset.geojson` <- generado por `00_colegios_csv_to_geojson.py` |
 | **Contenido** | Nombre, direccion, coordenadas, localidad, UPZ, naturaleza juridica y caracteristicas academicas de cada sede educativa oficial |
 
 ---
@@ -83,9 +84,9 @@ paper-AI/
 | | |
 |---|---|
 | **Fuente** | ICFES via datos abiertos Bogota |
-| **Script** | `scripts/fetch_saber11_bogota.py` |
+| **Script** | `scripts/00_fetch_saber11_bogota.py` |
 | **Output raw** | `data/raw/saber11_bogota_2020_2022.csv` - `data/raw/pruebassaber2023.geojson` |
-| **Output processed** | `data/processed/saber_bogota_merged.geojson` <- generado por `merge_saber_geojson.py` |
+| **Output processed** | `data/processed/saber_bogota_merged.geojson` <- generado por `00_merge_saber_geojson.py` |
 | **Contenido** | Puntaje promedio Saber 11 por establecimiento educativo para los anos 2020, 2022 y 2023. Variable `q_j` (calidad academica del colegio) |
 
 ---
@@ -95,9 +96,9 @@ paper-AI/
 | | |
 |---|---|
 | **Fuente** | Secretaria de Educacion del Distrito via datos abiertos Bogota |
-| **Script** | `scripts/fetch_colegios_geo.py` (descarga conjunta con directorio) |
+| **Script** | `scripts/00_fetch_geodata.py` (descarga conjunta con directorio) |
 | **Output raw** | `data/raw/demandacupos04_2024.geojson` - `data/raw/matriculatotal04_2024.geojson` |
-| **Output processed** | `data/processed/demanda_clean.geojson` - `data/processed/matriculas_clean.geojson` <- generados por `demand_capacity_colegios.py` |
+| **Output processed** | `data/processed/demanda_clean.geojson` - `data/processed/matriculas_clean.geojson` <- generados por `00_demand_capacity_colegios.py` |
 | **Contenido** | Numero de cupos demandados y matricula total por colegio. Se usa para construir `sobre_demanda_j = demanda / matricula`, variable dependiente de la regresion que estima `alpha` |
 
 ---
@@ -107,7 +108,7 @@ paper-AI/
 | | |
 |---|---|
 | **Fuente** | Secretaria Distrital de Planeacion via datos abiertos Bogota |
-| **Script** | `scripts/fetch_em2021_variables.py` |
+| **Script** | `scripts/00_fetch_em2021_variables.py` |
 | **Output raw** | `data/raw/em2021_encuesta_principal.csv` - `data/raw/em2021_variables_adicionales.csv` |
 | **Contenido** | Dos tablas descargadas por separado y cruzadas por `DIRECTORIO` / `directorio_hog` |
 
@@ -254,3 +255,43 @@ Los scripts de transformacion toman los archivos de `raw/` y producen versiones 
 | `poblacion_expandida` | Suma de `FEX_C` | Aproximacion al total de hogares reales en la UPZ |
 
 > **Limitacion:** `COD_UPZ_GRUPO` en la EM2021 agrupa UPZs pequenas bajo un mismo codigo. El cruce posterior con el directorio de colegios puede dejar algunos sin match directo. Esta limitacion se documenta en el paper.
+
+---
+
+### T5. Delitos de alto impacto -> controles de seguridad por localidad
+
+**Script:** `scripts/00_clean_delitos.py`
+**Input:** `data/raw/delitos_alto_impacto.geojson`
+**Output:** `data/processed/delitos_por_localidad.csv`
+
+**Que hace:**
+- Lee el GeoJSON (1 fila por localidad, columnas `CM**[YY]CONT` con conteos anuales por periodo)
+- Suma las columnas de cada periodo por tipo de delito para obtener el acumulado real por localidad
+- Estandariza el nombre de localidad para el cruce con el directorio de colegios (`CANDELARIA` -> `LA CANDELARIA`)
+- Excluye la fila `SIN LOCALIZACION`
+
+> **Nota:** El campo `CM**TOTAL` del GeoJSON fuente es el total de Bogota entera, no el de la localidad. Los valores correctos por localidad se obtienen sumando las columnas `CM**[YY]CONT`.
+
+**Variables de salida:** `homicidios`, `lesiones_personales`, `hurto_personas`, `hurto_residencias`, `hurto_automotores`, `hurto_bicicletas`, `hurto_comercio`, `hurto_entidades`, `violencia_intrafam`, `delitos_sexuales`.
+
+**Por que:** El entorno de seguridad afecta las preferencias de los hogares. Una localidad con alta criminalidad puede reducir la demanda de colegios aunque tengan buena calidad o apariencia. Incluirlo como control aísla el efecto de la señal visual.
+
+---
+
+### T6. Competencia del sector privado -> porcentaje por localidad
+
+**Script:** `scripts/00_build_competencia_privada.py`
+**Input:** `data/raw/colegios_dataset.csv` (directorio completo oficial + no oficial)
+**Output:** `data/processed/competencia_privada_localidad.csv`
+
+**Que hace:**
+- Carga el directorio completo (sector Oficial y No Oficial)
+- Agrupa por `nombre_localidad` y calcula:
+  - `n_sedes_total`: total de sedes en la localidad
+  - `n_sedes_no_oficial`: sedes del sector no oficial
+  - `pct_no_oficial`: porcentaje de sedes no oficiales
+- Normaliza el nombre de localidad para el cruce posterior
+
+**Variables de salida:** `localidad_norm`, `n_sedes_total`, `n_sedes_no_oficial`, `pct_no_oficial`.
+
+**Por que:** La intensidad competitiva del mercado educativo local puede moderar el efecto visual. En localidades con alta oferta privada, los hogares tienen mas opciones y pueden ser mas sensibles a senales de calidad -- tanto academica como visual. Se incluye como control en la regresion de `alpha` y como variable descriptiva en el EDA (Figura 4).
