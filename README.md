@@ -34,7 +34,17 @@ paper-AI/
 │   ├── primary/                    <- Dataset maestro, output de 01_build_dataset.py
 │   │   └── colegios_features.geojson
 │   └── images/
-│       └── embeddings/             <- Embeddings VGG19 por colegio (equipo de imagenes)
+│       ├── gsv/                    <- Imágenes Google Street View (558 sedes × 10 headings)
+│       │   ├── {id_establecimiento}/
+│       │   │   └── {id_sede}_{heading:03d}.jpg
+│       │   ├── gsv_catalog.csv     <- Metadatos de descarga (ignorado en git)
+│       │   └── mapa_cobertura_gsv.png
+│       ├── mapillary/              <- Catálogo Mapillary (imágenes ignoradas en git)
+│       │   ├── mapillary_catalog.csv  <- ignorado en git (>100 MB)
+│       │   ├── resumen_fechas.csv     <- ignorado en git
+│       │   ├── mapa_cobertura_total.png
+│       │   └── mapa_cobertura_filtrada.png
+│       └── embeddings/             <- Embeddings VGG19 por sede (pendiente)
 ├── docs/                           <- Diccionarios de variables y documentacion de referencia
 │   ├── em2021_diccionario.ods
 │   └── em2021_variablesadicionales_diccionario.ods
@@ -58,7 +68,13 @@ paper-AI/
 │   ├── 00_clean_parques.py         <- Convierte MAGNA-SIRGAS a WGS84
 │   ├── 00_clean_delitos.py         <- Agrega delitos por localidad (suma CMH*CONT por localidad)
 │   ├── 00_build_competencia_privada.py <- Calcula % sedes no oficiales por localidad
-│   └── 01_build_dataset.py         <- Integra todas las fuentes -> primary/
+│   ├── 00_analyze_mapillary_colegios.py <- Catalogo Mapillary y mapas de cobertura
+│   ├── 00_download_mapillary_colegios.py <- Descarga imágenes Mapillary
+│   ├── 00_download_gsv_colegios.py <- Descarga imágenes Google Street View (fuente principal)
+│   ├── 01_build_dataset.py         <- Integra todas las fuentes -> primary/
+│   ├── 01_mapa_cobertura_gsv.py    <- Mapa de cobertura GSV
+│   ├── gsv_config.py               <- Parámetros GSV (modo prueba, headings, resolución)
+│   └── mapillary_filtros.py        <- Parámetros de selección Mapillary
 ├── requirements.txt
 └── README.md
 ```
@@ -158,49 +174,68 @@ Estas fuentes se descargan **manualmente** desde el portal de datos abiertos de 
 
 ---
 
-### 6. Imagenes de entorno de colegios - Mapillary
+### 6. Imágenes de entorno de colegios - Google Street View *(fuente principal)*
 
 | | |
 |---|---|
-| **Fuente** | Mapillary Graph API v4 (imagenes publicas con licencia CC) |
-| **Script** | `scripts/fetch_mapillary_colegios.py` |
-| **Output catalogo** | `data/images/mapillary/mapillary_catalog.csv` |
-| **Output resumen** | `data/images/mapillary/resumen_fechas.csv` |
-| **Output imagenes** | `data/images/mapillary/*.jpg` |
-| **Convencion de nombre** | `{DANE12_EST}_{YYYY-MM-DD}_{image_id}.jpg` |
+| **Fuente** | Google Street View Static API |
+| **Script** | `scripts/00_download_gsv_colegios.py` |
+| **Config** | `scripts/gsv_config.py` (parámetros editables: `MODO_MUESTRA`, `N_HEADINGS`, resolución) |
+| **Output catálogo** | `data/images/gsv/gsv_catalog.csv` *(ignorado en git — reproducible con el script)* |
+| **Output imágenes** | `data/images/gsv/{id_establecimiento}/{id_sede}_{heading:03d}.jpg` *(ignoradas en git)* |
+| **Output mapa** | `data/images/gsv/mapa_cobertura_gsv.png` |
 
-**Parametros de busqueda:**
-- Radio: 100 m alrededor del punto de cada colegio (bounding box)
-- Fecha minima: 2021-01-01
-
-**Criterios de seleccion para descarga:**
-- Se excluyen imagenes panoramicas (`is_pano = True`): representan el 55 % del catalogo
-  y tienen distorsion equirectangular incompatible con VGG19 sin preprocesado adicional.
-- Deduplicacion por secuencia: de cada recorrido de captura (`sequence`) se conserva
-  unicamente la imagen mas cercana al colegio, eliminando pseudorreplicacion
-  (los recorridos tienen ~47 fotogramas consecutivos casi identicos en promedio).
+**Parámetros de descarga:**
+- `N_HEADINGS = 10` headings uniformes (0°, 36°, 72°, … 324°) para capturar la fachada desde múltiples ángulos
+- Resolución: `640×640` px, `FOV = 90°`, `PITCH = 0`
+- Reanudable: si `gsv_catalog.csv` existe, salta las imágenes ya descargadas
 
 **Cobertura resultante:**
-- Imagenes descargadas: ~2 200 (regulares, no redundantes)
-- Colegios cubiertos: 244 / 407 (60 %)
+- Imágenes descargadas: **5,580** (558 sedes × 10 headings)
+- Sedes cubiertas: **558 / 558 (100%)**
+- Costo: ~$39 USD (dentro del crédito gratuito mensual de Google Cloud)
 
-**Limitacion documentada — colegios sin indice visual:**
-163 colegios quedan fuera del indice visual `v_j`: 37 no tienen ninguna imagen
-de Mapillary dentro de 100 m, y 102 solo tienen imagenes panoramicas que se
-excluyen por incompatibilidad metodologica con VGG19. Estos colegios se tratan
-como `v_j = NaN` en la regresion. Se verifica que la ausencia de cobertura no
-este correlacionada sistematicamente con el nivel socioeconomico de la UPZ
-(ver Apendice X), de modo que el sesgo de seleccion potencial es aleatorio
-respecto a las variables de interes.
+**Por qué GSV como fuente principal:** A diferencia de Mapillary (crowdsourced, calidad variable), GSV usa cámaras calibradas a altura estandarizada (~2.5 m) con resolución y encuadre consistentes. Esto reduce el ruido en los embeddings VGG19 que no proviene del colegio sino de la cámara o el ángulo.
 
-### 7. Embeddings visuales de colegios (pendiente - equipo de imagenes)
+**Modo prueba:** Activar `MODO_MUESTRA = True` en `gsv_config.py` para probar con `N_MUESTRA = 5` sedes antes del run completo. El catálogo de prueba se guarda como `gsv_catalog_muestra.csv`.
+
+---
+
+### 7. Imágenes de entorno de colegios - Mapillary *(referencia / exploración)*
 
 | | |
 |---|---|
-| **Responsable** | Otro miembro del grupo |
-| **Input** | `data/images/mapillary/*.jpg` |
-| **Output esperado** | `data/images/embeddings/embeddings.parquet` |
-| **Contenido** | Embeddings VGG19 por colegio, usados para construir el indice visual `v_j` en `scripts/02_visual_index.py` |
+| **Fuente** | Mapillary Graph API v4 (imágenes públicas con licencia CC) |
+| **Scripts** | `scripts/00_analyze_mapillary_colegios.py` / `scripts/00_download_mapillary_colegios.py` |
+| **Config** | `scripts/mapillary_filtros.py` (parámetros editables: fecha, ángulo, radio) |
+| **Output catálogo** | `data/images/mapillary/mapillary_catalog.csv` *(ignorado en git — >100 MB)* |
+| **Output resumen** | `data/images/mapillary/resumen_fechas.csv` *(ignorado en git)* |
+| **Output mapas** | `data/images/mapillary/mapa_cobertura_total.png` / `mapa_cobertura_filtrada.png` |
+| **Convención de nombre** | `{DANE12_EST}_{YYYY-MM-DD}_{image_id}.jpg` |
+
+**Parámetros de búsqueda** (configurables en `mapillary_filtros.py`):
+- Radio: `RADIO_M = 100` m alrededor del punto de cada colegio
+- Fecha mínima: `FECHA_DESDE = "2020-01-01"`
+- Ángulo máximo cámara→colegio: `ANGULO_MAX_DEG = 90°`
+- Deduplicación por secuencia y espacial (10 m mínimo entre imágenes)
+- Máximo por colegio: `N_MAX_POR_COLEGIO = 10`
+
+**Cobertura del catálogo:**
+- Imágenes en catálogo: ~89,856
+- Sedes cubiertas: 292 / 558 (52%) tras filtros
+
+**Nota:** Mapillary se mantiene como fuente secundaria para análisis de robustez. La fuente principal para los embeddings VGG19 es GSV (cobertura 100%).
+
+---
+
+### 8. Embeddings visuales de colegios *(pendiente)*
+
+| | |
+|---|---|
+| **Input** | `data/images/gsv/{id_establecimiento}/*.jpg` |
+| **Output esperado** | `data/images/embeddings/gsv_embeddings.parquet` |
+| **Contenido** | Embeddings VGG19 por sede, promediados sobre los 10 headings → vector `v_j` ∈ ℝ⁴⁰⁹⁶ |
+| **Script esperado** | `scripts/02_extract_embeddings.py` |
 
 ---
 
