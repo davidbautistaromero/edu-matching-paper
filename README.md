@@ -19,7 +19,7 @@ paper-AI/
 │   │   ├── em2021_variables_adicionales.csv
 │   │   ├── estaciones_transmilenio.geojson
 │   │   ├── paraderos_sitp.geojson
-│   │   ├── parques_bogota.geojson          <- pendiente re-descarga
+│   │   ├── parques_bogota.geojson
 │   │   └── delitos_alto_impacto.geojson
 │   ├── processed/            <- Intermedios limpios, output de scripts 00_*
 │   │   ├── colegios_dataset.geojson
@@ -72,7 +72,7 @@ paper-AI/
 
 | | |
 |---|---|
-| **Script** | `00_fetch_colegios_geo.py` |
+| **Script** | `00_fetch_geodata.py` |
 | **Fuente** | Secretaria de Educacion del Distrito via datos abiertos Bogota |
 | **Output raw** | `data/raw/colegios_dataset.csv` |
 | **Output processed** | `data/processed/colegios_dataset.geojson` <- `00_colegios_csv_to_geojson.py` |
@@ -96,7 +96,7 @@ paper-AI/
 
 | | |
 |---|---|
-| **Script** | `00_fetch_colegios_geo.py` (descarga conjunta) |
+| **Script** | `00_fetch_geodata.py` (descarga conjunta) |
 | **Fuente** | Secretaria de Educacion del Distrito via datos abiertos Bogota |
 | **Output raw** | `data/raw/demandacupos04_2024.geojson` - `data/raw/matriculatotal04_2024.geojson` |
 | **Output processed** | `data/processed/demanda_clean.geojson` - `data/processed/matriculas_clean.geojson` <- `00_demand_capacity_colegios.py` |
@@ -144,13 +144,13 @@ paper-AI/
 
 ### 5. Variables de control geograficas y de seguridad
 
-Descarga **manual** desde https://datosabiertos.bogota.gov.co -- ubicar en `data/raw/`.
+Todos los archivos se descargan via `00_fetch_geodata.py` excepto estaciones_transmilenio y delitos (manuales desde https://datosabiertos.bogota.gov.co).
 
 | Archivo | Fuente | Script de limpieza | Output processed |
 |---|---|---|---|
 | `estaciones_transmilenio.geojson` | Transmilenio S.A. | (ninguno, formato estandar) | -- |
 | `paraderos_sitp.geojson` | Transmilenio S.A. | `00_clean_sitp.py` | `sitp_clean.geojson` |
-| `parques_bogota.geojson` | Sec. Distrital de Planeacion | pendiente | `parques_clean.geojson` |
+| `parques_bogota.geojson` | Sec. Distrital de Planeacion | `00_clean_parques.py` | `parques_clean.geojson` |
 | `delitos_alto_impacto.geojson` | Sec. Distrital de Seguridad | `00_clean_delitos.py` | `delitos_por_localidad.csv` |
 
 > **Nota SITP:** El GeoJSON raw tiene formato ESRI (`geometry: {x, y}` sin `type`). `00_clean_sitp.py` lo convierte a GeoJSON estandar.
@@ -256,6 +256,18 @@ Los scripts `00_*` transforman cada fuente individual. El script `01_build_datas
 
 ---
 
+### T8. Parques -> GeoJSON estandar en WGS84
+
+**Script:** `00_clean_parques.py`
+**Input:** `data/raw/parques_bogota.geojson`
+**Output:** `data/processed/parques_clean.geojson`
+
+- El raw viene en formato ESRI JSON con geometrias Polygon en proyeccion MAGNA-SIRGAS Bogota
+- Extrae el centroide de cada poligono y lo reproyecta a WGS84 via formula Transverse Mercator inversa
+- 5,293 parques validos | 8 omitidos (fuera del bbox de Bogota)
+
+---
+
 ### T7. Dataset maestro (BUILD)
 
 **Script:** `01_build_dataset.py`
@@ -284,5 +296,5 @@ Unidad de analisis: **establecimiento educativo** (no sede).
 | `dist_transmilenio_m` | 306 / 306 |
 | `dist_sitp_m` | 306 / 306 |
 | Delitos por localidad | 306 / 306 |
-| `dist_parque_m` | pendiente re-descarga |
-| `v_j` (visual) | pendiente embeddings |
+| `dist_parque_m` | 306 / 306 (mediana 111m) |
+| `v_j` (visual) | 0 / 306 (pendiente embeddings) |
