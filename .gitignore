@@ -1,5 +1,6 @@
 ﻿.venv/
 venv/
+.env
 data/images/mapillary/
 __pycache__/
 *.pyc
