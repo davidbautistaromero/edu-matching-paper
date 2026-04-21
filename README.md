@@ -29,7 +29,8 @@ paper-AI/
 │   │   ├── em2021_por_upz.csv
 │   │   ├── sitp_clean.geojson
 │   │   ├── parques_clean.geojson
-│   │   └── delitos_por_localidad.csv
+│   │   ├── delitos_por_localidad.csv
+│   │   └── competencia_privada_localidad.csv
 │   ├── primary/                    <- Dataset maestro, output de 01_build_dataset.py
 │   │   └── colegios_features.geojson
 │   └── images/
