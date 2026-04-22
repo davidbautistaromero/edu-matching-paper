@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-download_mapillary_colegios.py
-==============================
+00_download_mapillary_colegios.py
+=================================
 Descarga las imágenes de Mapillary seleccionadas según los criterios
 definidos en los parámetros. Lee el catálogo de metadatos generado por
-analyze_mapillary_colegios.py y descarga solo las imágenes que cumplen
+00_analyze_mapillary_colegios.py y descarga solo las imágenes que cumplen
 los filtros y aún no existen en disco.
 
 PREREQUISITO
-  Ejecutar primero analyze_mapillary_colegios.py para construir el catálogo:
-    python scripts/analyze_mapillary_colegios.py
+  Ejecutar primero 00_analyze_mapillary_colegios.py para construir el catálogo:
+    python scripts/00_analyze_mapillary_colegios.py
 
-CRITERIOS DE SELECCIÓN (sincronizados con analyze_mapillary_colegios.py)
-  · FECHA_DESDE     : solo imágenes capturadas a partir de esta fecha.
-  · EXCLUIR_PANORAMICAS : excluye imágenes 360° incompatibles con VGG19.
-  · DEDUP_POR_SECUENCIA : 1 imagen (la más cercana) por (colegio, secuencia).
+CRITERIOS DE SELECCIÓN
+  Definidos en mapillary_filtros.py (fuente de verdad compartida con
+  00_analyze_mapillary_colegios.py). Ver ese módulo para cambiarlos.
 
 REANUDABILIDAD
   El script comprueba si cada archivo .jpg ya existe en disco antes de
@@ -26,9 +25,12 @@ SALIDA
   data/images/mapillary/
   └── {DANE12_EST}_{YYYY-MM-DD}_{image_id}.jpg   (una línea por imagen)
 
-  El nombre de archivo identifica el colegio (DANE), la fecha de captura
-  y el ID único de Mapillary, permitiendo cruzar imágenes con cualquier
-  otro dataset del proyecto y citar la fuente exacta en el paper.
+CAMBIOS RESPECTO AL ORIGINAL
+  · aplicar_filtros y sus parámetros viven en mapillary_filtros.py
+    (fuente de verdad única compartida con 00_analyze_mapillary_colegios.py).
+  · descargar_una: el semáforo se adquiere solo durante la petición HTTP
+    activa; los sleeps de backoff (429 y errores de red) ocurren fuera del
+    semáforo, evitando que un slot bloqueado paralice la concurrencia completa.
 
 REQUISITOS
   pip install aiohttp pandas
@@ -38,9 +40,23 @@ REQUISITOS
 # Biblioteca estándar
 # ---------------------------------------------------------------------------
 import asyncio
+import random
 import signal
 import sys
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Módulo compartido — criterios de selección y aplicar_filtros
+# ---------------------------------------------------------------------------
+sys.path.insert(0, str(Path(__file__).parent))
+from mapillary_filtros import (
+    FECHA_DESDE,
+    FECHA_HASTA,
+    EXCLUIR_PANORAMICAS,
+    DEDUP_POR_SECUENCIA,
+    MODO_MUESTRA,
+    aplicar_filtros,
+)
 
 # ---------------------------------------------------------------------------
 # Terceros
@@ -50,7 +66,9 @@ import pandas as pd
 
 
 # =============================================================================
-# PARÁMETROS — deben coincidir con analyze_mapillary_colegios.py
+# PARÁMETROS
+# Los criterios de selección (FECHA_DESDE, EXCLUIR_PANORAMICAS,
+# DEDUP_POR_SECUENCIA) se importan de mapillary_filtros.py.
 # =============================================================================
 
 # Número máximo de peticiones HTTP simultáneas.
@@ -64,54 +82,13 @@ MAX_CONCURRENT = 30
 # "thumb_1024_url" → 1024 px (más rápido; ~120 KB/imagen).
 IMG_FIELD = "thumb_2048_url"
 
-# --- Criterios de selección — MANTENER SINCRONIZADOS con analyze_mapillary_colegios.py ---
-
-# Fecha mínima de captura. "" o None para no filtrar.
-FECHA_DESDE = "2021-01-01"
-
-# True → excluir panorámicas (is_pano = True).
-# VGG19 fue entrenado en imágenes perspectiva estándar; las panorámicas
-# tienen distorsión equirectangular que degrada los embeddings resultantes.
-EXCLUIR_PANORAMICAS = True
-
-# True → 1 imagen por (colegio, secuencia), la más cercana al colegio.
-# Elimina pseudorreplicación de fotogramas consecutivos (~47 imgs/seq).
-DEDUP_POR_SECUENCIA = True
-
 # Rutas del proyecto.
 _ROOT         = Path(__file__).resolve().parents[1]
-RUTA_CATALOGO = _ROOT / "data" / "images" / "mapillary" / "mapillary_catalog.csv"
+_sfx          = "_muestra" if MODO_MUESTRA else ""
 RUTA_SALIDA   = _ROOT / "data" / "images" / "mapillary"
+RUTA_CATALOGO = RUTA_SALIDA / f"mapillary_catalog{_sfx}.csv"
 
 # =============================================================================
-
-
-def aplicar_filtros(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Aplica los criterios de selección al catálogo y devuelve el subconjunto
-    de imágenes que deben descargarse.
-
-    is_pano se normaliza de string CSV ("True"/"False") a booleano real
-    antes de filtrar; bool("False") == True en Python, por lo que no basta
-    con astype(bool) directamente sobre la columna leída desde CSV.
-    """
-    sel = df.copy()
-
-    sel["is_pano"] = sel["is_pano"].astype(str).str.strip().str.lower() == "true"
-
-    if FECHA_DESDE:
-        sel = sel[sel["fecha"] >= FECHA_DESDE]
-
-    if EXCLUIR_PANORAMICAS:
-        sel = sel[~sel["is_pano"]]
-
-    if DEDUP_POR_SECUENCIA:
-        sel = (
-            sel.sort_values("distancia_m", na_position="last")
-               .drop_duplicates(subset=["dane_est", "sequence"], keep="first")
-        )
-
-    return sel.reset_index(drop=True)
 
 
 async def descargar_imagenes() -> None:
@@ -123,14 +100,16 @@ async def descargar_imagenes() -> None:
     ------
     - La columna 'descargada' se recalcula desde el disco al inicio (no se
       confía en el valor almacenado), lo que hace la reanudación idempotente.
-    - El semáforo MAX_CONCURRENT limita las conexiones simultáneas al CDN.
+    - El semáforo MAX_CONCURRENT se adquiere solo durante la petición HTTP
+      activa; los sleeps de backoff ocurren fuera del semáforo para no
+      bloquear slots de concurrencia mientras se espera.
     - Ctrl+C (SIGINT) activa asyncio.Event que detiene nuevas descargas;
       las peticiones en vuelo terminan antes de que el proceso salga.
     - Al finalizar, 'descargada' se actualiza en el CSV con el estado real.
     """
     if not RUTA_CATALOGO.exists():
         print("[ERROR] No se encontró mapillary_catalog.csv.")
-        print(f"  → Ejecuta primero: python scripts/analyze_mapillary_colegios.py")
+        print(f"  → Ejecuta primero: python scripts/00_analyze_mapillary_colegios.py")
         sys.exit(1)
 
     df = pd.read_csv(RUTA_CATALOGO, dtype={"dane_est": str})
@@ -145,14 +124,10 @@ async def descargar_imagenes() -> None:
         sel["descargada"].eq(False) & sel["url_descarga"].notna()
     ].copy()
 
-    n_pano_excluidas = (
-        df[df["is_pano"].astype(str).str.lower() == "true"].__len__()
-        if EXCLUIR_PANORAMICAS else 0
-    )
-
     print(f"Imágenes en catálogo      : {len(df):,}")
-    if FECHA_DESDE:
-        print(f"Filtro de fecha           : >= {FECHA_DESDE}")
+    if FECHA_DESDE or FECHA_HASTA:
+        rango = f"{FECHA_DESDE or '*'} – {FECHA_HASTA or '*'}"
+        print(f"Filtro de fecha           : {rango}")
     if EXCLUIR_PANORAMICAS:
         print(f"Excluir panorámicas       : sí")
     if DEDUP_POR_SECUENCIA:
@@ -176,22 +151,34 @@ async def descargar_imagenes() -> None:
     conector  = aiohttp.TCPConnector(limit=MAX_CONCURRENT)
 
     loop = asyncio.get_running_loop()
-    loop.add_signal_handler(
-        signal.SIGINT,
-        lambda: (
-            sys.stdout.write(
-                "\n\n[AVISO] Deteniendo. Las imágenes en disco se conservan.\n"
-                "        Vuelve a ejecutar el script para continuar.\n"
-            ),
-            sys.stdout.flush(),
-            parar.set(),
-        ),
-    )
+    def _on_sigint():
+        sys.stdout.write(
+            "\n\n[AVISO] Deteniendo. Las imágenes en disco se conservan.\n"
+            "        Vuelve a ejecutar el script para continuar.\n"
+        )
+        sys.stdout.flush()
+        parar.set()
+
+    try:
+        # Unix: add_signal_handler se integra nativamente con el event loop
+        # de asyncio y puede activar el evento parar desde dentro del loop.
+        loop.add_signal_handler(signal.SIGINT, _on_sigint)
+    except NotImplementedError:
+        # Windows: ProactorEventLoop no implementa add_signal_handler y lanza
+        # NotImplementedError. Como fallback se usa signal.signal(), que en
+        # Windows ejecuta el handler en el hilo principal (fuera del loop).
+        # call_soon_threadsafe() es necesario para cruzar de ese hilo al loop
+        # de asyncio de forma segura sin condiciones de carrera.
+        signal.signal(
+            signal.SIGINT,
+            lambda sig, frame: loop.call_soon_threadsafe(_on_sigint),
+        )
 
     descargadas_sesion: list = []
     procesadas = 0
+    timeout = aiohttp.ClientTimeout(total=60)
 
-    async def descargar_una(row: pd.Series) -> None:
+    async def descargar_una(row: dict) -> None:
         nonlocal procesadas
         if parar.is_set():
             return
@@ -201,27 +188,32 @@ async def descargar_imagenes() -> None:
             procesadas += 1
             return
 
-        async with semaforo:
-            for intento in range(3):
-                try:
-                    async with session.get(
-                        row["url_descarga"],
-                        timeout=aiohttp.ClientTimeout(total=60),
-                    ) as r:
+        for intento in range(3):
+            rate_limited = False
+            contenido = None
+            try:
+                async with semaforo:
+                    async with session.get(row["url_descarga"], timeout=timeout) as r:
                         if r.status == 429:
-                            await asyncio.sleep(2 ** intento * 5)
-                            continue
-                        r.raise_for_status()
-                        contenido = await r.read()
-                    ruta_local.write_bytes(contenido)
-                    descargadas_sesion.append(row["nombre_archivo"])
-                    break
-                except asyncio.CancelledError:
+                            rate_limited = True
+                        else:
+                            r.raise_for_status()
+                            contenido = await r.read()
+            except asyncio.CancelledError:
+                return
+            except Exception:
+                if intento == 2:
                     return
-                except Exception:
-                    if intento == 2:
-                        return
-                    await asyncio.sleep(2 ** intento)
+                await asyncio.sleep(2 ** intento + random.uniform(0, 1))
+                continue
+
+            if rate_limited:
+                await asyncio.sleep(2 ** intento * 5 + random.uniform(0, 2))
+                continue
+
+            ruta_local.write_bytes(contenido)
+            descargadas_sesion.append(row["nombre_archivo"])
+            break
 
         procesadas += 1
         sys.stdout.write(
@@ -230,13 +222,15 @@ async def descargar_imagenes() -> None:
         )
         sys.stdout.flush()
 
+    registros = pendientes.to_dict("records")
     async with aiohttp.ClientSession(connector=conector) as session:
-        await asyncio.gather(*[descargar_una(row) for _, row in pendientes.iterrows()])
+        await asyncio.gather(*[descargar_una(row) for row in registros])
 
-    # Actualizar catálogo con estado real del disco
-    df["descargada"] = df["nombre_archivo"].apply(
-        lambda n: (RUTA_SALIDA / str(n)).exists()
-    )
+    # Actualizar catálogo: solo marcar las filas descargadas esta sesión.
+    # df["descargada"] ya reflejaba el estado real del disco al inicio;
+    # basta con activar las nuevas sin releer el disco para cada fila.
+    if descargadas_sesion:
+        df.loc[df["nombre_archivo"].isin(set(descargadas_sesion)), "descargada"] = True
     df.to_csv(RUTA_CATALOGO, index=False, encoding="utf-8")
 
     print(f"\n\nDescargadas esta sesión   : {len(descargadas_sesion):,}")

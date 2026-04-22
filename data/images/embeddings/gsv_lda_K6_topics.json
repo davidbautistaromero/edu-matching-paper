@@ -1,0 +1,92 @@
+{
+  "topic_1": {
+    "top_features": [
+      64,
+      23,
+      21,
+      17,
+      19,
+      13,
+      50,
+      41,
+      49,
+      32
+    ],
+    "feature_space": "pca_70d_whitened"
+  },
+  "topic_2": {
+    "top_features": [
+      64,
+      23,
+      21,
+      17,
+      19,
+      13,
+      50,
+      58,
+      43,
+      51
+    ],
+    "feature_space": "pca_70d_whitened"
+  },
+  "topic_3": {
+    "top_features": [
+      64,
+      23,
+      21,
+      17,
+      19,
+      13,
+      50,
+      32,
+      43,
+      58
+    ],
+    "feature_space": "pca_70d_whitened"
+  },
+  "topic_4": {
+    "top_features": [
+      64,
+      23,
+      21,
+      17,
+      19,
+      13,
+      50,
+      58,
+      51,
+      49
+    ],
+    "feature_space": "pca_70d_whitened"
+  },
+  "topic_5": {
+    "top_features": [
+      0,
+      1,
+      9,
+      6,
+      33,
+      7,
+      5,
+      16,
+      10,
+      20
+    ],
+    "feature_space": "pca_70d_whitened"
+  },
+  "topic_6": {
+    "top_features": [
+      64,
+      23,
+      21,
+      17,
+      19,
+      13,
+      50,
+      43,
+      49,
+      58
+    ],
+    "feature_space": "pca_70d_whitened"
+  }
+}
