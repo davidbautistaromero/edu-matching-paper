@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """
-03_lda_topics.py
-Aprende tópicos visuales con LDA sobre los embeddings VGG19.
+03_nmf_topics.py
+Aprende tópicos visuales con NMF sobre los embeddings VGG19.
+
+Por qué NMF y no LDA:
+  LDA colapsa en este dataset porque los embeddings VGG19 de fachadas escolares
+  en Bogotá son suficientemente homogéneos para que el prior de Dirichlet domine
+  y todos los documentos converjan a distribuciones casi uniformes. NMF no asume
+  distribuciones probabilísticas, trabaja directamente sobre los features
+  no-negativos (garantizados por ReLU en VGG19) y produce representaciones
+  parts-based más interpretables para datos visuales densos.
 
 Metodología:
   1. Carga embeddings crudos por imagen (gsv_vgg19_raw.parquet)
-  2. PCA blanqueado (whiten=True): 512d → PCA_N_COMPONENTS
-     - Whitening iguala la varianza de todas las PCs antes de L1-norm,
-       evitando que PC1 domine y LDA colapse en 1-2 tópicos efectivos
-     - Shift a no-negativo por columna (requerido por LDA)
-  3. Normalización L1 (transforma vectores a distribuciones)
-  4. LDA con K ∈ K_VALUES sobre imágenes individuales
+  2. Normalización L2 por fila (estabiliza la escala entre imágenes)
+  3. NMF con K ∈ K_VALUES sobre imágenes individuales
+  4. Normalización L1 de proporciones de salida (W → suma por fila = 1)
   5. Agrega proporciones de tópicos por establecimiento (media)
 
 Inputs:
@@ -18,21 +23,20 @@ Inputs:
   data/images/gsv/gsv_catalog.csv
 
 Outputs (por cada K):
-  data/images/embeddings/gsv_lda_K{k}_images.parquet   (por imagen)
-  data/images/embeddings/gsv_lda_K{k}.parquet          (por establecimiento)
-  data/images/embeddings/gsv_lda_K{k}_topics.json      (top-10 PCs por tópico)
+  data/images/embeddings/gsv_nmf_K{k}_images.parquet   (por imagen)
+  data/images/embeddings/gsv_nmf_K{k}.parquet          (por establecimiento)
+  data/images/embeddings/gsv_nmf_K{k}_topics.json      (top-10 features por tópico)
 """
 
 # =============================================================================
 # CONFIGURACIÓN
 # =============================================================================
-K_VALUES         = [6, 8, 10]
-K_DEFAULT        = 8
-PCA_N_COMPONENTS = 70     # 80% varianza explicada — ver 02a_diagnose_embeddings.py
-MAX_ITER         = 200
-RANDOM_SEED      = 42
-TOP_N_FEAT       = 10
-TOP_N_EST        = 3
+K_VALUES    = [6, 8, 10]
+K_DEFAULT   = 8
+MAX_ITER    = 500
+RANDOM_SEED = 42
+TOP_N_FEAT  = 10
+TOP_N_EST   = 3
 
 RAW_EMBEDDINGS_PATH = 'data/images/embeddings/gsv_vgg19_raw.parquet'
 CATALOG_PATH        = 'data/images/gsv/gsv_catalog.csv'
@@ -48,7 +52,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import LatentDirichletAllocation, PCA
+from sklearn.decomposition import NMF
 from sklearn.preprocessing import normalize
 
 logging.basicConfig(
@@ -92,61 +96,43 @@ def load_nombres() -> dict:
 
 
 # =============================================================================
-# PCA BLANQUEADO + SHIFT A NO-NEGATIVO
+# NMF
 # =============================================================================
-def apply_pca(X: np.ndarray, n_components: int) -> tuple[np.ndarray, PCA]:
-    """
-    Reduce dimensión con PCA blanqueado y shiftea a no-negativo.
-    whiten=True iguala la varianza de todas las PCs, evitando que las primeras
-    componentes dominen después de L1-norm y colapsen LDA.
-    """
-    log.info(f'Aplicando PCA blanqueado: 512d → {n_components}d ...')
-    pca = PCA(n_components=n_components, whiten=True, random_state=RANDOM_SEED)
-    X_pca = pca.fit_transform(X)
-
-    var_acum = pca.explained_variance_ratio_.cumsum()
-    log.info(f'  Varianza explicada: {100*var_acum[-1]:.1f}%')
-    log.info(f'  PC1: {100*pca.explained_variance_ratio_[0]:.1f}%  '
-             f'PC2: {100*pca.explained_variance_ratio_[1]:.1f}%')
-
-    X_pca -= X_pca.min(axis=0)
-    log.info(f'  Rango después de shift: min={X_pca.min():.4f}  max={X_pca.max():.4f}')
-    return X_pca, pca
-
-
-# =============================================================================
-# LDA
-# =============================================================================
-def run_lda(
+def run_nmf(
     X_norm: np.ndarray,
     df_meta: pd.DataFrame,
     nombres: dict,
     K: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     """
-    Ajusta LDA con K tópicos sobre imágenes individuales.
-    Devuelve proporciones por imagen y por establecimiento (media).
+    Ajusta NMF con K tópicos sobre imágenes individuales.
+    Devuelve proporciones (L1-normalizadas) por imagen y por establecimiento.
     """
-    log.info(f'  Ajustando LDA con K={K} sobre {len(X_norm):,} imágenes...')
+    log.info(f'  Ajustando NMF con K={K} sobre {len(X_norm):,} imágenes...')
 
-    lda = LatentDirichletAllocation(
+    nmf = NMF(
         n_components=K,
+        init='nndsvda',      # inicialización determinista basada en SVD
         max_iter=MAX_ITER,
-        learning_method='batch',
         random_state=RANDOM_SEED,
-        n_jobs=-1,
+        l1_ratio=0.0,        # regularización L2 pura (más estable)
     )
-    topic_props = lda.fit_transform(X_norm)  # [N_images, K]
+    W = nmf.fit_transform(X_norm)   # [N_images, K] — proporciones no normalizadas
 
-    log.info(f'  Log-verosimilitud: {lda.bound_:.2f}')
-    log.info(f'  Perplejidad:       {lda.perplexity(X_norm):.2f}')
+    log.info(f'  Error de reconstrucción: {nmf.reconstruction_err_:.4f}')
+    log.info(f'  Iteraciones:             {nmf.n_iter_}')
+
+    # Normalizar W por fila (L1) → proporciones que suman 1
+    W_norm = normalize(W, norm='l1')
 
     topic_cols = [f'topic_{k+1}' for k in range(K)]
 
-    df_img = pd.DataFrame(topic_props, columns=topic_cols)
+    # --- Por imagen ---
+    df_img = pd.DataFrame(W_norm, columns=topic_cols)
     for col in ['id_establecimiento', 'id_sede', 'heading']:
         df_img.insert(list(df_img.columns).index(topic_cols[0]), col, df_meta[col].values)
 
+    # --- Por establecimiento (media de proporciones) ---
     df_est = (
         df_img
         .groupby('id_establecimiento')[topic_cols]
@@ -154,15 +140,16 @@ def run_lda(
         .reset_index()
     )
 
+    # Top-N features por tópico (índices en el espacio 512d original)
     topics_json = {
         f'topic_{k+1}': {
-            'top_features': np.argsort(lda.components_[k])[::-1][:TOP_N_FEAT].tolist(),
-            'feature_space': f'pca_{PCA_N_COMPONENTS}d_whitened',
+            'top_features': np.argsort(nmf.components_[k])[::-1][:TOP_N_FEAT].tolist(),
+            'feature_space': 'raw_512d',
         }
         for k in range(K)
     }
 
-    return df_img, df_est, topics_json, lda
+    return df_img, df_est, topics_json, nmf
 
 
 # =============================================================================
@@ -193,35 +180,33 @@ def print_topic_stats(df_est: pd.DataFrame, nombres: dict, K: int):
 # =============================================================================
 def main():
     log.info('=' * 60)
-    log.info('APRENDIZAJE DE TÓPICOS VISUALES CON LDA + PCA')
+    log.info('APRENDIZAJE DE TÓPICOS VISUALES CON NMF')
     log.info('=' * 60)
 
     df_raw, X = load_embeddings()
     nombres = load_nombres()
 
-    X_pca, _ = apply_pca(X, PCA_N_COMPONENTS)
-
-    log.info('Normalizando vectores (L1)...')
-    X_norm = normalize(X_pca, norm='l1')
-    log.info(f'  Suma de filas: min={X_norm.sum(axis=1).min():.4f}  '
-             f'max={X_norm.sum(axis=1).max():.4f}')
+    # Normalización L2 por fila — estabiliza escala sin destruir no-negatividad
+    log.info('Normalizando vectores (L2)...')
+    X_norm = normalize(X, norm='l2')
+    log.info(f'  Norma L2 media: {np.linalg.norm(X_norm, axis=1).mean():.4f}')
 
     for K in K_VALUES:
         log.info(f'\n{"─"*60}')
         log.info(f'K = {K}')
         log.info(f'{"─"*60}')
 
-        df_img, df_est, topics_json, _ = run_lda(X_norm, df_raw, nombres, K)
+        df_img, df_est, topics_json, nmf = run_nmf(X_norm, df_raw, nombres, K)
 
-        img_path = os.path.join(EMBEDDINGS_DIR, f'gsv_lda_K{K}_images.parquet')
+        img_path = os.path.join(EMBEDDINGS_DIR, f'gsv_nmf_K{K}_images.parquet')
         df_img.to_parquet(img_path, index=False)
         log.info(f'  Por imagen guardado:          {img_path}  {df_img.shape}')
 
-        est_path = os.path.join(EMBEDDINGS_DIR, f'gsv_lda_K{K}.parquet')
+        est_path = os.path.join(EMBEDDINGS_DIR, f'gsv_nmf_K{K}.parquet')
         df_est.to_parquet(est_path, index=False)
         log.info(f'  Por establecimiento guardado: {est_path}  {df_est.shape}')
 
-        json_path = os.path.join(EMBEDDINGS_DIR, f'gsv_lda_K{K}_topics.json')
+        json_path = os.path.join(EMBEDDINGS_DIR, f'gsv_nmf_K{K}_topics.json')
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(topics_json, f, indent=2)
         log.info(f'  Top features guardados:       {json_path}')
@@ -233,10 +218,9 @@ def main():
 
     log.info('\n' + '=' * 60)
     log.info('RESUMEN')
-    log.info(f'  Preproceso: PCA blanqueado 512d → {PCA_N_COMPONENTS}d + L1')
     for K in K_VALUES:
         tag = ' ← PRINCIPAL' if K == K_DEFAULT else ''
-        log.info(f'  K={K}: gsv_lda_K{K}.parquet + gsv_lda_K{K}_images.parquet{tag}')
+        log.info(f'  K={K}: gsv_nmf_K{K}.parquet + gsv_nmf_K{K}_images.parquet{tag}')
     log.info('=' * 60)
 
 

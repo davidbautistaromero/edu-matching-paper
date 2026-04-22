@@ -5,17 +5,15 @@ Extrae embeddings visuales de imágenes GSV usando VGG19 preentrenado en ImageNe
 
 Metodología:
   - VGG19 sin cabeza de clasificación (hasta block5_pool + global average pool)
-  - Vector de 512 dimensiones por imagen (no-negativo por ReLU — válido para LDA)
-  - Promedio de N headings por sede → 1 vector por sede
-  - Promedio de sedes por establecimiento → 1 vector por establecimiento (558 total)
+  - Vector de 512 dimensiones por imagen (no-negativo por ReLU)
+  - Una fila por imagen — la agregación por sede/establecimiento ocurre en 03_lda_topics.py
 
 Inputs:
   data/images/gsv/gsv_catalog.csv
   data/images/gsv/{id_sede}/{id_sede}_{heading:03d}.jpg
 
 Outputs:
-  data/images/embeddings/gsv_vgg19_raw.parquet            (por imagen)
-  data/images/embeddings/gsv_vgg19_establecimiento.parquet (por establecimiento, 558 filas × 512 cols)
+  data/images/embeddings/gsv_vgg19_raw.parquet   (una fila por imagen)
 """
 
 # =============================================================================
@@ -23,6 +21,10 @@ Outputs:
 # =============================================================================
 MODE = 'full'   # 'sample' → solo 10 establecimientos | 'full' → todos
 BATCH_SIZE = 32   # imágenes por lote (reducir si hay problemas de memoria)
+
+# Imágenes en blanco: GSV devuelve una imagen gris uniforme cuando no hay cobertura.
+# Se detectan por la baja desviación estándar de sus píxeles en escala de grises.
+BLANK_STD_THRESHOLD = 15.0  # umbral empírico: imágenes reales tienen std >> 15
 
 CATALOG_PATH   = 'data/images/gsv/gsv_catalog.csv'
 GSV_DIR        = 'data/images/gsv'
@@ -143,18 +145,37 @@ def load_catalog(mode: str) -> pd.DataFrame:
 
 
 # =============================================================================
+# DETECCIÓN DE IMÁGENES EN BLANCO
+# =============================================================================
+def is_blank(filepath: str) -> bool:
+    """
+    Devuelve True si la imagen es el placeholder gris de GSV ("no imagery").
+    Criterio: std de píxeles en escala de grises < BLANK_STD_THRESHOLD.
+    """
+    try:
+        arr = np.array(Image.open(filepath).convert('L'))
+        return float(arr.std()) < BLANK_STD_THRESHOLD
+    except Exception:
+        return False
+
+
+# =============================================================================
 # PROCESAMIENTO POR LOTES
 # =============================================================================
 def process_batch(filepaths: list, extractor: nn.Module) -> np.ndarray:
     """
     Carga un lote de imágenes, aplica transformación y extrae embeddings.
-    Devuelve array [N, 512] o [N_válidas, 512] si algunas imágenes fallan.
+    Omite imágenes en blanco (sin cobertura GSV) y archivos corruptos.
+    Devuelve array [N_válidas, 512] y lista de índices válidos.
     """
     tensors = []
     valid_indices = []
 
     for i, fp in enumerate(filepaths):
         try:
+            if is_blank(fp):
+                log.debug(f'Imagen en blanco omitida: {fp}')
+                continue
             img = Image.open(fp).convert('RGB')
             tensors.append(imagenet_transform(img))
             valid_indices.append(i)
@@ -249,48 +270,20 @@ def main():
     log.info(f'Embeddings por imagen guardados: {raw_path}  ({df_raw.shape})')
 
     # -------------------------------------------------------------------------
-    # 5. Promedio por sede
+    # 5. Resumen final
     # -------------------------------------------------------------------------
-    log.info('Promediando embeddings por sede...')
-    feature_cols = emb_cols
+    n_est  = df_raw['id_establecimiento'].nunique()
+    n_sede = df_raw['id_sede'].nunique()
 
-    df_sede = (
-        df_raw
-        .groupby(['id_establecimiento', 'id_sede'])[feature_cols]
-        .mean()
-        .reset_index()
-    )
-    log.info(f'  Sedes con embedding: {len(df_sede):,}')
-
-    # -------------------------------------------------------------------------
-    # 6. Promedio por establecimiento
-    # -------------------------------------------------------------------------
-    log.info('Promediando embeddings por establecimiento...')
-    df_est = (
-        df_sede
-        .groupby('id_establecimiento')[feature_cols]
-        .mean()
-        .reset_index()
-    )
-    log.info(f'  Establecimientos con embedding: {len(df_est):,}')
-
-    est_path = os.path.join(EMBEDDINGS_DIR, 'gsv_vgg19_establecimiento.parquet')
-    df_est.to_parquet(est_path, index=False)
-    log.info(f'Embeddings por establecimiento guardados: {est_path}  ({df_est.shape})')
-
-    # -------------------------------------------------------------------------
-    # 7. Resumen final
-    # -------------------------------------------------------------------------
     log.info('=' * 60)
     log.info('RESUMEN')
     log.info(f'  Imágenes procesadas:        {len(all_embeddings):,}')
     log.info(f'  Imágenes con error:         {n_errors:,}')
-    log.info(f'  Sedes con embedding:        {len(df_sede):,}')
-    log.info(f'  Establecimientos con emb.:  {len(df_est):,}')
+    log.info(f'  Sedes únicas:               {n_sede:,}')
+    log.info(f'  Establecimientos únicos:    {n_est:,}')
     log.info(f'  Dimensión del vector:       512')
-    log.info('Archivos creados:')
-    log.info(f'  {raw_path}')
-    log.info(f'  {est_path}')
+    log.info(f'  Archivo creado: {raw_path}')
+    log.info('  Agregación por sede/establecimiento → 03_lda_topics.py')
     log.info('=' * 60)
 
 

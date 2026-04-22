@@ -44,7 +44,12 @@ paper-AI/
 │       │   ├── resumen_fechas.csv     <- ignorado en git
 │       │   ├── mapa_cobertura_total.png
 │       │   └── mapa_cobertura_filtrada.png
-│       └── embeddings/             <- Embeddings VGG19 por sede (pendiente)
+│       └── embeddings/             <- Embeddings y tópicos visuales
+│           ├── gsv_vgg19_raw.parquet          <- 1 fila por imagen (5,580 × 512)
+│           ├── gsv_lda_K{k}.parquet           <- Proporciones de tópicos por establecimiento
+│           ├── gsv_lda_K{k}_images.parquet    <- Proporciones de tópicos por imagen
+│           ├── gsv_lda_K{k}_topics.json       <- Top features por tópico
+│           └── diagnostico_embeddings.json    <- Resultados de pruebas de calidad
 ├── docs/                           <- Diccionarios de variables y documentacion de referencia
 │   ├── em2021_diccionario.ods
 │   └── em2021_variablesadicionales_diccionario.ods
@@ -73,6 +78,9 @@ paper-AI/
 │   ├── 00_download_gsv_colegios.py <- Descarga imágenes Google Street View (fuente principal)
 │   ├── 01_build_dataset.py         <- Integra todas las fuentes -> primary/
 │   ├── 01_mapa_cobertura_gsv.py    <- Mapa de cobertura GSV
+│   ├── 02_extract_embeddings.py    <- Extrae embeddings VGG19 por imagen (512d, sin agregar)
+│   ├── 02a_diagnose_embeddings.py  <- Diagnóstico de calidad + selección d PCA (figura)
+│   ├── 03_lda_topics.py            <- PCA(68d) + LDA sobre imágenes -> tópicos por establecimiento
 │   ├── gsv_config.py               <- Parámetros GSV (modo prueba, headings, resolución)
 │   └── mapillary_filtros.py        <- Parámetros de selección Mapillary
 ├── requirements.txt
@@ -228,14 +236,22 @@ Estas fuentes se descargan **manualmente** desde el portal de datos abiertos de 
 
 ---
 
-### 8. Embeddings visuales de colegios *(pendiente)*
+### 8. Embeddings visuales de colegios
 
 | | |
 |---|---|
-| **Input** | `data/images/gsv/{id_establecimiento}/*.jpg` |
-| **Output esperado** | `data/images/embeddings/gsv_embeddings.parquet` |
-| **Contenido** | Embeddings VGG19 por sede, promediados sobre los 10 headings → vector `v_j` ∈ ℝ⁴⁰⁹⁶ |
-| **Script esperado** | `scripts/02_extract_embeddings.py` |
+| **Fuente** | Imágenes GSV descargadas (5,580 imágenes — 558 sedes × 10 headings) |
+| **Script** | `scripts/02_extract_embeddings.py` |
+| **Output** | `data/images/embeddings/gsv_vgg19_raw.parquet` (5,580 filas × 512 features) |
+| **Contenido** | Un vector de 512 dimensiones por imagen, sin agregar — la agregación ocurre en `03_lda_topics.py` |
+
+**Metodología de extracción:**
+- Modelo: VGG19 preentrenado en ImageNet, sin cabeza de clasificación
+- Capa de salida: `block5_pool` + `AdaptiveAvgPool2d(1,1)` → vector de 512d no-negativo (ReLU)
+- Preprocesamiento: `Resize(256)` → `CenterCrop(224)` → normalización ImageNet
+- Procesamiento en lotes de 32 imágenes; tolerante a imágenes corruptas
+
+**Por qué no se agrega aquí:** promediar los vectores por sede o establecimiento antes de LDA reduce artificialmente la variabilidad entre colegios. LDA aprende tópicos más estables sobre imágenes individuales; la agregación de proporciones ocurre *después* en espacio ya interpretable.
 
 ---
 
@@ -366,3 +382,68 @@ Los scripts de transformacion toman los archivos de `raw/` y producen versiones 
 **Variables de salida:** `localidad_norm`, `n_sedes_total`, `n_sedes_no_oficial`, `pct_no_oficial`.
 
 **Por que:** La intensidad competitiva del mercado educativo local puede moderar el efecto visual. En localidades con alta oferta privada, los hogares tienen mas opciones y pueden ser mas sensibles a senales de calidad -- tanto academica como visual. Se incluye como control en la regresion de `alpha` y como variable descriptiva en el EDA (Figura 4).
+
+---
+
+### T7. Extracción de embeddings VGG19
+
+**Script:** `scripts/02_extract_embeddings.py`
+**Input:** `data/images/gsv/{id_establecimiento}/*.jpg` + `data/images/gsv/gsv_catalog.csv`
+**Output:** `data/images/embeddings/gsv_vgg19_raw.parquet`
+
+**Que hace:**
+- Filtra el catálogo GSV para quedarse solo con imágenes descargadas
+- Carga VGG19 (ImageNet) y construye extractor `block5_pool → AvgPool → 512d`
+- Procesa las 5,580 imágenes en lotes de 32, tolerante a archivos corruptos
+- Guarda una fila por imagen con metadatos (`id_establecimiento`, `id_sede`, `heading`) y 512 features
+
+**Por que la agregación no ocurre aquí:** agregar por sede/establecimiento antes de LDA suaviza los vectores y concentra los embeddings en una región más homogénea del espacio, lo que produce colapso de tópicos en LDA. La agregación se realiza en T9 una vez que las proporciones de tópicos ya son interpretables.
+
+---
+
+### T8. Diagnóstico de calidad de embeddings y selección de d PCA
+
+**Script:** `scripts/02a_diagnose_embeddings.py`
+**Input:** `data/images/embeddings/gsv_vgg19_raw.parquet`
+**Outputs:** `data/images/embeddings/diagnostico_embeddings.json` · `reports/figures/pca_component_selection.png`
+
+**Que hace:**
+1. **Varianza por feature:** verifica que ninguna dimensión esté degenerada (var ≈ 0)
+2. **Similitud coseno entre pares:** muestrea 5,000 pares aleatorios y reporta la distribución de similitudes — alerta si la media supera 0.85 (señal de colapso potencial en LDA)
+3. **PCA + selección de d:** calcula hasta 150 PCs y construye la figura de sedimentación con el codo y d\* seleccionado
+
+**Resultados sobre los datos actuales:**
+
+| Test | Resultado | Estado |
+|---|---|---|
+| Varianza por feature | Var min: 0.000343, 0% features nulas | ✅ OK |
+| Similitud coseno (imágenes) | Media: 0.61 | ✅ OK |
+| PCA — codo | d = 18 (∼55% varianza) | — |
+| PCA — umbral 70% | d = 37 | — |
+| PCA — umbral 80% | d = 68 | ✅ seleccionado |
+| PCA — umbral 90% | d = 141 | — |
+
+**Criterio de selección de d\*:** se elige el umbral más alto alcanzado dentro de 150 PCs que sea ≥ 80%. Si ninguno se alcanza, se usa el 80% como piso. El codo (d=18) se reporta como referencia pero no se usa directamente porque captura solo ∼55% de la varianza visual.
+
+**Por que d=68 y no d=37 ni d=141:** el tramo 70%→80% cuesta 31 PCs adicionales con una ganancia de 0.32% por PC — eficiente. El tramo 80%→90% cuesta 73 PCs con 0.14% por PC — ineficiente. d=68 está en el punto donde la curva entra en su zona plana, con N/d = 82 (cómodo para LDA).
+
+---
+
+### T9. Tópicos visuales con LDA
+
+**Script:** `scripts/03_lda_topics.py`
+**Input:** `data/images/embeddings/gsv_vgg19_raw.parquet`
+**Outputs (por cada K ∈ {6, 8, 10}):**
+- `data/images/embeddings/gsv_lda_K{k}_images.parquet` — proporciones por imagen
+- `data/images/embeddings/gsv_lda_K{k}.parquet` — proporciones por establecimiento
+- `data/images/embeddings/gsv_lda_K{k}_topics.json` — top features por tópico
+
+**Que hace:**
+1. **PCA(68):** reduce 512d → 68d y shift a no-negativo (requerido por LDA). Retiene el 80% de la varianza visual
+2. **Normalización L1:** transforma cada vector a una distribución de probabilidad (suma = 1)
+3. **LDA sobre imágenes individuales:** aprende K tópicos visuales con más datos y mayor variabilidad que si se corriera sobre promedios por establecimiento
+4. **Agregación:** promedia las proporciones de tópicos por establecimiento → 1 vector de K dimensiones por colegio
+
+**Por que LDA sobre imágenes y no sobre establecimientos:** con 5,580 imágenes la relación N/d = 82, suficiente para que LDA estime distribuciones estables. Correr LDA sobre los 306 vectores promediados (N/d = 4.5) producía colapso: todos los tópicos excepto uno recibían peso uniforme 1/K.
+
+**Parámetro principal:** `K_DEFAULT = 8` tópicos. Se evalúan K ∈ {6, 8, 10} para análisis de robustez.
