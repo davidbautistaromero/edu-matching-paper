@@ -21,7 +21,7 @@ Outputs:
 # =============================================================================
 # CONFIGURACIÓN — modificar aquí antes de correr
 # =============================================================================
-MODE = 'sample'   # 'sample' → solo 10 establecimientos | 'full' → todos
+MODE = 'full'   # 'sample' → solo 10 establecimientos | 'full' → todos
 BATCH_SIZE = 32   # imágenes por lote (reducir si hay problemas de memoria)
 
 CATALOG_PATH   = 'data/images/gsv/gsv_catalog.csv'
