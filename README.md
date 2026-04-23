@@ -4,6 +4,28 @@ Analisis de mecanismos de asignacion escolar en Bogota con modelos de matching y
 
 ---
 
+## Instalacion rapida
+
+```powershell
+cd C:\ruta\al\repo
+.\setup.ps1
+```
+
+El script `setup.ps1` hace todo automaticamente:
+1. Crea el entorno virtual `.venv`
+2. Detecta si hay GPU NVIDIA disponible
+   - **Con GPU:** instala torch con soporte CUDA 12.4 (recomendado — el full run tarda ~5-8 min)
+   - **Sin GPU:** instala torch CPU (el full run puede tardar ~80 min)
+3. Instala el resto de dependencias (`requirements.txt`)
+4. Descarga el checkpoint DeepLabV3+ ResNet-101 (~449 MB) si no existe en `checkpoints/`
+
+> **Nota:** El checkpoint no esta en git por su tamano. El setup lo descarga automaticamente
+> desde Google Drive. Si la descarga falla, bajalo manualmente desde:
+> https://drive.google.com/file/d/1t7TC8mxQaFECt4jutdq_NMnWxdm6B-Nb
+> y guardalo en `checkpoints/best_deeplabv3plus_resnet101_cityscapes_os16.pth`
+
+---
+
 ## Estructura del proyecto
 
 ```
@@ -447,3 +469,102 @@ Los scripts de transformacion toman los archivos de `raw/` y producen versiones 
 **Por que LDA sobre imágenes y no sobre establecimientos:** con 5,580 imágenes la relación N/d = 82, suficiente para que LDA estime distribuciones estables. Correr LDA sobre los 306 vectores promediados (N/d = 4.5) producía colapso: todos los tópicos excepto uno recibían peso uniforme 1/K.
 
 **Parámetro principal:** `K_DEFAULT = 8` tópicos. Se evalúan K ∈ {6, 8, 10} para análisis de robustez.
+
+**Nota:** LDA colapsa en este dataset (std=0 en todos los tópicos para cualquier K). El prior de Dirichlet domina cuando los embeddings VGG19 de fachadas escolares son suficientemente homogéneos. Se reemplaza por NMF en T10.
+
+---
+
+### T10. Tópicos visuales con NMF (reemplaza LDA)
+
+**Script:** `scripts/03_nmf_topics.py`
+**Input:** `data/images/embeddings/gsv_vgg19_raw.parquet`
+**Outputs (por cada K ∈ {6, 8, 10}):**
+- `data/images/embeddings/gsv_nmf_K{k}_images.parquet` — proporciones por imagen
+- `data/images/embeddings/gsv_nmf_K{k}.parquet` — proporciones por establecimiento
+- `data/images/embeddings/gsv_nmf_K{k}_topics.json` — top features por tópico
+
+**Por que NMF y no LDA:** NMF (Non-negative Matrix Factorization, Lee & Seung 1999) no asume distribuciones probabilísticas. Trabaja directamente sobre los features no-negativos (garantizados por ReLU en VGG19) y produce tópicos parts-based con varianza real entre establecimientos (std ≈ 0.05–0.12 vs std=0 en LDA).
+
+**Parámetro principal:** `K_DEFAULT = 8`. Modelo principal en `gsv_nmf_K8.parquet`.
+
+---
+
+### T11. Segmentación semántica con DeepLabV3+ Cityscapes
+
+**Script:** `scripts/02b_seg_cityscapes.py`
+**Input:** `data/images/gsv/{id_establecimiento}/*.jpg`
+**Outputs:**
+- `data/images/segmentation/gsv_cs_raw.parquet` — proporciones por imagen
+- `data/images/segmentation/gsv_cs_establecimiento.parquet` — proporciones por establecimiento
+- `data/images/segmentation/diagnostico_primera_foto.png` — validación visual
+
+**Que hace:**
+- Pasa cada imagen por DeepLabV3+ ResNet-101 (Cityscapes, 19 clases) — cada píxel recibe una etiqueta semántica
+- Agrupa las 19 clases en 7 categorías temáticas para la regresión:
+
+| Grupo | Clases Cityscapes | Media (558 colegios) |
+|---|---|---|
+| `infraestructura_vial` | road, sidewalk | 33.1% |
+| `edificacion` | building | 25.9% |
+| `referencia` | sky, person, rider | 23.9% |
+| `vegetacion` | vegetation, terrain | 9.6% |
+| `cerramiento` | wall, fence | 3.7% |
+| `vehiculos` | car, truck, bus, train, moto, bici | 2.7% |
+| `mobiliario_urbano` | pole, traffic light, traffic sign | 1.0% |
+
+- En regresión se excluye `referencia` para evitar multicolinealidad perfecta (las 7 suman 1)
+
+**Checkpoint requerido:** `checkpoints/best_deeplabv3plus_resnet101_cityscapes_os16.pth` (~449 MB). El `setup.ps1` lo descarga automáticamente.
+
+**Velocidad:** ~6 min para 5,580 imágenes con GPU RTX 4070.
+
+**Por que Cityscapes:** entrenado específicamente en escenas urbanas (19 clases urbanas). Produce coeficientes directamente interpretables en regresión — "10pp más de vegetación → X% más sobredemanda" (Suel et al. 2019, Scientific Reports).
+
+---
+
+### T12. Features perceptuales con CLIP
+
+**Script:** `scripts/02c_clip_features.py`
+**Input:** `data/images/gsv/{id_establecimiento}/*.jpg`
+**Outputs:**
+- `data/images/clip/gsv_clip_raw.parquet` — scores por imagen
+- `data/images/clip/gsv_clip_establecimiento.parquet` — scores por establecimiento
+
+**Que hace:**
+- Carga CLIP ViT-B/32 (Radford et al. 2021) — mapea imágenes y texto al mismo espacio de 512 dimensiones
+- Para cada imagen calcula: `score = coseno(imagen, frase_positiva) − coseno(imagen, frase_negativa)`
+- Las 4 dimensiones y sus frases son **fijas** para garantizar replicabilidad:
+
+| Dimensión | Frase positiva | Frase negativa |
+|---|---|---|
+| `mantenimiento` | "a school building with a clean and well-maintained facade" | "a school building with a deteriorated and neglected facade" |
+| `vegetacion_percibida` | "a school surrounded by trees and green areas" | "a school with no vegetation or green spaces around it" |
+| `accesibilidad` | "a school with a welcoming and open entrance" | "a school with a closed, walled-off and unwelcoming entrance" |
+| `seguridad_percibida` | "a school in a safe and calm street environment" | "a school in a dangerous and chaotic street environment" |
+
+**Scores medios (558 colegios):** mantenimiento −0.012 · vegetacion −0.046 · accesibilidad −0.028 · seguridad −0.006
+
+**Por que CLIP complementa Cityscapes:** Cityscapes mide *qué hay físicamente* en la imagen. CLIP mide *cómo se percibe* ese entorno — deterioro, apertura, seguridad — dimensiones subjetivas validadas en Naik et al. (2017) y Dubey et al. (2016) como predictores de comportamiento urbano.
+
+**Velocidad:** ~54 segundos para 5,580 imágenes con GPU RTX 4070.
+
+---
+
+### T13. Regresión comparativa de métodos visuales
+
+**Script:** `scripts/04_regresion.py` *(pendiente)*
+**Variable dependiente:** `sobredemanda_j` — exceso de demanda por establecimiento
+**Inputs:** `colegios_features.geojson` + outputs de T10, T11, T12
+
+**Modelos:**
+
+| Modelo | Features visuales | Propósito |
+|---|---|---|
+| M0 | Ninguna | Baseline — solo ICFES + controles |
+| M1 | NMF K=8 (8 tópicos) | VGG19 + NMF — exploración latente |
+| M2 | Cityscapes (6 proporciones) | Atributos físicos objetivos |
+| M3 | CLIP (4 scores) | Percepción subjetiva del entorno |
+| M4 | Cityscapes + CLIP | Combinado |
+
+**Criterio de comparación:** R² ajustado + RMSE en validación cruzada k=5.
+Si R²(M4) > R²(M2) y R²(M3): Cityscapes y CLIP capturan dimensiones distintas — resultado sustantivo.

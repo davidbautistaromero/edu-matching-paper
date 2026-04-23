@@ -2,7 +2,9 @@
 .env
 
 __pycache__/
+checkpoints/
 *.pyc
+*.pth
 
 # Imágenes y catálogos pesados — se reproducen con los scripts
 data/images/gsv/**/*.jpg

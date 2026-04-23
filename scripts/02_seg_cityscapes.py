@@ -52,27 +52,18 @@ from network import modeling  # aquí está la definición de DeepLabV3+
 # =============================================================================
 
 # Carpeta con las imágenes .jpg a segmentar
-IMAGES_DIR = (
-    '/Users/macbook/Documents/Documentos/MeCA/202601/TopicosIA/Talleres/'
-    'edu-matching-paper/data/images/mapillary/comparacion_filtros/fotos/0_baseline'
-)
+IMAGES_DIR = r'C:\paper-AI\data\images\gsv'
 
 # Carpeta donde se guardarán los outputs (se crea automáticamente si no existe)
-OUT_DIR = (
-    '/Users/macbook/Documents/Documentos/MeCA/202601/TopicosIA/Talleres/'
-    'edu-matching-paper/data/images/segmentation'
-)
+OUT_DIR = r'C:\paper-AI\data\images\segmentation'
 
 # Ruta al checkpoint del modelo preentrenado en Cityscapes (449 MB, no se mueve)
-CKPT_PATH = (
-    '/Users/macbook/Documents/Documentos/MeCA/202601/TopicosIA/Talleres/'
-    'prueba/DeepLabV3Plus-Pytorch/checkpoints/best_deeplabv3plus_resnet101_cityscapes_os16.pth'
-)
+CKPT_PATH = r'C:\paper-AI\checkpoints\best_deeplabv3plus_resnet101_cityscapes_os16.pth'
 
 # Modo de ejecución:
 #   'sample' → procesa solo los primeros 10 establecimientos (para probar)
 #   'full'   → procesa todos los establecimientos de la carpeta
-MODE = 'sample'
+MODE = 'full'
 
 # Número de clases de Cityscapes (siempre 19, no cambiar)
 NUM_CLASSES = 19
@@ -112,22 +103,20 @@ GRUPOS = {
     # → proxy de pavimentación y accesibilidad peatonal al colegio
     'infraestructura_vial': [0, 1],
 
-    # Edificación: building (2) + wall (3) + fence (4)
-    # → densidad y tipo de construcción del entorno inmediato
-    'edificacion': [2, 3, 4],
+    # Edificación: solo building (2)
+    # → presencia de estructuras construidas en el entorno inmediato
+    # Separado de cerramiento para distinguir edificios visibles de muros
+    'edificacion': [2],
+
+    # Cerramiento: wall (3) + fence (4)
+    # → proxy de aislamiento físico del colegio respecto al entorno
+    # En Bogotá los muros perimetrales son muy frecuentes y tienen
+    # una señal distinta a la edificación abierta
+    'cerramiento': [3, 4],
 
     # Vegetación: vegetation (8) + terrain (9)
     # → cobertura verde; variable clave en literatura de bienestar urbano
     'vegetacion': [8, 9],
-
-    # Cielo: sky (10)
-    # → proxy de apertura espacial / densidad urbana vertical
-    # Un cielo muy tapado indica entorno muy denso o estrecho
-    'cielo': [10],
-
-    # Actividad humana: person (11) + rider (12)
-    # → vitalidad peatonal del entorno; presencia de comunidad
-    'actividad_humana': [11, 12],
 
     # Vehículos: car(13) + truck(14) + bus(15) + train(16) + moto(17) + bici(18)
     # → tráfico; proxy de ruido, contaminación y peligrosidad vial
@@ -136,6 +125,12 @@ GRUPOS = {
     # Mobiliario urbano: pole(5) + traffic light(6) + traffic sign(7)
     # → formalidad urbana y mantenimiento del espacio público
     'mobiliario_urbano': [5, 6, 7],
+
+    # Categoría de referencia (excluir en regresión para evitar multicolinealidad)
+    # Agrupa: sky (10) + person (11) + rider (12)
+    # sky: apertura espacial — poco interpretable como variable independiente
+    # person/rider: varianza casi cero en fotos de fachadas escolares (~0.2%)
+    'referencia': [10, 11, 12],
 }
 
 # Construimos un diccionario inverso: dado un índice de clase (0-18),
@@ -193,15 +188,18 @@ PALETTE = [
 
 def build_catalog(images_dir: str, mode: str) -> pd.DataFrame:
     """
-    Lee todos los .jpg del directorio y extrae el id_establecimiento
+    Recorre subdirectorios de images_dir y extrae id_establecimiento
     del nombre del archivo.
 
     El nombre sigue el formato:
-      {id_establecimiento}_{fecha}_{id_foto}.jpg
-      ejemplo: 111001010031_2022-06-20_138365378811821.jpg
+      {id_establecimiento}_{heading:03d}.jpg
+      ejemplo: 111001010031_000.jpg
+
+    Las imágenes están en:
+      images_dir/{id_establecimiento}/{id_establecimiento}_{heading:03d}.jpg
 
     Parámetros:
-      images_dir : ruta a la carpeta con las imágenes
+      images_dir : ruta raíz que contiene subdirectorios por establecimiento
       mode       : 'sample' (10 establecimientos) o 'full' (todos)
 
     Retorna:
@@ -209,30 +207,31 @@ def build_catalog(images_dir: str, mode: str) -> pd.DataFrame:
     """
     registros = []
 
-    for fname in sorted(os.listdir(images_dir)):
+    for root, dirs, files in os.walk(images_dir):
+        for fname in sorted(files):
 
-        # Ignorar archivos que no sean .jpg
-        if not fname.lower().endswith('.jpg'):
-            continue
+            # Ignorar archivos que no sean .jpg
+            if not fname.lower().endswith('.jpg'):
+                continue
 
-        # Separar el nombre por '_' para extraer el id del establecimiento
-        # '111001010031_2022-06-20_138365378811821.jpg'
-        #  → partes = ['111001010031', '2022-06-20', '138365378811821']
-        partes = fname.replace('.jpg', '').split('_')
+            # Separar el nombre por '_' para extraer el id del establecimiento
+            # '111001010031_000.jpg'
+            #  → partes = ['111001010031', '000']
+            partes = fname.replace('.jpg', '').split('_')
 
-        # Si el nombre no tiene al menos 3 partes, el formato es inesperado
-        if len(partes) < 3:
-            log.warning(f'Nombre de archivo inesperado, se omite: {fname}')
-            continue
+            # Si el nombre no tiene al menos 2 partes, el formato es inesperado
+            if len(partes) < 2:
+                log.warning(f'Nombre de archivo inesperado, se omite: {fname}')
+                continue
 
-        # La primera parte siempre es el id del establecimiento
-        id_est = partes[0]
+            # La primera parte siempre es el id del establecimiento
+            id_est = partes[0]
 
-        registros.append({
-            'id_establecimiento': id_est,
-            'filename':           fname,
-            'filepath':           os.path.join(images_dir, fname),
-        })
+            registros.append({
+                'id_establecimiento': id_est,
+                'filename':           fname,
+                'filepath':           os.path.join(root, fname),
+            })
 
     df = pd.DataFrame(registros)
     log.info(f'Imágenes encontradas:       {len(df):,}')
@@ -278,7 +277,7 @@ def build_model():
 
     # Cargar el archivo .pth en memoria (map_location='cpu' porque
     # no tenemos GPU; evita errores de dispositivo)
-    ckpt = torch.load(CKPT_PATH, map_location='cpu')
+    ckpt = torch.load(CKPT_PATH, map_location='cpu', weights_only=False)
 
     # El checkpoint guarda los pesos bajo la clave 'model_state'.
     # Si por alguna razón no existe esa clave, usamos el dict completo.
