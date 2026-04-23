@@ -550,21 +550,57 @@ Los scripts de transformacion toman los archivos de `raw/` y producen versiones 
 
 ---
 
-### T13. Regresión comparativa de métodos visuales
+### T13. Imputación espacial de valores faltantes
 
-**Script:** `scripts/04_regresion.py` *(pendiente)*
-**Variable dependiente:** `sobredemanda_j` — exceso de demanda por establecimiento
-**Inputs:** `colegios_features.geojson` + outputs de T10, T11, T12
+**Script:** `scripts/03b_imputacion_espacial.py`
+**Input:** `data/primary/colegios_features.geojson`
+**Output:** `data/primary/colegios_features_imputed.geojson`
 
-**Modelos:**
+**Que hace:**
+- Detecta automáticamente columnas numéricas con NaN (25 columnas, 661 valores faltantes)
+- Para cada valor faltante: busca vecinos dentro de un radio de 2 km (haversine, BallTree)
+  y imputa con la media de los vecinos con valor válido
+- Fallback a mediana global si no hay vecinos en el radio (40 casos)
+- Resultado: 306 establecimientos sin NaN en ninguna variable numérica
 
-| Modelo | Features visuales | Propósito |
-|---|---|---|
-| M0 | Ninguna | Baseline — solo ICFES + controles |
-| M1 | NMF K=8 (8 tópicos) | VGG19 + NMF — exploración latente |
-| M2 | Cityscapes (6 proporciones) | Atributos físicos objetivos |
-| M3 | CLIP (4 scores) | Percepción subjetiva del entorno |
-| M4 | Cityscapes + CLIP | Combinado |
+**Por que imputación espacial:** los colegios cercanos comparten entorno socioeconómico.
+La media de vecindario es mejor estimador que la media global, especialmente para variables
+de UPZ (pobreza, ingreso) que varían fuertemente por zona.
 
-**Criterio de comparación:** R² ajustado + RMSE en validación cruzada k=5.
-Si R²(M4) > R²(M2) y R²(M3): Cityscapes y CLIP capturan dimensiones distintas — resultado sustantivo.
+---
+
+### T14. LASSO comparativo de métodos visuales
+
+**Script:** `scripts/04_regresion.py`
+**Variable dependiente:** `log(sobre_demanda_j)` — log del ratio demanda/matrícula
+**Input:** `colegios_features_imputed.geojson` + outputs de T10, T11, T12
+**Outputs:** `reports/lasso_comparativa.csv` · `reports/lasso_M4_coefs.csv`
+
+**Por que LASSO y no OLS:** N=301, p_max=17. LASSO (Tibshirani 1996) penaliza coeficientes
+pequeños a exactamente cero, produciendo selección automática de features y manejando
+multicolinealidad (las proporciones Cityscapes suman 1).
+
+**Controles (M0):** `puntaje_icfes_promedio` (media 2020/2022/2023) · `tasa_pobreza_monetaria` ·
+`ingreso_percapita_promedio` · `dist_sitp_m` · `pct_no_oficial` · `hurto_personas` · `homicidios`
+
+**Resultados (LassoCV, k=5):**
+
+| Modelo | p_in | Activas | λ* | R²_adj | RMSE_cv |
+|---|---|---|---|---|---|
+| M0 — Baseline | 7 | 0 | 0.0139 | −0.024 | 0.088 |
+| **M1 — NMF** | **15** | **9** | **0.0038** | **0.044** | **0.087** |
+| M2 — Cityscapes | 13 | 4 | 0.0056 | −0.014 | 0.088 |
+| M3 — CLIP | 11 | 0 | 0.0139 | −0.038 | 0.088 |
+| M4 — Combinado | 17 | 0 | 0.0139 | −0.060 | 0.088 |
+
+**Features seleccionadas por M1 (9):**
+`topic_2` (−) · `pct_no_oficial` (+) · `topic_1` (+) · `puntaje_icfes_promedio` (+) ·
+`topic_6` (−) · `hurto_personas` (+) · `dist_sitp_m` (−) · `topic_7` (−) · `ingreso_percapita_promedio` (+)
+
+**Interpretación:** Los tópicos visuales NMF 1, 2, 6 y 7 tienen señal sobre sobredemanda
+incluso controlando por calidad académica, pobreza, accesibilidad y competencia privada.
+Cityscapes y CLIP no sobreviven la penalización LASSO — la señal visual está capturada
+en los patrones latentes VGG19+NMF, no en proporciones semánticas ni índices perceptuales.
+
+**Pendiente:** identificar qué representan visualmente topic_1, topic_2, topic_6 y topic_7
+(inspección de imágenes con peso alto en cada tópico).

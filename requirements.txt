@@ -10,5 +10,6 @@ torchvision
 scikit-learn
 Pillow
 tqdm
+statsmodels
 # CLIP no está en PyPI — el setup.ps1 lo instala desde GitHub:
 # pip install git+https://github.com/openai/CLIP.git
