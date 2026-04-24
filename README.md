@@ -569,38 +569,43 @@ de UPZ (pobreza, ingreso) que varían fuertemente por zona.
 
 ---
 
-### T14. LASSO comparativo de métodos visuales
+### T14. Comparativa de estimadores y métodos visuales
 
 **Script:** `scripts/04_regresion.py`
 **Variable dependiente:** `log(sobre_demanda_j)` — log del ratio demanda/matrícula
 **Input:** `colegios_features_imputed.geojson` + outputs de T10, T11, T12
-**Outputs:** `reports/lasso_comparativa.csv` · `reports/lasso_M4_coefs.csv`
-
-**Por que LASSO y no OLS:** N=301, p_max=17. LASSO (Tibshirani 1996) penaliza coeficientes
-pequeños a exactamente cero, produciendo selección automática de features y manejando
-multicolinealidad (las proporciones Cityscapes suman 1).
+**Outputs:** `reports/comparativa_estimadores.csv` · `reports/mejores_coefs.csv`
 
 **Controles (M0):** `puntaje_icfes_promedio` (media 2020/2022/2023) · `tasa_pobreza_monetaria` ·
-`ingreso_percapita_promedio` · `dist_sitp_m` · `pct_no_oficial` · `hurto_personas` · `homicidios`
+`ingreso_percapita_promedio` · `dist_sitp_m` · `pct_no_oficial` · `hurto_personas` · `homicidios` ·
+`n_oficiales_localidad` (capacidad pública en la misma localidad) · `estrato_2` ... `estrato_6` (base = estrato 1)
 
-**Resultados (LassoCV, k=5):**
+**Estimadores comparados:** OLS · Ridge · LASSO · ElasticNet — todos con Pipeline(StandardScaler) para evitar data leakage en CV k=5.
 
-| Modelo | p_in | Activas | λ* | R²_adj | RMSE_cv |
+**Resultados — mejor combinación por RMSE_cv:**
+
+| Modelo | Estimador | p_in | Activas | R²_adj | RMSE_cv |
 |---|---|---|---|---|---|
-| M0 — Baseline | 7 | 0 | 0.0139 | −0.024 | 0.088 |
-| **M1 — NMF** | **15** | **9** | **0.0038** | **0.044** | **0.087** |
-| M2 — Cityscapes | 13 | 4 | 0.0056 | −0.014 | 0.088 |
-| M3 — CLIP | 11 | 0 | 0.0139 | −0.038 | 0.088 |
-| M4 — Combinado | 17 | 0 | 0.0139 | −0.060 | 0.088 |
+| **M1 — NMF** | **ElasticNet** | **21** | **9** | **0.073** | **0.0869** |
+| M1 — NMF | Lasso | 21 | 9 | 0.071 | 0.0869 |
+| M0–M4 | OLS/Ridge | — | — | 0.13–0.20 | 0.138–0.156 |
 
-**Features seleccionadas por M1 (9):**
-`topic_2` (−) · `pct_no_oficial` (+) · `topic_1` (+) · `puntaje_icfes_promedio` (+) ·
-`topic_6` (−) · `hurto_personas` (+) · `dist_sitp_m` (−) · `topic_7` (−) · `ingreso_percapita_promedio` (+)
+OLS y Ridge tienen RMSE_cv ~0.14–0.16 — peores fuera de muestra por sobreajuste (N=301, p hasta 23). LASSO y ElasticNet generalizan mejor.
 
-**Interpretación:** Los tópicos visuales NMF 1, 2, 6 y 7 tienen señal sobre sobredemanda
-incluso controlando por calidad académica, pobreza, accesibilidad y competencia privada.
-Cityscapes y CLIP no sobreviven la penalización LASSO — la señal visual está capturada
-en los patrones latentes VGG19+NMF, no en proporciones semánticas ni índices perceptuales.
+**Features seleccionadas por M1-ElasticNet (9):**
 
-**Pendiente:** identificar qué representan visualmente topic_1, topic_2, topic_6 y topic_7
-(inspección de imágenes con peso alto en cada tópico).
+| Variable | Coef | Tipo |
+|---|---|---|
+| `estrato_4` | +0.016 | Control |
+| `topic_1` | +0.009 | Visual NMF |
+| `topic_2` | −0.006 | Visual NMF |
+| `estrato_3` | −0.003 | Control |
+| `hurto_personas` | +0.002 | Control |
+| `pct_no_oficial` | +0.002 | Control |
+| `puntaje_icfes_promedio` | −0.002 | Control |
+| `estrato_5` | −0.002 | Control |
+| `topic_6` | −0.001 | Visual NMF |
+
+**Interpretación:** topic_1 (+) y topic_2 (−) son los tópicos visuales con mayor señal. El estrato_4 tiene el coeficiente más alto — colegios en zonas de estrato 4 tienen mayor sobredemanda relativa. Cityscapes y CLIP no sobreviven ningún estimador — la señal visual está capturada en tópicos latentes NMF.
+
+**Pendiente:** identificar qué representan visualmente topic_1, topic_2 y topic_6 (inspección de imágenes con peso alto en cada tópico).

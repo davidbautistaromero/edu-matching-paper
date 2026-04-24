@@ -1,6 +1,0 @@
-﻿modelo,n_features,R2_adj,RMSE_cv,n_obs,features
-M0 — Línea base,6,0.9724,0.093,248,"log_matricula, puntaje_2023, tasa_pobreza_monetaria, ingreso_percapita_promedio, dist_transmilenio_m, pct_no_oficial"
-M1 — NMF,14,0.9728,0.0937,248,"log_matricula, puntaje_2023, tasa_pobreza_monetaria, ingreso_percapita_promedio, dist_transmilenio_m, pct_no_oficial, topic_1, topic_2, topic_3, topic_4, topic_5, topic_6, topic_7, topic_8"
-M2 — Cityscapes,12,0.9727,0.0925,248,"log_matricula, puntaje_2023, tasa_pobreza_monetaria, ingreso_percapita_promedio, dist_transmilenio_m, pct_no_oficial, infraestructura_vial, edificacion, cerramiento, vegetacion, vehiculos, mobiliario_urbano"
-M3 — CLIP,10,0.9726,0.0924,248,"log_matricula, puntaje_2023, tasa_pobreza_monetaria, ingreso_percapita_promedio, dist_transmilenio_m, pct_no_oficial, mantenimiento, vegetacion_percibida, accesibilidad, seguridad_percibida"
-M4 — Combinado,16,0.9726,0.0933,248,"log_matricula, puntaje_2023, tasa_pobreza_monetaria, ingreso_percapita_promedio, dist_transmilenio_m, pct_no_oficial, infraestructura_vial, edificacion, cerramiento, vegetacion, vehiculos, mobiliario_urbano, mantenimiento, vegetacion_percibida, accesibilidad, seguridad_percibida"

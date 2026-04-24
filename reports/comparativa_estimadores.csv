@@ -1,0 +1,21 @@
+﻿modelo,estimador,p_in,activas,R2_adj,RMSE_cv,hiperparametro
+M1 - NMF,Lasso,21,9,0.071,0.0869,alpha=0.0060359
+M1 - NMF,ElasticNet,21,9,0.073,0.0869,alpha=0.056291 l1=0.10
+M4 - CS+CLIP,Lasso,23,0,-0.083,0.0881,alpha=0.0227248
+M4 - CS+CLIP,ElasticNet,23,0,-0.083,0.0881,alpha=0.227248 l1=0.10
+M3 - CLIP,ElasticNet,17,0,-0.0601,0.0882,alpha=0.227248 l1=0.10
+M3 - CLIP,Lasso,17,0,-0.0601,0.0882,alpha=0.0227248
+M2 - Cityscapes,Lasso,19,0,-0.0676,0.0882,alpha=0.0227248
+M2 - Cityscapes,ElasticNet,19,0,-0.0676,0.0882,alpha=0.227248 l1=0.10
+M0 - Controles,ElasticNet,13,0,-0.0453,0.0883,alpha=0.227248 l1=0.10
+M0 - Controles,Lasso,13,0,-0.0453,0.0883,alpha=0.0227248
+M1 - NMF,OLS,21,21,0.1994,0.1381,-
+M1 - NMF,Ridge,21,21,0.1768,0.1402,alpha=10
+M0 - Controles,OLS,13,13,0.1484,0.1485,-
+M0 - Controles,Ridge,13,13,0.1283,0.1487,alpha=10
+M3 - CLIP,OLS,17,17,0.1739,0.1501,-
+M3 - CLIP,Ridge,17,17,0.1526,0.1503,alpha=10
+M2 - Cityscapes,Ridge,19,19,0.1318,0.1533,alpha=10
+M4 - CS+CLIP,Ridge,23,23,0.1416,0.1543,alpha=10
+M2 - Cityscapes,OLS,19,19,0.1533,0.1549,-
+M4 - CS+CLIP,OLS,23,23,0.1625,0.1564,-
