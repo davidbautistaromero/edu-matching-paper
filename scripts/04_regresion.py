@@ -14,10 +14,13 @@ Ejecutar desde cualquier directorio:
 # IMPORTACIONES
 # =============================================================================
 
+import datetime
+import json
 import logging
 from pathlib import Path
 
 import geopandas as gpd
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import ElasticNetCV, LassoCV, LinearRegression, RidgeCV
@@ -37,6 +40,7 @@ CLIP_PATH     = r'C:\paper-AI\data\images\clip\gsv_clip_establecimiento.parquet'
 OUT_DIR        = r'C:\paper-AI\reports'
 OUT_TABLE_PATH = r'C:\paper-AI\reports\comparativa_estimadores.csv'
 OUT_COEFS_PATH = r'C:\paper-AI\reports\mejores_coefs.csv'
+MODELS_DIR     = r'C:\paper-AI\models'
 
 DEPVAR_RAW = 'sobre_demanda_j'
 DEPVAR     = 'log_sobredemanda'
@@ -277,8 +281,9 @@ def main():
         ('M4', 'CS+CLIP',    CS_FEATURES + CLIP_FEATURES),
     ]
 
-    filas     = []
-    todos_res = {}  # {(modelo_id, nombre_est): res}
+    filas      = []
+    todos_res  = {}   # {(modelo_id, nombre_est): res}
+    todos_pipes = {}  # {(modelo_id, nombre_est): fitted pipeline}
 
     for modelo_id, modelo_desc, features_vis in especificaciones:
         all_features = CONTROLES + features_vis
@@ -289,7 +294,8 @@ def main():
 
         for nombre_est, pipe in construir_pipelines().items():
             res = estimar(nombre_est, pipe, X, y)
-            todos_res[(modelo_id, nombre_est)] = res
+            todos_res[(modelo_id, nombre_est)]   = res
+            todos_pipes[(modelo_id, nombre_est)] = pipe
 
             log.info(f'  [{nombre_est:<11}]  R2_adj={res["r2_adj"]:.4f}  '
                      f'RMSE_cv={res["rmse_cv"]:.4f}  '
@@ -359,6 +365,30 @@ def main():
     log.info(f'  Features activas ({len(activas_list)}): {", ".join(activas_list)}')
     log.info(f'  Outputs en: {OUT_DIR}')
     log.info('=' * 70)
+
+    # -------------------------------------------------------------------------
+    # Guardar modelo M1-ElasticNet
+    # -------------------------------------------------------------------------
+    models_dir = Path(MODELS_DIR)
+    models_dir.mkdir(parents=True, exist_ok=True)
+
+    best_pipe  = todos_pipes[('M1', 'ElasticNet')]
+    model_path = models_dir / 'elasticnet_M1.joblib'
+    joblib.dump(best_pipe, model_path)
+
+    m1_features = CONTROLES + NMF_FEATURES
+    meta = {
+        'model':    'ElasticNet M1-NMF',
+        'features': m1_features,
+        'target':   'sobre_demanda_j',
+        'n_obs':    len(df),
+        'fit_date': datetime.date.today().isoformat(),
+    }
+    meta_path = models_dir / 'elasticnet_M1_meta.json'
+    with open(meta_path, 'w', encoding='utf-8') as f:
+        json.dump(meta, f, indent=2, ensure_ascii=False)
+
+    print('Modelo guardado en: models/elasticnet_M1.joblib')
 
 
 # =============================================================================

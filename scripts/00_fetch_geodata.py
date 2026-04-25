@@ -8,6 +8,9 @@ Fuentes:
   - parques_bogota.geojson       : ubicación de parques en Bogotá (formato ESRI JSON, requiere 00_clean_parques.py)
 """
 
+import io
+import zipfile
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -30,9 +33,20 @@ SOURCES = {
         "https://datosabiertos.bogota.gov.co/dataset/1ca41514-3671-41d6-8c3b-a970dc8c24a7"
         "/resource/16288e7f-0345-4680-84aa-40e987706ea8/download/parque.json"
     ),
+    "manzana_estratificacion.geojson": (
+        "https://datosabiertos.bogota.gov.co/dataset/55467552-0af4-4524-a390-a2956035744e"
+        "/resource/29f2d770-bd5d-4450-9e95-8737167ba12f/download/manzanaestratificacion.json"
+    ),
 }
 
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "raw"
+
+SOURCES_ZIP = {
+    "upz": (
+        "https://datosabiertos.bogota.gov.co/dataset/30105648-f24f-41b3-8e88-50004c3bf972/resource/50a34bd9-ad86-405d-b0a8-8f98feb8ce3f/download/pensionadosupz_042023.zip",
+        OUTPUT_DIR / "upz"
+    ),
+}
 
 
 def make_session() -> requests.Session:
@@ -54,6 +68,27 @@ def main():
             response.raise_for_status()
             output_path.write_bytes(response.content)
             print(f"  Guardado en: {output_path} ({output_path.stat().st_size / 1024:.1f} KB)")
+
+        for name, (url, target_dir) in SOURCES_ZIP.items():
+            target_dir.mkdir(parents=True, exist_ok=True)
+            print(f"Descargando {name}.zip ...")
+            response = session.get(url, timeout=120)
+            response.raise_for_status()
+            with zipfile.ZipFile(io.BytesIO(response.content)) as zf:
+                zf.extractall(target_dir)
+            # Aplanar subcarpetas y renombrar todos los archivos a upz.*
+            all_files = [f for f in target_dir.rglob("*") if f.is_file()]
+            for f in all_files:
+                new_name = target_dir / f"upz{f.suffix}"
+                f.rename(new_name)
+            # Eliminar subdirectorios vacíos que hayan quedado
+            for d in sorted(target_dir.rglob("*"), reverse=True):
+                if d.is_dir():
+                    try:
+                        d.rmdir()
+                    except OSError:
+                        pass
+            print(f"  Extraído en: {target_dir} (archivos renombrados a upz.*)")
 
 
 if __name__ == "__main__":

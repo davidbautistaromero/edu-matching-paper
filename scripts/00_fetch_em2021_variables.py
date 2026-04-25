@@ -29,9 +29,32 @@ Tabla 2 — Variables adicionales (resource ba44798f):
     N_deficit_cualitativo   → déficit cualitativo de vivienda (0/1)
     N_deficit_habitacional  → déficit habitacional total (0/1)
 
+Tabla 3 — Personas en edad escolar (nivel persona, mismo CSV que Tabla 1):
+  Descarga: mismo CSV completo vía URL directa (streaming)
+  Columnas seleccionadas (demografía DBF_MTP_258_1 + educación DBF_MTP_258_4):
+    DIRECTORIO  → llave de vivienda / cruce con encuesta principal
+    ORDEN       → orden de la persona dentro del hogar
+    NPCEP4      → edad en años (demografía)
+    NPCHP2      → ¿estudia actualmente? 1=Sí 2=No
+    NPCHP6      → nivel en el que está matriculado
+    NPCHP12     → tipo de institución: 1=oficial, 2=no oficial
+  Filtros:
+    NPCHP2 == '1'   (estudia actualmente)
+    NPCHP12 == '1'  (institución oficial)
+    NPCEP4 numérico entre 5 y 17 inclusive
+  Cruce con Tabla 1 para obtener COD_UPZ_GRUPO, COD_LOCALIDAD, ESTRATO2021, FEX_C
+  Agregación a nivel hogar (DIRECTORIO):
+    DIRECTORIO                  → identificador del hogar
+    COD_UPZ_GRUPO               → UPZ (primer valor del hogar)
+    COD_LOCALIDAD               → localidad (primer valor del hogar)
+    ESTRATO2021                 → estrato (primer valor del hogar)
+    FEX_C                       → factor de expansión (primer valor del hogar)
+    n_hijos_oficial             → conteo de hijos en institución oficial
+
 Outputs:
   data/raw/em2021_encuesta_principal.csv
   data/raw/em2021_variables_adicionales.csv
+  data/raw/em2021_familias_escolar.csv
 
 Fuente: https://datosabiertos.bogota.gov.co/dataset/encuesta-multiproposito-2021-sdp
 """
@@ -83,6 +106,17 @@ VARS_COLS = [
 VARS_OUT = RAW_DIR / "em2021_variables_adicionales.csv"
 
 PAGE_SIZE = 10_000
+
+# Tabla 3 — personas en edad escolar (mismo CSV que Tabla 1)
+PERSONAS_COLS = [
+    "DIRECTORIO",  # llave de vivienda
+    "ORDEN",       # orden de la persona en el hogar
+    "NPCEP4",      # edad en años (demografía)
+    "NPCHP2",      # ¿estudia actualmente? 1=Sí 2=No
+    "NPCHP6",      # nivel matriculado
+    "NPCHP12",     # tipo institución: 1=oficial, 2=no oficial
+]
+FAMILIAS_OUT = RAW_DIR / "em2021_familias_escolar.csv"
 
 
 # ── Tabla 1: encuesta principal ───────────────────────────────────────────────
@@ -217,13 +251,117 @@ def fetch_variables_adicionales() -> None:
     print(f"  Guardado: {VARS_OUT}  ({len(df):,} filas, {len(df.columns)} columnas, {size_mb:.1f} MB)")
 
 
+# ── Tabla 3: personas en edad escolar en institución oficial ──────────────────
+
+def fetch_personas_escolar() -> None:
+    """
+    Reutiliza el mismo CSV de la encuesta principal (streaming) para extraer
+    columnas de demografía y educación a nivel persona.  Filtra niños 5-17 años
+    que estudian actualmente en institución oficial, cruza con
+    em2021_encuesta_principal.csv y agrega a nivel hogar (DIRECTORIO).
+    """
+    print("\nDescargando familias con hijos en edad escolar (streaming + filtro en memoria)...")
+    resp = requests.get(ENCUESTA_URL, timeout=300, stream=True)
+    resp.raise_for_status()
+
+    total = int(resp.headers.get("content-length", 0))
+    if total:
+        print(f"  Tamaño total: {total/1e6:.1f} MB")
+
+    buf = io.BytesIO()
+    downloaded = 0
+    for chunk in resp.iter_content(chunk_size=2 * 1024 * 1024):
+        buf.write(chunk)
+        downloaded += len(chunk)
+        if total:
+            print(f"  Descargados {downloaded/1e6:.1f} / {total/1e6:.1f} MB...", end="\r")
+    print(f"\n  Descarga completa: {downloaded/1e6:.1f} MB")
+
+    buf.seek(0)
+
+    chunks_df = []
+    cols_to_keep = None
+    missing = []
+    total_rows = 0
+
+    for chunk in pd.read_csv(
+        buf,
+        sep=",",
+        encoding="latin-1",
+        dtype=str,
+        low_memory=False,
+        chunksize=50_000,
+    ):
+        if cols_to_keep is None:
+            print(f"  Columnas en el archivo: {len(chunk.columns)}")
+            col_map = {c.strip('"').upper(): c for c in chunk.columns}
+            cols_to_keep = []
+            for want in PERSONAS_COLS:
+                match = col_map.get(want.upper())
+                if match:
+                    cols_to_keep.append(match)
+                else:
+                    missing.append(want)
+            if missing:
+                print(f"  ⚠ Columnas no encontradas: {missing}")
+            if not cols_to_keep:
+                print("  ✗ Sin columnas válidas. Verifica los nombres en el diccionario.")
+                return
+
+        filtered = chunk[cols_to_keep].copy()
+        filtered.columns = [c.strip('"').upper() for c in filtered.columns]
+        chunks_df.append(filtered)
+        total_rows += len(filtered)
+        print(f"  Procesadas {total_rows:,} filas...", end="\r")
+
+    print()
+    df = pd.concat(chunks_df, ignore_index=True)
+
+    # ── Filtros ───────────────────────────────────────────────────────────────
+    df = df[df["NPCHP2"].str.strip() == "1"]    # estudia actualmente
+    df = df[df["NPCHP12"].str.strip() == "1"]   # institución oficial
+    df["NPCEP4_num"] = pd.to_numeric(df["NPCEP4"], errors="coerce")
+    df = df[df["NPCEP4_num"].between(5, 17)]
+    print(f"  Filas tras filtros (5-17 años, estudia, oficial): {len(df):,}")
+
+    # ── Cruce con encuesta principal ──────────────────────────────────────────
+    enc = pd.read_csv(
+        ENCUESTA_OUT,
+        dtype=str,
+        usecols=["DIRECTORIO", "COD_UPZ_GRUPO", "COD_LOCALIDAD", "ESTRATO2021", "NVCBP11AA", "FEX_C"],
+    )
+    df = df.merge(enc, on="DIRECTORIO", how="left")
+
+    fex_missing = df["FEX_C"].isna().sum()
+    if fex_missing:
+        print(f"  ⚠ {fex_missing:,} filas sin FEX_C tras el cruce")
+
+    df["FEX_C"] = pd.to_numeric(df["FEX_C"], errors="coerce")
+
+    # ── Agregación a nivel hogar ──────────────────────────────────────────────
+    agg = df.groupby("DIRECTORIO", dropna=False).agg(
+        COD_UPZ_GRUPO=("COD_UPZ_GRUPO", "first"),
+        COD_LOCALIDAD=("COD_LOCALIDAD", "first"),
+        ESTRATO2021=("ESTRATO2021", "first"),
+        NVCBP11AA=("NVCBP11AA", "first"),
+        FEX_C=("FEX_C", "first"),
+        n_hijos_oficial=("DIRECTORIO", "count"),
+    ).reset_index()
+
+    agg.to_csv(FAMILIAS_OUT, index=False, encoding="utf-8")
+    size_mb = FAMILIAS_OUT.stat().st_size / 1e6
+    print(f"  Guardado: {FAMILIAS_OUT}")
+    print(f"  {len(agg):,} hogares con hijos en institución oficial | {size_mb:.2f} MB")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     fetch_encuesta_principal()
     fetch_variables_adicionales()
-    print("\n✓ Listo. Ambos archivos en data/raw/")
+    fetch_personas_escolar()
+    print("\n✓ Listo. Archivos en data/raw/")
 
 
 if __name__ == "__main__":

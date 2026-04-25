@@ -42,7 +42,13 @@ paper-AI/
 │   │   ├── estaciones_transmilenio.geojson
 │   │   ├── paraderos_sitp.geojson
 │   │   ├── parques_bogota.geojson
-│   │   └── delitos_alto_impacto.geojson
+│   │   ├── delitos_alto_impacto.geojson
+│   │   ├── em2021_familias_escolar.csv    <- Hogares con hijos en colegio oficial, estrato real 1-6
+│   │   ├── poblacion-localidad-upz-bogota-2018-2024.xlsx
+│   │   ├── manzana_estratificacion.geojson <- Estrato por manzana (Datos Abiertos Bogotá)
+│   │   └── upz/
+│   │       ├── upz.shp                    <- Polígonos UPZ Bogotá
+│   │       └── upz.*                      <- Archivos shapefile auxiliares
 │   ├── processed/                  <- Intermedios limpios, output de scripts 00_*
 │   │   ├── colegios_dataset.geojson
 │   │   ├── saber_bogota_merged.geojson
@@ -52,9 +58,14 @@ paper-AI/
 │   │   ├── sitp_clean.geojson
 │   │   ├── parques_clean.geojson
 │   │   ├── delitos_por_localidad.csv
-│   │   └── competencia_privada_localidad.csv
+│   │   ├── competencia_privada_localidad.csv
+│   │   ├── poblacion_upz_2024.parquet     <- Población <18 años por UPZ (DANE 2024)
+│   │   ├── familias_ubicadas.parquet      <- 13,568 familias con lat/lon por manzana y estrato
+│   │   ├── familias_distancias.parquet    <- Matriz Haversine (13,568 × 303) en km
+│   │   └── utilidades_familias.parquet   <- Utilidades u_ij completas (float32)
 │   ├── primary/                    <- Dataset maestro, output de 01_build_dataset.py
-│   │   └── colegios_features.geojson
+│   │   ├── colegios_features.geojson
+│   │   └── preferencias_familias.parquet  <- Rankings top-20 por familia (choice set = localidad)
 │   └── images/
 │       ├── gsv/                    <- Imágenes Google Street View (558 sedes × 10 headings)
 │       │   ├── {id_establecimiento}/
@@ -76,12 +87,14 @@ paper-AI/
 │   ├── em2021_diccionario.ods
 │   └── em2021_variablesadicionales_diccionario.ods
 ├── models/
-│   └── regretnet/                  <- Arquitectura y pesos del modelo RegretNet
+│   ├── regretnet/                  <- Arquitectura y pesos del modelo RegretNet
+│   └── elasticnet_M1.joblib           <- Modelo ElasticNet M1-NMF entrenado (gitignored)
 ├── notebooks/
 │   └── 01_eda.ipynb                <- Analisis exploratorio de datos
 ├── reports/
 │   ├── figures/
-│   │   └── eda/                    <- Figuras del analisis exploratorio (8 figuras)
+│   │   ├── eda/                    <- Figuras del analisis exploratorio (8 figuras)
+│   │   └── mapa_familias_simuladas.png    <- Familias simuladas por estrato y colegios oficiales
 │   └── paper/                      <- Documento final
 ├── scripts/
 │   ├── 00_fetch_geodata.py         <- Descarga geodatos SED, ICFES y parques
@@ -98,11 +111,14 @@ paper-AI/
 │   ├── 00_analyze_mapillary_colegios.py <- Catalogo Mapillary y mapas de cobertura
 │   ├── 00_download_mapillary_colegios.py <- Descarga imágenes Mapillary
 │   ├── 00_download_gsv_colegios.py <- Descarga imágenes Google Street View (fuente principal)
+│   ├── 00_fetch_poblacion_upz.py      <- Limpia Excel población DANE por UPZ
 │   ├── 01_build_dataset.py         <- Integra todas las fuentes -> primary/
 │   ├── 01_mapa_cobertura_gsv.py    <- Mapa de cobertura GSV
 │   ├── 02_extract_embeddings.py    <- Extrae embeddings VGG19 por imagen (512d, sin agregar)
 │   ├── 02a_diagnose_embeddings.py  <- Diagnóstico de calidad + selección d PCA (figura)
 │   ├── 03_lda_topics.py            <- PCA(68d) + LDA sobre imágenes -> tópicos por establecimiento
+│   ├── 05_simular_distancias.py       <- Ubica familias en manzana por estrato + Haversine
+│   ├── 06_preferencias.py             <- Utilidades u_ij + rankings por localidad
 │   ├── gsv_config.py               <- Parámetros GSV (modo prueba, headings, resolución)
 │   └── mapillary_filtros.py        <- Parámetros de selección Mapillary
 ├── requirements.txt
@@ -609,3 +625,109 @@ OLS y Ridge tienen RMSE_cv ~0.14–0.16 — peores fuera de muestra por sobreaju
 **Interpretación:** topic_1 (+) y topic_2 (−) son los tópicos visuales con mayor señal. El estrato_4 tiene el coeficiente más alto — colegios en zonas de estrato 4 tienen mayor sobredemanda relativa. Cityscapes y CLIP no sobreviven ningún estimador — la señal visual está capturada en tópicos latentes NMF.
 
 **Pendiente:** identificar qué representan visualmente topic_1, topic_2 y topic_6 (inspección de imágenes con peso alto en cada tópico).
+
+---
+
+## Pipeline de simulación
+
+### S1. Familias con hijos en colegio oficial — EM2021
+
+**Script:** `scripts/00_fetch_em2021_variables.py` (función `fetch_personas_escolar`)
+**Input:** CSV completo EM2021 (1.25 GB, descargado en streaming)
+**Output:** `data/raw/em2021_familias_escolar.csv`
+
+Filtra personas de 5-17 años que estudian en institución oficial (NPCHP2=1, NPCHP12=1),
+agrega a nivel hogar (DIRECTORIO) y cruza con encuesta principal para traer UPZ, localidad
+y estrato real (`NVCBP11AA` — estrato para tarifa de servicios públicos, 1-6).
+
+**Resultado:** 21,643 hogares con hijos en colegio oficial.
+
+---
+
+### S2. Ubicación de familias en manzana por estrato
+
+**Script:** `scripts/05_simular_distancias.py`
+**Inputs:** `em2021_familias_escolar.csv` · `upz/upz.shp` · `manzana_estratificacion.geojson` · `colegios_features.geojson`
+**Outputs:** `familias_ubicadas.parquet` · `familias_distancias.parquet`
+
+Para cada familia:
+1. Identifica su UPZ de residencia
+2. Selecciona aleatoriamente una manzana dentro de su UPZ que tenga el mismo estrato real (NVCBP11AA)
+   - Si no hay manzanas del estrato exacto: usa el estrato más cercano disponible
+3. Toma un punto aleatorio dentro de la manzana (rejection sampling en el bbox del polígono)
+4. Calcula distancias Haversine a los 303 colegios con embeddings NMF
+
+**Resultado:** 13,568 familias ubicadas (87.5% de match — el 12.5% restante son UPZs 8xx periféricas sin polígono individual).
+Matriz de distancias: shape (13,568 × 303), min=0.01 km, max=32.7 km.
+
+---
+
+### S3. Modelo de utilidad y rankings de preferencia
+
+**Script:** `scripts/06_preferencias.py`
+**Inputs:** `models/elasticnet_M1.joblib` · `familias_ubicadas.parquet` · `familias_distancias.parquet`
+**Outputs:** `data/primary/preferencias_familias.parquet` · `data/processed/utilidades_familias.parquet`
+
+**Modelo de utilidad (Random Utility Model):**
+
+```
+u_ij = β·X_j  −  α_s · ln(1 + d_ij)  +  ε_ij
+```
+
+| Componente | Descripción |
+|---|---|
+| `β·X_j` | Score de calidad predicho por ElasticNet M1 — homogéneo entre estratos |
+| `α_s · ln(1+d_ij)` | Penalización distancia heterogénea por estrato |
+| `ε_ij ~ Gumbel(0,1)` | Ruido logístico (seed=42) |
+
+**Penalización por distancia (Hastings et al. 2009):**
+
+Función power law calibrada con ratio α₁/α₆ = 3x:
+
+```
+α_s = 0.30 / s^0.613
+```
+
+| Estrato | α_s |
+|---|---|
+| 1 | 0.300 |
+| 2 | 0.196 |
+| 3 | 0.153 |
+| 4 | 0.128 |
+| 5 | 0.112 |
+| 6 | 0.100 |
+
+**Choice set:** cada familia elige solo entre colegios de su localidad.
+Excepción: La Candelaria (localidad 17) puede elegir también en localidades 3 (Santa Fe), 14 (Los Mártires) y 15 (Antonio Nariño).
+
+**Resultado:** Rankings top-20 por familia. Choice set promedio: 23.3 colegios.
+
+---
+
+## Referencias
+
+### Mecanismos de matching y school choice
+- Abdulkadiroğlu, A. & Sönmez, T. (2003). School Choice: A Mechanism Design Approach. *American Economic Review*, 93(3), 729–747.
+- Gale, D. & Shapley, L. (1962). College Admissions and the Stability of Marriage. *American Mathematical Monthly*, 69(1), 9–15.
+- Hastings, J., Kane, T. & Staiger, D. (2009). Heterogeneous Preferences and the Efficacy of Public School Choice. *NBER Working Paper* 12145.
+- Burgess, S., Greaves, E., Vignoles, A. & Wilson, D. (2015). What Parents Want: School Preferences and School Choice. *Economic Journal*, 125(587), 1262–1289.
+- Gallego, F. & Hernando, A. (2009). School Choice in Chile: Looking at the Demand Side. *Pontificia Universidad Católica de Chile*, Working Paper.
+
+### Mecanismos aprendidos / RegretNet
+- Dütting, P., Feng, Z., Narasimhan, H., Parkes, D. & Ravindranath, S. (2019/2023). Optimal Auctions through Deep Learning. *ICML 2019 / Journal of the ACM*, 70(1).
+
+### Features visuales urbanas
+- Naik, N., Raskar, R. & Hidalgo, C. (2017). Computer Vision Uncovers Predictors of Physical Urban Change. *PNAS*, 114(29), 7571–7576.
+- Dubey, A., Naik, N., Parikh, D., Raskar, R. & Hidalgo, C. (2016). Deep Learning the City: Quantifying Urban Perception at a Global Scale. *ECCV 2016*.
+- Suel, E., Bhatt, S., Brauer, M., Flaxman, S. & Bhatt, S. (2019). Measuring Individual Wellbeing from Urban Street Images. *Scientific Reports*, 9, 15851.
+
+### Visión computacional y embeddings
+- Radford, A. et al. (2021). Learning Transferable Visual Models From Natural Language Supervision. *ICML 2021*.
+- Lee, D. & Seung, H. (2001). Algorithms for Non-negative Matrix Factorization. *NeurIPS 2000*.
+- Simonyan, K. & Zisserman, A. (2015). Very Deep Convolutional Networks for Large-Scale Image Recognition. *ICLR 2015* (VGG19).
+
+### Econometría
+- Tibshirani, R. (1996). Regression Shrinkage and Selection via the Lasso. *Journal of the Royal Statistical Society B*, 58(1), 267–288.
+- Zou, H. & Hastie, T. (2005). Regularization and Variable Selection via the Elastic Net. *Journal of the Royal Statistical Society B*, 67(2), 301–320.
+- Long, J. & Ervin, L. (2000). Using Heteroscedasticity Consistent Standard Errors in the Linear Regression Model. *The American Statistician*, 54(3), 217–224.
+- Einav, L. & Levin, J. (2010). Empirical Industrial Organization: A Progress Report. *Journal of Economic Perspectives*, 24(2), 145–162.

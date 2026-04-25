@@ -1,0 +1,29 @@
+{
+  "model": "ElasticNet M1-NMF",
+  "features": [
+    "puntaje_icfes_promedio",
+    "tasa_pobreza_monetaria",
+    "ingreso_percapita_promedio",
+    "dist_sitp_m",
+    "pct_no_oficial",
+    "hurto_personas",
+    "homicidios",
+    "n_oficiales_localidad",
+    "estrato_2",
+    "estrato_3",
+    "estrato_4",
+    "estrato_5",
+    "estrato_6",
+    "topic_1",
+    "topic_2",
+    "topic_3",
+    "topic_4",
+    "topic_5",
+    "topic_6",
+    "topic_7",
+    "topic_8"
+  ],
+  "target": "sobre_demanda_j",
+  "n_obs": 301,
+  "fit_date": "2026-04-25"
+}
