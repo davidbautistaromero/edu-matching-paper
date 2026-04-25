@@ -88,7 +88,7 @@ paper-AI/
 │   └── em2021_variablesadicionales_diccionario.ods
 ├── models/
 │   ├── regretnet/                  <- Arquitectura y pesos del modelo RegretNet
-│   └── elasticnet_M1.joblib           <- Modelo ElasticNet M1-NMF entrenado (gitignored)
+│   └── elasticnet_M1.joblib           <- Modelo Lasso M1-NMF entrenado (gitignored)
 ├── notebooks/
 │   └── 01_eda.ipynb                <- Analisis exploratorio de datos
 ├── reports/
@@ -602,13 +602,13 @@ de UPZ (pobreza, ingreso) que varían fuertemente por zona.
 
 | Modelo | Estimador | p_in | Activas | R²_adj | RMSE_cv |
 |---|---|---|---|---|---|
-| **M1 — NMF** | **ElasticNet** | **21** | **9** | **0.073** | **0.0869** |
+| **M1 — NMF** | **Lasso** | **21** | **9** | **0.073** | **0.0869** |
 | M1 — NMF | Lasso | 21 | 9 | 0.071 | 0.0869 |
 | M0–M4 | OLS/Ridge | — | — | 0.13–0.20 | 0.138–0.156 |
 
 OLS y Ridge tienen RMSE_cv ~0.14–0.16 — peores fuera de muestra por sobreajuste (N=301, p hasta 23). LASSO y ElasticNet generalizan mejor.
 
-**Features seleccionadas por M1-ElasticNet (9):**
+**Features seleccionadas por M1-Lasso (9):**
 
 | Variable | Coef | Tipo |
 |---|---|---|
@@ -676,7 +676,7 @@ u_ij = β·X_j  −  α_s · ln(1 + d_ij)  +  ε_ij
 
 | Componente | Descripción |
 |---|---|
-| `β·X_j` | Score de calidad predicho por ElasticNet M1 — homogéneo entre estratos |
+| `β·X_j` | Score de calidad predicho por Lasso M1 — homogéneo entre estratos |
 | `α_s · ln(1+d_ij)` | Penalización distancia heterogénea por estrato |
 | `ε_ij ~ Gumbel(0,1)` | Ruido logístico (seed=42) |
 
@@ -709,9 +709,12 @@ Excepción: La Candelaria (localidad 17) puede elegir también en localidades 3 
 ### Mecanismos de matching y school choice
 - Abdulkadiroğlu, A. & Sönmez, T. (2003). School Choice: A Mechanism Design Approach. *American Economic Review*, 93(3), 729–747.
 - Gale, D. & Shapley, L. (1962). College Admissions and the Stability of Marriage. *American Mathematical Monthly*, 69(1), 9–15.
-- Hastings, J., Kane, T. & Staiger, D. (2009). Heterogeneous Preferences and the Efficacy of Public School Choice. *NBER Working Paper* 12145.
-- Burgess, S., Greaves, E., Vignoles, A. & Wilson, D. (2015). What Parents Want: School Preferences and School Choice. *Economic Journal*, 125(587), 1262–1289.
-- Gallego, F. & Hernando, A. (2009). School Choice in Chile: Looking at the Demand Side. *Pontificia Universidad Católica de Chile*, Working Paper.
+
+### Preferencias y distancia en school choice
+- Hastings, J., Kane, T. & Staiger, D. (2009). Heterogeneous Preferences and the Efficacy of Public School Choice. *NBER Working Paper* 12145. [Fuente de α₀=0.30 y ratio α₁/α₆=3x]
+- Burgess, S., Greaves, E., Vignoles, A. & Wilson, D. (2015). What Parents Want: School Preferences and School Choice. *Economic Journal*, 125(587), 1262–1289. [Gradiente de distancia heterogéneo por estrato, especificación log-distancia]
+- Gallego, F. & Hernando, A. (2009). School Choice in Chile: Looking at the Demand Side. *Pontificia Universidad Católica de Chile*, Working Paper. [Contexto LatAm: restricción geográfica como principal determinante en familias de bajos ingresos]
+- Einav, L. & Levin, J. (2010). Empirical Industrial Organization: A Progress Report. *Journal of Economic Perspectives*, 24(2), 145–162. [Referencia para especificación log-log de parámetros heterogéneos]
 
 ### Mecanismos aprendidos / RegretNet
 - Dütting, P., Feng, Z., Narasimhan, H., Parkes, D. & Ravindranath, S. (2019/2023). Optimal Auctions through Deep Learning. *ICML 2019 / Journal of the ACM*, 70(1).
@@ -730,4 +733,3 @@ Excepción: La Candelaria (localidad 17) puede elegir también en localidades 3 
 - Tibshirani, R. (1996). Regression Shrinkage and Selection via the Lasso. *Journal of the Royal Statistical Society B*, 58(1), 267–288.
 - Zou, H. & Hastie, T. (2005). Regularization and Variable Selection via the Elastic Net. *Journal of the Royal Statistical Society B*, 67(2), 301–320.
 - Long, J. & Ervin, L. (2000). Using Heteroscedasticity Consistent Standard Errors in the Linear Regression Model. *The American Statistician*, 54(3), 217–224.
-- Einav, L. & Levin, J. (2010). Empirical Industrial Organization: A Progress Report. *Journal of Economic Perspectives*, 24(2), 145–162.
