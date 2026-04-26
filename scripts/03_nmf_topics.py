@@ -199,15 +199,11 @@ def main():
         df_img, df_est, topics_json, nmf = run_nmf(X_norm, df_raw, nombres, K)
 
         img_path = os.path.join(EMBEDDINGS_DIR, f'gsv_nmf_K{K}_images.parquet')
-        # Cast id_establecimiento a str para evitar bugs de merge downstream
-        # (el GeoJSON de colegios usa str; mezclar int64 con str rompe pd.merge)
         df_img['id_establecimiento'] = df_img['id_establecimiento'].astype(str)
         df_img.to_parquet(img_path, index=False)
         log.info(f'  Por imagen guardado:          {img_path}  {df_img.shape}')
 
         est_path = os.path.join(EMBEDDINGS_DIR, f'gsv_nmf_K{K}.parquet')
-        # Cast id_establecimiento a str para evitar bugs de merge downstream
-        # (el GeoJSON de colegios usa str; mezclar int64 con str rompe pd.merge)
         df_est['id_establecimiento'] = df_est['id_establecimiento'].astype(str)
         df_est.to_parquet(est_path, index=False)
         log.info(f'  Por establecimiento guardado: {est_path}  {df_est.shape}')
