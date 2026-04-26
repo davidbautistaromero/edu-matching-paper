@@ -1,0 +1,25 @@
+{
+  "N_estudiantes": 1000,
+  "M_colegios": 50,
+  "sigma": 1.0,
+  "seed": 42,
+  "alpha_hat": 0.087928,
+  "alpha_hat_pval": 0.0,
+  "s_bar": 2.2353,
+  "gamma_s": {
+    "1": 0.039335,
+    "2": 0.07867,
+    "3": 0.118006,
+    "4": 0.157341,
+    "5": 0.196676,
+    "6": 0.236011
+  },
+  "v_j_construccion": "residuo de OLS(log_sobredemanda ~ q_j_std), z-score",
+  "corr_v_j_q_j": 0.0,
+  "validacion_sesgo": {
+    "corr_estrato_vj_bias": 0.02953,
+    "corr_estrato_vj_true": 0.00426,
+    "corr_estrato_qj_bias": -0.0175,
+    "corr_estrato_qj_true": -0.02317
+  }
+}

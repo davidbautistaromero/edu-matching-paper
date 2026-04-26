@@ -1,0 +1,3 @@
+condicion,n_asignados,n_sin_asignar,eficiencia_q,equidad_corr,sesgo_visual,rank_medio,blocking_pairs,q_estrato_1,q_estrato_2,q_estrato_3,q_estrato_4,q_estrato_5,q_estrato_6
+BM,13568,0,258.7227,0.1926,0.0122,1.182,183,254.5349,257.5646,262.4524,263.9953,259.4202,253.5188
+DA,13568,0,258.7269,0.192,0.0101,1.19,0,254.541,257.5787,262.4366,263.9953,259.4202,253.5188

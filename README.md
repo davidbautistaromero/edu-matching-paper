@@ -704,6 +704,120 @@ Excepción: La Candelaria (localidad 17) puede elegir también en localidades 3 
 
 ---
 
+## Pipeline de matching
+
+Los scripts de matching comparten algoritmos a través del módulo `matching_utils.py` para
+evitar duplicación. Existen dos contextos de aplicación: datos reales y datos sintéticos.
+
+```
+scripts/
+├── matching_utils.py          ← módulo compartido: BM, DA, métricas
+├── 07_matching_bm_da.py       ← matching sobre datos reales (13,568 familias)
+├── 08_datos_sinteticos.py     ← genera población sintética calibrada (§5.3)
+└── 09_matching_sinteticos.py  ← matching sobre datos sintéticos (4 condiciones)
+```
+
+### M0. Módulo compartido — `matching_utils.py`
+
+Contiene las implementaciones de Boston Mechanism y Deferred Acceptance como funciones
+puras que reciben una **función de prioridad** `priority_fn(student_idx, school_id) → float`
+donde menor valor = mayor prioridad. Esta abstracción permite usar exactamente el mismo
+código en el contexto real (prioridad = distancia Haversine) y en el sintético
+(prioridad = lotería aleatoria).
+
+**Funciones principales:**
+
+| Función | Descripción |
+|---|---|
+| `boston_mechanism(pref_lists, cap, priority_fn)` | BM: aceptación irrevocable por ronda |
+| `deferred_acceptance(pref_lists, cap, priority_fn)` | DA/GS: provisional, strategyproof |
+| `count_blocking_pairs(assignment, ...)` | Cuenta pares (i,j) mutuamente preferibles |
+| `mean_rank_obtained(assignment, pref_lists)` | Posición media del colegio asignado |
+| `compute_metrics(assignment, ..., quality_col, visual_col)` | Todas las métricas juntas |
+
+---
+
+### M1. Matching sobre datos reales — `07_matching_bm_da.py`
+
+**Inputs:** `preferencias_familias.parquet` · `familias_ubicadas.parquet` · `familias_distancias.parquet` · `colegios_features_imputed.geojson`
+
+**Diseño:**
+- Capacidad = `round(matricula_total / 13)`, mínimo 5 — cohort anual estimado
+- Prioridad = distancia Haversine (réplica del criterio SED Bogotá)
+- Choice set = localidad (heredado de `06_preferencias.py`)
+
+**Outputs:** `data/results/matching_bm.parquet` · `data/results/matching_da.parquet` · `reports/matching_comparison.csv`
+
+**Resultados:**
+
+| Mecanismo | Asignados | Eficiencia q | corr(estrato, q) | corr(estrato, SD) | Rank medio | Blocking pairs |
+|---|---|---|---|---|---|---|
+| Boston (BM) | 13,568 (100%) | 258.72 | +0.193 | +0.012 | 1.18 | **183** |
+| DA (Gale-Shapley) | 13,568 (100%) | 258.73 | +0.192 | +0.010 | 1.19 | **0** ✓ |
+
+**Interpretación:** DA confirma 0 blocking pairs (estable por construcción). La diferencia
+de eficiencia y equidad es mínima porque la capacidad total (45,119 cupos) supera
+ampliamente la demanda (13,568 familias) — la competencia existe dentro de localidades
+pero casi todos obtienen su primera o segunda preferencia.
+
+---
+
+### M2. Datos sintéticos calibrados — `08_datos_sinteticos.py`
+
+Implementa la sección 5.3 del diseño metodológico: una población sintética donde las
+preferencias incorporan **sesgo visual explícito**, separado del componente de calidad.
+
+**Modelo de utilidad:**
+```
+CON sesgo: u_ij  = q_j_std + (α̂ + γ_s_i) · v_j + ε_ij
+SIN sesgo: u0_ij = q_j_std + ε_ij
+```
+
+**Construcción de v_j (índice visual):**
+```
+Paso 1: OLS  →  log(SD_j) = β₀ + β₁·q_j_std + e_j
+Paso 2: v_j_raw = e_j   (residuo = demanda no explicada por calidad)
+Paso 3: v_j = z-score(v_j_raw)     ⟹  corr(v_j, q_j) = 0.000 por construcción
+```
+
+**Parámetros calibrados:**
+
+| Parámetro | Valor | Fuente |
+|---|---|---|
+| `alpha_hat` (α̂) | 0.08793 (p≈0) | OLS `log(SD) ~ v_j` |
+| `gamma_s` | 0.039 → 0.236 (s=1→6) | `α̂ × (s / s̄)`, s̄=2.24 |
+| `sigma` (σ) | 1.0 | Calibrado para competencia real |
+| N estudiantes | 1,000 | Distribución real EM2021 |
+| M colegios | 50 | Muestra estratificada por cuartil q_j |
+
+**Outputs:** `sinteticos_colegios.parquet` · `sinteticos_estudiantes.parquet` · `sinteticos_preferencias.parquet` · `sinteticos_pref_sin_sesgo.parquet` · `sinteticos_utilidades.parquet` · `sinteticos_calibracion.json`
+
+**Validación:** `corr(estrato, v_j_top1)` pasa de 0.004 (sin sesgo) a 0.030 (con sesgo) — amplificación ×7 del sesgo visual en la primera preferencia por estrato.
+
+---
+
+### M3. Matching sobre datos sintéticos — `09_matching_sinteticos.py`
+
+Compara **4 condiciones experimentales** para aislar el efecto del mecanismo vs. el del
+sesgo en las preferencias. La **misma lotería de prioridad** se usa en las 4 condiciones.
+
+**Outputs:** 4 parquets de asignación · `sinteticos_matching_comparison.csv` · 2 figuras
+
+**Resultados:**
+
+| Condición | Eficiencia q | \|corr(estrato,q)\| | corr(estrato,v) | Rank medio | Blocking pairs |
+|---|---|---|---|---|---|
+| BM + sesgo | −0.313 | 0.008 | −0.012 | 7.5 | **444** |
+| BM + verdad | −0.313 | 0.001 | −0.001 | 7.8 | 422 |
+| DA + sesgo | −0.313 | 0.040 | **+0.047** | 12.0 | **0** ✓ |
+| DA + verdad | −0.313 | 0.015 | +0.026 | 12.7 | **0** ✓ |
+
+**Hallazgo principal:** DA garantiza 0 blocking pairs pero **amplifica el sesgo visual**
+(corr 0.026 → 0.047) porque respeta las preferencias declaradas — incluyendo el sesgo.
+Esto motiva directamente RegretNet con `FairnessPenalty` en la función de pérdida.
+
+---
+
 ## Referencias
 
 ### Mecanismos de matching y school choice
