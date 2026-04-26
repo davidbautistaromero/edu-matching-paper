@@ -67,6 +67,9 @@ features = meta["features"]
 
 gdf = gpd.read_file(COLEGIOS)
 nmf = pd.read_parquet(NMF_PATH)
+# Cast defensivo a str: desde 03_nmf_topics.py el parquet ya nace con
+# id_establecimiento como str, pero mantenemos el cast por si alguien
+# regenera el parquet manualmente saltándose el script. Cinturón de seguridad.
 gdf["id_establecimiento"] = gdf["id_establecimiento"].astype(str)
 nmf["id_establecimiento"] = nmf["id_establecimiento"].astype(str)
 df  = gdf.merge(nmf[["id_establecimiento"] + [c for c in nmf.columns if c.startswith("topic_")]],
