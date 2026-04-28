@@ -33,10 +33,13 @@ Output (data/processed/):
 
 import json
 import math
+import unicodedata
 import warnings
 import pandas as pd
 import numpy as np
+import geopandas as gpd
 from pathlib import Path
+from shapely.geometry import Point
 
 warnings.filterwarnings("ignore")
 
@@ -172,8 +175,54 @@ def build_colegios(path: Path) -> pd.DataFrame:
         "lon", "lat", "_geom",
     ]
     result = result[[c for c in cols if c in result.columns]]
+
+    # Asignar localidad via sjoin con poligonos oficiales (reemplaza string del CSV)
+    result = asignar_localidad_sjoin(result)
+
     print(f"  {len(result):,} establecimientos")
     return result
+
+
+def asignar_localidad_sjoin(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Reemplaza nombre_localidad del CSV por el nombre oficial del poligono
+    de localidades (Datos Abiertos Bogota). Usa sjoin nearest como fallback
+    para colegios que caigan fuera de los poligonos (rurales en borde).
+    """
+    loc_path = RAW / "localidades_bogota.geojson"
+    if not loc_path.exists():
+        print("  AVISO: localidades_bogota.geojson no encontrado, se mantiene nombre del CSV")
+        return df
+
+    print("  Asignando localidad via sjoin con poligonos oficiales...")
+    localidades = gpd.read_file(loc_path)[["LocNombre", "LocCodigo", "geometry"]].copy()
+    localidades["LocNombre"] = localidades["LocNombre"].str.title()   # USME -> Usme
+
+    # Crear GeoDataFrame de colegios
+    mask_valid = df["lon"].notna() & df["lat"].notna()
+    gdf_col = gpd.GeoDataFrame(
+        df[mask_valid].copy(),
+        geometry=[Point(lon, lat) for lon, lat in zip(df[mask_valid]["lon"], df[mask_valid]["lat"])],
+        crs="EPSG:4326"
+    )
+
+    # sjoin within: asigna localidad si el punto cae dentro del poligono
+    joined = gpd.sjoin(gdf_col, localidades, how="left", predicate="within")
+
+    # Fallback nearest para puntos fuera de poligonos (borde rural)
+    sin_loc = joined["LocNombre"].isna()
+    if sin_loc.any():
+        nearest = gpd.sjoin_nearest(gdf_col[sin_loc], localidades, how="left")
+        joined.loc[sin_loc, "LocNombre"] = nearest["LocNombre"].values
+        joined.loc[sin_loc, "LocCodigo"] = nearest["LocCodigo"].values
+        print(f"    {sin_loc.sum()} colegios asignados por nearest (borde)")
+
+    df = df.copy()
+    df.loc[mask_valid, "nombre_localidad"] = joined["LocNombre"].values
+    df.loc[mask_valid, "codigo_localidad"]  = joined["LocCodigo"].values
+    n_ok = df["nombre_localidad"].notna().sum()
+    print(f"    {n_ok} / {len(df)} colegios con localidad asignada via poligono")
+    return df
 
 
 # ── Paso 2: Saber 11 -> q_j ──────────────────────────────────────────────────
@@ -313,10 +362,17 @@ def join_delitos(df: pd.DataFrame) -> pd.DataFrame:
     """
     import unicodedata
 
+    # Mapeo de nombres del poligono oficial -> nombre en el CSV de delitos
+    LOCALIDAD_ALIAS = {
+        "CANDELARIA": "LA CANDELARIA",
+        "MARTIRES":   "LOS MARTIRES",
+    }
+
     def normalize_str(s):
         s = str(s).strip().upper()
         s = unicodedata.normalize("NFD", s)
-        return "".join(c for c in s if unicodedata.category(c) != "Mn")
+        s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+        return LOCALIDAD_ALIAS.get(s, s)
 
     print("Paso 8 - Uniendo delitos por localidad...")
     path = PROC / "delitos_por_localidad.csv"
@@ -351,6 +407,18 @@ def join_competencia_privada(df: pd.DataFrame) -> pd.DataFrame:
         s = str(s).strip().upper()
         s = unicodedata.normalize("NFD", s)
         return "".join(c for c in s if unicodedata.category(c) != "Mn")
+
+    # Mapeo de nombres del poligono oficial -> nombre en el CSV de competencia
+    LOCALIDAD_ALIAS = {
+        "CANDELARIA": "LA CANDELARIA",
+        "MARTIRES":   "LOS MARTIRES",
+    }
+
+    def normalize_str(s):
+        s = str(s).strip().upper()
+        s = unicodedata.normalize("NFD", s)
+        s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+        return LOCALIDAD_ALIAS.get(s, s)
 
     print("Paso 9 - Uniendo competencia sector privado por localidad...")
     path = PROC / "competencia_privada_localidad.csv"
@@ -417,6 +485,11 @@ def main():
 
     # Paso 7: distancias geograficas
     df = join_geo_controls(df)
+
+    # Excluir solo Sumapaz (zona rural sin cobertura EM2021 ni familias encuestadas)
+    n_antes = len(df)
+    df = df[~df["nombre_localidad"].isin(["Sumapaz"])].reset_index(drop=True)
+    print(f"  Sumapaz excluida: {n_antes - len(df)} establecimientos removidos")
 
     # Paso 8: delitos
     df = join_delitos(df)

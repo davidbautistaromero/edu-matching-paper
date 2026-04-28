@@ -137,14 +137,14 @@ if n_blanca > 0:
     handles.append(patch_blanca)
 if n_sin > 0:
     handles.append(patch_sin)
-ax.legend(handles=handles, loc="lower left", fontsize=10, framealpha=0.9)
+ax.legend(handles=handles, loc="lower left", fontsize=14, framealpha=0.9)
 
 n_validas = n_con
 ax.set_title(
     f"Cobertura Google Street View — Colegios Oficiales Bogotá\n"
     f"{n_validas}/{n_total} sedes con cobertura real ({n_validas/n_total*100:.1f}%) | "
     f"10 headings × sede | Total imágenes válidas: {n_validas * 10}",
-    fontsize=12, pad=14,
+    fontsize=17, pad=18,
 )
 ax.set_axis_off()
 

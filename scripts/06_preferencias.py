@@ -41,23 +41,9 @@ log = logging.getLogger(__name__)
 # ── Paths ─────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
 
-def _find_best_model(models_dir):
-    import glob
-    metas = glob.glob(str(models_dir / "*_meta.json"))
-    if not metas:
-        raise FileNotFoundError(f"No *_meta.json found in {models_dir}")
-    best_meta, best_rmse = None, float("inf")
-    for mp in metas:
-        with open(mp) as f:
-            m = json.load(f)
-        rmse = m.get("rmse_cv", float("inf"))
-        if rmse < best_rmse:
-            best_rmse, best_meta = rmse, mp
-    meta_path = Path(best_meta)
-    model_path = meta_path.parent / (meta_path.stem.replace("_meta", "") + ".joblib")
-    return model_path, meta_path
-
-MODEL_PATH, META_PATH = _find_best_model(ROOT / "models")
+# Modelo seleccionado: M1 NMF Ridge — mayor Spearman (0.466), ΔR²_adj=+0.040
+MODEL_PATH = ROOT / "models" / "ridge_m1.joblib"
+META_PATH  = ROOT / "models" / "ridge_m1_meta.json"
 COLEGIOS  = ROOT / "data" / "primary" / "colegios_features_imputed.geojson"
 NMF_PATH  = ROOT / "data" / "images" / "embeddings" / "gsv_nmf_K8.parquet"
 FAM_PATH  = ROOT / "data" / "processed" / "familias_expandidas.parquet"
@@ -99,6 +85,12 @@ df = gdf.merge(nmf[["id_establecimiento"] + [c for c in nmf.columns if c.startsw
 df["puntaje_icfes_promedio"] = df[["puntaje_2023", "punt_global_2022", "punt_global_2020"]].mean(axis=1)
 for k in range(2, 7):
     df[f"estrato_{k}"] = pd.to_numeric(df[f"pct_estrato_{k}"], errors="coerce")
+
+# Derivar indicadores binarios desde columnas categoricas del GeoJSON
+if "es_rural" not in df.columns:
+    df["es_rural"] = (df["zona"].astype(str).str.upper().str.strip() == "RURAL").astype(int)
+if "es_tecnico" not in df.columns:
+    df["es_tecnico"] = (df["caracter_media"].astype(str).str.upper().str.strip() == "TECNICO").astype(int)
 
 cap_loc = df.groupby("nombre_localidad")["matricula_total"].transform("sum")
 df["n_oficiales_localidad"] = (cap_loc - df["matricula_total"]).clip(lower=0)
@@ -244,5 +236,6 @@ out_rank = ROOT / "data" / "primary" / "preferencias_familias.parquet"
 
 rankings_df.to_parquet(out_rank)
 log.info(f"  preferencias_familias.parquet  ({out_rank.stat().st_size / 1e6:.1f} MB)")
+
 log.info(f"  utilidades_familias.parquet    ({out_util.stat().st_size / 1e6:.1f} MB)")
 log.info("Done.")

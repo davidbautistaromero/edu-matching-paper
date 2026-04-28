@@ -23,6 +23,7 @@ import geopandas as gpd
 import joblib
 import numpy as np
 import pandas as pd
+from scipy.stats import spearmanr
 from sklearn.linear_model import ElasticNetCV, LassoCV, LinearRegression, RidgeCV
 from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
@@ -47,8 +48,6 @@ DEPVAR     = 'log_sobredemanda'
 
 CONTROLES = [
     'puntaje_icfes_promedio',
-    'tasa_pobreza_monetaria',
-    'ingreso_percapita_promedio',
     'dist_sitp_m',
     'pct_no_oficial',
     'hurto_personas',
@@ -59,6 +58,8 @@ CONTROLES = [
     'estrato_4',
     'estrato_5',
     'estrato_6',
+    'es_rural',
+    'es_tecnico',
 ]
 
 NMF_FEATURES  = [f'topic_{i}' for i in range(1, 9)]
@@ -220,11 +221,14 @@ def estimar(nombre_est: str, pipeline: Pipeline,
         activas    = int(np.sum(coefs != 0))
         hiperparam = f'alpha={est.alpha_:.6g} l1={est.l1_ratio_:.2f}'
 
+    spearman = float(spearmanr(y.values, y_pred).statistic)
+
     return {
         'coefs':      coefs,
         'activas':    activas,
         'r2_adj':     r2_adj,
         'rmse_cv':    rmse_cv,
+        'spearman':   spearman,
         'hiperparam': hiperparam,
         'features':   X.columns.tolist(),
         'p_in':       p,
@@ -254,6 +258,12 @@ def main():
     for k in [2, 3, 4, 5, 6]:
         df[f'estrato_{k}'] = pd.to_numeric(df[f'pct_estrato_{k}'], errors='coerce')
 
+    # Dummies de zona y caracter (base: URBANA, Academico)
+    df['es_rural']   = df['zona'].isin(['RURAL', 'EXPANSION']).astype(float)
+    df['es_tecnico'] = df['caracter_media'].isin(['Tecnico', 'Academico - Tecnico']).astype(float)
+    # "Sin informacion" en caracter_media -> NaN para que caiga en dropna
+    df.loc[df['caracter_media'].isin(['Sin informacion', 'Sin información']), 'es_tecnico'] = np.nan
+
     # Capacidad publica en la misma localidad excluyendo el establecimiento propio
     df['matricula_total'] = pd.to_numeric(df['matricula_total'], errors='coerce')
     cap_loc = df.groupby('nombre_localidad')['matricula_total'].transform('sum')
@@ -274,7 +284,7 @@ def main():
     y = df[DEPVAR]
 
     especificaciones = [
-        ('M0', 'Controles',  []),
+        ('M0', 'Controles',  []),           # benchmark silencioso
         ('M1', 'NMF',        NMF_FEATURES),
         ('M2', 'Cityscapes', CS_FEATURES),
         ('M3', 'CLIP',       CLIP_FEATURES),
@@ -298,6 +308,7 @@ def main():
             todos_pipes[(modelo_id, nombre_est)] = pipe
 
             log.info(f'  [{nombre_est:<11}]  R2_adj={res["r2_adj"]:.4f}  '
+                     f'Spearman={res["spearman"]:+.4f}  '
                      f'RMSE_cv={res["rmse_cv"]:.4f}  '
                      f'activas={res["activas"]}/{len(all_features)}  '
                      f'hp={res["hiperparam"]}')
@@ -308,28 +319,39 @@ def main():
                 'p_in':           res['p_in'],
                 'activas':        res['activas'],
                 'R2_adj':         round(res['r2_adj'], 4),
+                'Spearman':       round(res['spearman'], 4),
                 'RMSE_cv':        round(res['rmse_cv'], 4),
                 'hiperparametro': res['hiperparam'],
             })
 
     # -------------------------------------------------------------------------
-    # Tabla comparativa ordenada por RMSE_cv ascendente
+    # Tabla comparativa: agregar ΔR²_adj vs M0 y ordenar por Spearman desc
     # -------------------------------------------------------------------------
-    tabla = pd.DataFrame(filas).sort_values('RMSE_cv').reset_index(drop=True)
+    tabla = pd.DataFrame(filas)
+
+    # ΔR²_adj: ganancia incremental de features visuales vs M0 (mismo estimador)
+    r2_m0 = tabla[tabla['modelo'].str.startswith('M0')].set_index('estimador')['R2_adj']
+    tabla['delta_R2_adj'] = tabla.apply(
+        lambda r: round(r['R2_adj'] - r2_m0.get(r['estimador'], float('nan')), 4),
+        axis=1
+    )
+
+    # Ordenar por Spearman descendente; M0 queda como referencia
+    tabla = tabla.sort_values('Spearman', ascending=False).reset_index(drop=True)
 
     log.info('=' * 70)
-    log.info('TABLA COMPARATIVA (ordenada por RMSE_cv ascendente)')
+    log.info('TABLA COMPARATIVA (ordenada por Spearman descendente)')
     log.info('=' * 70)
 
-    header = (f"{'Modelo':<28} {'Estimador':<12} {'p_in':>5} "
-              f"{'activas':>8} {'R2_adj':>8} {'RMSE_cv':>9}  Hiperparametro")
-    sep = '-' * (len(header) + 10)
+    header = (f"{'Modelo':<28} {'Estimador':<12} {'activas':>8} "
+              f"{'R2_adj':>8} {'ΔR2_adj':>9} {'Spearman':>10} {'RMSE_cv':>9}  Hiperparametro")
     log.info(header)
-    log.info(sep)
+    log.info('-' * (len(header) + 5))
     for _, row in tabla.iterrows():
         log.info(
-            f"{row['modelo']:<28} {row['estimador']:<12} {row['p_in']:>5} "
-            f"{row['activas']:>8} {row['R2_adj']:>8.4f} {row['RMSE_cv']:>9.4f}  "
+            f"{row['modelo']:<28} {row['estimador']:<12} {row['activas']:>8} "
+            f"{row['R2_adj']:>8.4f} {row['delta_R2_adj']:>+9.4f} "
+            f"{row['Spearman']:>10.4f} {row['RMSE_cv']:>9.4f}  "
             f"{row['hiperparametro']}"
         )
 
@@ -337,9 +359,10 @@ def main():
     log.info(f'Tabla comparativa guardada: {OUT_TABLE_PATH}')
 
     # -------------------------------------------------------------------------
-    # Coeficientes del mejor (modelo, estimador) por RMSE_cv minimo
+    # Coeficientes del mejor modelo: mayor Spearman excluyendo M0
     # -------------------------------------------------------------------------
-    mejor_fila = tabla.iloc[0]
+    tabla_sin_m0 = tabla[~tabla['modelo'].str.startswith('M0')]
+    mejor_fila      = tabla_sin_m0.iloc[0]
     mejor_modelo_id = mejor_fila['modelo'].split(' - ')[0]
     mejor_est       = mejor_fila['estimador']
     mejor_res       = todos_res[(mejor_modelo_id, mejor_est)]
@@ -356,42 +379,42 @@ def main():
     activas_list = coefs_df[coefs_df['activa']]['variable'].tolist()
 
     log.info('=' * 70)
-    log.info('MEJOR COMBINACION (RMSE_cv minimo)')
-    log.info(f'  Modelo:     {mejor_fila["modelo"]}')
-    log.info(f'  Estimador:  {mejor_est}')
-    log.info(f'  RMSE_cv:    {mejor_fila["RMSE_cv"]:.4f}')
-    log.info(f'  R2_adj:     {mejor_fila["R2_adj"]:.4f}')
-    log.info(f'  Hiperpar.:  {mejor_fila["hiperparametro"]}')
+    log.info('MEJOR COMBINACION (Spearman maximo, excl. M0)')
+    log.info(f'  Modelo:      {mejor_fila["modelo"]}')
+    log.info(f'  Estimador:   {mejor_est}')
+    log.info(f'  Spearman:    {mejor_fila["Spearman"]:.4f}')
+    log.info(f'  ΔR2_adj:     {mejor_fila["delta_R2_adj"]:+.4f}  (vs M0)')
+    log.info(f'  R2_adj:      {mejor_fila["R2_adj"]:.4f}')
+    log.info(f'  RMSE_cv:     {mejor_fila["RMSE_cv"]:.4f}')
+    log.info(f'  Hiperpar.:   {mejor_fila["hiperparametro"]}')
     log.info(f'  Features activas ({len(activas_list)}): {", ".join(activas_list)}')
-    log.info(f'  Outputs en: {OUT_DIR}')
+    log.info(f'  Outputs en:  {OUT_DIR}')
     log.info('=' * 70)
 
     # -------------------------------------------------------------------------
-    # Guardar el mejor modelo (menor RMSE_cv) — nombre determinado dinámicamente
+    # Guardar todos los modelos
     # -------------------------------------------------------------------------
     models_dir = Path(MODELS_DIR)
     models_dir.mkdir(parents=True, exist_ok=True)
 
-    best_pipe  = todos_pipes[(mejor_modelo_id, mejor_est)]
-    model_slug = f'{mejor_est.lower()}_{mejor_modelo_id.lower().replace(" ", "_")}'
-    model_path = models_dir / f'{model_slug}.joblib'
-    joblib.dump(best_pipe, model_path)
+    for (modelo_id, nombre_est), pipe in todos_pipes.items():
+        slug = f'{nombre_est.lower()}_{modelo_id.lower()}'
+        joblib.dump(pipe, models_dir / f'{slug}.joblib')
+        res  = todos_res[(modelo_id, nombre_est)]
+        meta = {
+            'model':        f'{nombre_est} {modelo_id}',
+            'features':     res['features'],
+            'target':       'log_sobredemanda',
+            'n_obs':        len(df),
+            'rmse_cv':      round(float(res['rmse_cv']), 6),
+            'r2_adj':       round(float(res['r2_adj']), 6),
+            'spearman':     round(float(res['spearman']), 6),
+            'fit_date':     datetime.date.today().isoformat(),
+        }
+        with open(models_dir / f'{slug}_meta.json', 'w', encoding='utf-8') as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
 
-    best_features = todos_res[(mejor_modelo_id, mejor_est)]['features']
-    meta = {
-        'model':      f'{mejor_est} {mejor_modelo_id}',
-        'features':   best_features,
-        'target':     'log_sobredemanda',
-        'n_obs':      len(df),
-        'rmse_cv':    round(float(mejor_fila['RMSE_cv']), 6),
-        'r2_adj':     round(float(mejor_fila['R2_adj']), 6),
-        'fit_date':   datetime.date.today().isoformat(),
-    }
-    meta_path = models_dir / f'{model_slug}_meta.json'
-    with open(meta_path, 'w', encoding='utf-8') as f:
-        json.dump(meta, f, indent=2, ensure_ascii=False)
-
-    print(f'Modelo guardado en: models/{model_slug}.joblib')
+    log.info(f'  {len(todos_pipes)} modelos guardados en: {MODELS_DIR}')
 
 
 # =============================================================================

@@ -1,0 +1,24 @@
+{
+  "model": "ElasticNet M0",
+  "features": [
+    "puntaje_icfes_promedio",
+    "dist_sitp_m",
+    "pct_no_oficial",
+    "hurto_personas",
+    "homicidios",
+    "n_oficiales_localidad",
+    "estrato_2",
+    "estrato_3",
+    "estrato_4",
+    "estrato_5",
+    "estrato_6",
+    "es_rural",
+    "es_tecnico"
+  ],
+  "target": "log_sobredemanda",
+  "n_obs": 370,
+  "rmse_cv": 0.082048,
+  "r2_adj": 0.0733,
+  "spearman": 0.388948,
+  "fit_date": "2026-04-28"
+}

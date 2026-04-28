@@ -199,20 +199,11 @@ def main():
     if remaining > 0:
         log.warning(f'  Aún quedan {remaining} NaN — revisar columnas sin mediana válida')
 
-    # ── Paso 6: Agregar capacidad escolar ─────────────────────────────────────
-    # cupos_j = round((matricula_j / matricula_total) * N_CUPOS_TOTAL)
-    # N_CUPOS_TOTAL = 124,000 (solicitudes de cupo registradas SED Bogota)
-    # Garantiza que la suma de cupos sea ~124K distribuidos proporcionalmente
-    # al tamano real de cada colegio. Minimo CAPACITY_MIN cupos por sede.
-    N_CUPOS_TOTAL = 124_000
-    CAPACITY_MIN  = 5
-
-    total_matricula = gdf['matricula_total'].sum()
-    gdf['capacidad'] = (
-        (gdf['matricula_total'] / total_matricula) * N_CUPOS_TOTAL
-    ).round().clip(lower=CAPACITY_MIN).astype(int)
-
-    log.info(f'  capacidad total: {gdf["capacidad"].sum():,} | media: {gdf["capacidad"].mean():.0f}')
+    # ── Paso 6: Excluir colegios con missing en q_j Y en controles EM2021 ──────
+    mask_excluir = gdf['q_j'].isna() & gdf['tasa_pobreza_monetaria'].isna()
+    n_excluidos = int(mask_excluir.sum())
+    gdf = gdf[~mask_excluir].reset_index(drop=True)
+    log.info(f'  Excluidos {n_excluidos} colegios con missing en q_j y EM2021 simultaneamente')
 
     # ── Paso 7: Guardar GeoJSON con el mismo CRS que el input ─────────────────
     gdf.to_file(OUTPUT_PATH, driver='GeoJSON')

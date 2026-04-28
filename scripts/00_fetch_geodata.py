@@ -37,6 +37,10 @@ SOURCES = {
         "https://datosabiertos.bogota.gov.co/dataset/55467552-0af4-4524-a390-a2956035744e"
         "/resource/29f2d770-bd5d-4450-9e95-8737167ba12f/download/manzanaestratificacion.json"
     ),
+    "localidades_bogota.geojson": (
+        "https://datosabiertos.bogota.gov.co/dataset/856cb657-8ca3-4ee8-857f-37211173b1f8"
+        "/resource/497b8756-0927-4aee-8da9-ca4e32ca3a8a/download/loca.json"
+    ),
 }
 
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "raw"

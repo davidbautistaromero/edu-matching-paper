@@ -2,8 +2,6 @@
   "model": "Lasso M1",
   "features": [
     "puntaje_icfes_promedio",
-    "tasa_pobreza_monetaria",
-    "ingreso_percapita_promedio",
     "dist_sitp_m",
     "pct_no_oficial",
     "hurto_personas",
@@ -14,6 +12,8 @@
     "estrato_4",
     "estrato_5",
     "estrato_6",
+    "es_rural",
+    "es_tecnico",
     "topic_1",
     "topic_2",
     "topic_3",
@@ -24,8 +24,9 @@
     "topic_8"
   ],
   "target": "log_sobredemanda",
-  "n_obs": 301,
-  "rmse_cv": 0.0869,
-  "r2_adj": 0.071,
+  "n_obs": 370,
+  "rmse_cv": 0.08105,
+  "r2_adj": 0.089553,
+  "spearman": 0.36595,
   "fit_date": "2026-04-28"
 }
