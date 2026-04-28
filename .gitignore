@@ -23,6 +23,11 @@ _*.txt
 # Parquet y outputs grandes
 data/embeddings/
 
+# Matrices grandes reproducibles con los scripts (>50 MB)
+data/processed/distancias_expandidas.parquet
+data/processed/familias_distancias.parquet
+data/processed/utilidades_familias.parquet
+
 # Modelos entrenados (pesados, se reproducen con 04_regresion.py)
 models/*.joblib
 
