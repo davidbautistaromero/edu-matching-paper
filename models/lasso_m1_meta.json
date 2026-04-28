@@ -1,5 +1,5 @@
 {
-  "model": "ElasticNet M1-NMF",
+  "model": "Lasso M1",
   "features": [
     "puntaje_icfes_promedio",
     "tasa_pobreza_monetaria",
@@ -23,7 +23,9 @@
     "topic_7",
     "topic_8"
   ],
-  "target": "sobre_demanda_j",
+  "target": "log_sobredemanda",
   "n_obs": 301,
-  "fit_date": "2026-04-25"
+  "rmse_cv": 0.0869,
+  "r2_adj": 0.071,
+  "fit_date": "2026-04-28"
 }

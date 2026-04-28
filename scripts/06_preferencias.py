@@ -32,8 +32,26 @@ log = logging.getLogger(__name__)
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT        = Path(__file__).resolve().parent.parent
-MODEL_PATH  = ROOT / "models" / "elasticnet_M1.joblib"
-META_PATH   = ROOT / "models" / "elasticnet_M1_meta.json"
+
+# Carga el mejor modelo disponible: busca cualquier *_meta.json en models/
+# y selecciona el que tenga menor rmse_cv (el que guardó 04_regresion.py)
+def _find_best_model(models_dir):
+    import glob
+    metas = glob.glob(str(models_dir / "*_meta.json"))
+    if not metas:
+        raise FileNotFoundError(f"No se encontró ningún *_meta.json en {models_dir}")
+    best_meta, best_rmse = None, float("inf")
+    for mp in metas:
+        with open(mp) as f:
+            m = json.load(f)
+        rmse = m.get("rmse_cv", float("inf"))
+        if rmse < best_rmse:
+            best_rmse, best_meta = rmse, mp
+    meta_path = Path(best_meta)
+    model_path = meta_path.with_suffix(".joblib")
+    return model_path, meta_path
+
+MODEL_PATH, META_PATH = _find_best_model(ROOT / "models")
 COLEGIOS    = ROOT / "data" / "primary" / "colegios_features_imputed.geojson"
 NMF_PATH    = ROOT / "data" / "images" / "embeddings" / "gsv_nmf_K8.parquet"
 FAM_PATH    = ROOT / "data" / "processed" / "familias_ubicadas.parquet"

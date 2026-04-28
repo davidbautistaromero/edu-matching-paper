@@ -367,28 +367,31 @@ def main():
     log.info('=' * 70)
 
     # -------------------------------------------------------------------------
-    # Guardar modelo M1-ElasticNet
+    # Guardar el mejor modelo (menor RMSE_cv) — nombre determinado dinámicamente
     # -------------------------------------------------------------------------
     models_dir = Path(MODELS_DIR)
     models_dir.mkdir(parents=True, exist_ok=True)
 
-    best_pipe  = todos_pipes[('M1', 'ElasticNet')]
-    model_path = models_dir / 'elasticnet_M1.joblib'
+    best_pipe  = todos_pipes[(mejor_modelo_id, mejor_est)]
+    model_slug = f'{mejor_est.lower()}_{mejor_modelo_id.lower().replace(" ", "_")}'
+    model_path = models_dir / f'{model_slug}.joblib'
     joblib.dump(best_pipe, model_path)
 
-    m1_features = CONTROLES + NMF_FEATURES
+    best_features = todos_res[(mejor_modelo_id, mejor_est)]['features']
     meta = {
-        'model':    'ElasticNet M1-NMF',
-        'features': m1_features,
-        'target':   'sobre_demanda_j',
-        'n_obs':    len(df),
-        'fit_date': datetime.date.today().isoformat(),
+        'model':      f'{mejor_est} {mejor_modelo_id}',
+        'features':   best_features,
+        'target':     'log_sobredemanda',
+        'n_obs':      len(df),
+        'rmse_cv':    round(float(mejor_fila['RMSE_cv']), 6),
+        'r2_adj':     round(float(mejor_fila['R2_adj']), 6),
+        'fit_date':   datetime.date.today().isoformat(),
     }
-    meta_path = models_dir / 'elasticnet_M1_meta.json'
+    meta_path = models_dir / f'{model_slug}_meta.json'
     with open(meta_path, 'w', encoding='utf-8') as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
 
-    print('Modelo guardado en: models/elasticnet_M1.joblib')
+    print(f'Modelo guardado en: models/{model_slug}.joblib')
 
 
 # =============================================================================
