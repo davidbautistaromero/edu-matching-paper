@@ -165,6 +165,8 @@ cols_out = [
     "id_establecimiento", "nombre_establecimiento", "nombre_localidad",
     "cod_localidad", "lat", "lon", "q_j", "sobre_demanda_j",
     "matricula_total", "capacidad", "a_j",
+    "pct_estrato_1", "pct_estrato_2", "pct_estrato_3",
+    "pct_estrato_4", "pct_estrato_5", "pct_estrato_6",
 ]
 out = df[[c for c in cols_out if c in df.columns]].copy()
 out.to_parquet(OUT_PATH, index=False)

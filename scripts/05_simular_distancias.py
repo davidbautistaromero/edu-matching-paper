@@ -52,7 +52,7 @@ n_dropped = n_total - len(fam)
 
 fam["COD_UPZ_GRUPO"] = fam["COD_UPZ_GRUPO"].astype(float).astype(int)
 fam["ESTRATO2021"]   = fam["ESTRATO2021"].astype(float).astype(int)
-fam["estrato_real"]  = pd.to_numeric(fam["NVCBP11AA"], errors="coerce").astype("Int64")
+fam["estrato_real"]  = pd.to_numeric(fam["NVCBP11AA"], errors="coerce").replace(0, pd.NA).astype("Int64")
 
 print(f"  Families kept   : {len(fam):,}")
 print(f"  Families dropped: {n_dropped:,} (missing COD_UPZ_GRUPO)")
