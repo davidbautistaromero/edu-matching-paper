@@ -338,6 +338,9 @@ def fetch_personas_escolar() -> None:
 
     df["FEX_C"] = pd.to_numeric(df["FEX_C"], errors="coerce")
 
+    # ── Marcar niños en edad de ingreso (5-6 años) ───────────────────────────
+    df["es_ingreso"] = df["NPCEP4_num"].between(5, 6).astype(int)
+
     # ── Agregación a nivel hogar ──────────────────────────────────────────────
     agg = df.groupby("DIRECTORIO", dropna=False).agg(
         COD_UPZ_GRUPO=("COD_UPZ_GRUPO", "first"),
@@ -346,6 +349,7 @@ def fetch_personas_escolar() -> None:
         NVCBP11AA=("NVCBP11AA", "first"),
         FEX_C=("FEX_C", "first"),
         n_hijos_oficial=("DIRECTORIO", "count"),
+        n_hijos_ingreso=("es_ingreso", "sum"),
     ).reset_index()
 
     agg.to_csv(FAMILIAS_OUT, index=False, encoding="utf-8")

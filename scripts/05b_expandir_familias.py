@@ -1,0 +1,91 @@
+"""
+05b_expandir_familias.py
+========================
+Expande las familias encuestadas usando el factor de expansión FEX_C.
+Cada familia se replica round(FEX_C) veces para representar la población real.
+
+Estrategia:
+  - Cada réplica hereda todos los atributos de la familia original
+    (UPZ, localidad, estrato, coordenadas) — no se mueve geográficamente.
+  - Las distancias de cada réplica = distancias originales + ruido U(-0.1, 0.1) km
+    clippeado a max(0, d) para evitar distancias negativas.
+  - El ruido es equivalente a estar en una manzana adyacente (~±100m),
+    garantizando que la réplica permanezca dentro de la misma UPZ y estrato.
+
+Inputs:
+  data/processed/familias_ubicadas.parquet       — familias simuladas con FEX_C
+  data/processed/familias_distancias.parquet     — matriz de distancias (n_fam × n_col)
+
+Outputs:
+  data/processed/familias_expandidas.parquet     — familias expandidas (N_real × atributos)
+  data/processed/distancias_expandidas.parquet   — matriz de distancias expandida (N_real × n_col)
+"""
+
+import numpy as np
+import pandas as pd
+from pathlib import Path
+
+SEED = 42
+NOISE_KM = 0.1   # ±100m de perturbación en distancias
+
+FAM_PATH   = Path(r"C:\paper-AI\data\processed\familias_ubicadas.parquet")
+DIST_PATH  = Path(r"C:\paper-AI\data\processed\familias_distancias.parquet")
+FAM_OUT    = Path(r"C:\paper-AI\data\processed\familias_expandidas.parquet")
+DIST_OUT   = Path(r"C:\paper-AI\data\processed\distancias_expandidas.parquet")
+
+rng = np.random.default_rng(SEED)
+
+# ── Cargar datos ──────────────────────────────────────────────────────────────
+print("Cargando familias_ubicadas.parquet...")
+fam = pd.read_parquet(FAM_PATH)
+print(f"  Familias originales: {len(fam):,}")
+
+print("Cargando familias_distancias.parquet...")
+dist = pd.read_parquet(DIST_PATH)
+n_colegios = dist.shape[1]
+print(f"  Dimensiones distancias: {dist.shape}")
+
+# ── Calcular réplicas por familia ─────────────────────────────────────────────
+fam["n_replicas"] = fam["FEX_C"].apply(lambda x: max(1, round(float(x))))
+total_replicas = fam["n_replicas"].sum()
+print(f"\n  Total réplicas (población representada): {total_replicas:,}")
+print(f"  Factor expansión medio: {fam['FEX_C'].astype(float).mean():.1f}")
+
+# ── Expandir familias ─────────────────────────────────────────────────────────
+print("\nExpandiendo familias...")
+fam_exp = fam.loc[fam.index.repeat(fam["n_replicas"])].copy()
+fam_exp = fam_exp.drop(columns=["n_replicas"]).reset_index(drop=True)
+
+# Índice original para asociar distancias
+fam_exp["_idx_original"] = fam.index.repeat(fam["n_replicas"]).values
+
+print(f"  Familias expandidas: {len(fam_exp):,}")
+
+# ── Expandir distancias con ruido ─────────────────────────────────────────────
+print("Expandiendo distancias con ruido U(-0.1, 0.1) km...")
+dist_vals = dist.values.astype(np.float32)
+col_names = dist.columns.tolist()
+
+# Indexar distancias originales para cada réplica
+dist_base = dist_vals[fam_exp["_idx_original"].values]  # (N_real, n_col)
+
+# Agregar ruido y clippear a >= 0
+noise = rng.uniform(-NOISE_KM, NOISE_KM, size=dist_base.shape).astype(np.float32)
+dist_exp = np.clip(dist_base + noise, 0, None)
+
+print(f"  Dimensiones distancias expandidas: {dist_exp.shape}")
+print(f"  Min distancia: {dist_exp.min():.4f} km  |  Max: {dist_exp.max():.4f} km")
+
+# ── Guardar ───────────────────────────────────────────────────────────────────
+print("\nGuardando outputs...")
+fam_exp = fam_exp.drop(columns=["_idx_original"])
+fam_exp.to_parquet(FAM_OUT, index=False)
+size_fam = FAM_OUT.stat().st_size / 1e6
+print(f"  {FAM_OUT.name}  ({len(fam_exp):,} filas, {size_fam:.1f} MB)")
+
+dist_exp_df = pd.DataFrame(dist_exp, columns=col_names)
+dist_exp_df.to_parquet(DIST_OUT, index=False)
+size_dist = DIST_OUT.stat().st_size / 1e6
+print(f"  {DIST_OUT.name}  ({dist_exp_df.shape}, {size_dist:.1f} MB)")
+
+print("\nDone.")

@@ -1,45 +1,51 @@
+# -*- coding: utf-8 -*-
 """
 06_preferencias.py
 ==================
 Calcula utilidades u_ij y rankings de preferencia para cada familia sobre colegios oficiales.
 
-Modelo: u_ij = q_j - alpha_s * log1p(d_ij) + epsilon_ij
-  q_j     : score de calidad predicho por ElasticNet M1 (NMF)
-  alpha_s : penalización distancia heterogénea por estrato (Hastings et al. 2009)
+Modelo: u_ij = a_j - alpha_s * log1p(d_ij) + epsilon_ij
+  a_j     : indice de atractivo del colegio j (predice log_sobredemanda con features observables)
+  alpha_s : penalizacion distancia heterogenea por estrato (Hastings et al. 2009)
              alpha_s = 0.30 / s^0.613  (power law calibrada: ratio estrato1/estrato6 = 3x)
-  d_ij    : distancia en km (familia i → colegio j)
-  epsilon : ruido Gumbel(0,1) — genera estocasticidad en rankings
+  d_ij    : distancia en km (familia i -> colegio j)
+  epsilon : ruido Gumbel(0,1) -- genera estocasticidad en rankings
 
 Choice set: familias eligen solo dentro de su localidad.
-Excepción: La Candelaria (localidad 17) puede elegir en localidades 17, 3, 14, 15.
+Excepcion: La Candelaria (localidad 17) puede elegir en localidades 17, 3, 14, 15.
+
+Inputs:
+  data/processed/familias_expandidas.parquet     -- familias expandidas con FEX_C
+  data/processed/distancias_expandidas.parquet   -- matriz de distancias expandida
 
 Outputs:
-  data/processed/preferencias_familias.parquet  — top-20 rankings por familia
-  data/processed/utilidades_familias.parquet    — matriz de utilidades completa (float32)
+  data/primary/preferencias_familias.parquet     -- top-20 rankings por familia
+  data/processed/utilidades_familias.parquet     -- matriz de utilidades (escrita en batches)
 """
 
 import json
 import logging
+import unicodedata
 from pathlib import Path
 
 import geopandas as gpd
 import joblib
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
 log = logging.getLogger(__name__)
 
-# ── Paths ──────────────────────────────────────────────────────────────────────
-ROOT        = Path(__file__).resolve().parent.parent
+# ── Paths ─────────────────────────────────────────────────────────────────────
+ROOT = Path(__file__).resolve().parent.parent
 
-# Carga el mejor modelo disponible: busca cualquier *_meta.json en models/
-# y selecciona el que tenga menor rmse_cv (el que guardó 04_regresion.py)
 def _find_best_model(models_dir):
     import glob
     metas = glob.glob(str(models_dir / "*_meta.json"))
     if not metas:
-        raise FileNotFoundError(f"No se encontró ningún *_meta.json en {models_dir}")
+        raise FileNotFoundError(f"No *_meta.json found in {models_dir}")
     best_meta, best_rmse = None, float("inf")
     for mp in metas:
         with open(mp) as f:
@@ -48,36 +54,36 @@ def _find_best_model(models_dir):
         if rmse < best_rmse:
             best_rmse, best_meta = rmse, mp
     meta_path = Path(best_meta)
-    model_path = meta_path.with_suffix(".joblib")
+    model_path = meta_path.parent / (meta_path.stem.replace("_meta", "") + ".joblib")
     return model_path, meta_path
 
 MODEL_PATH, META_PATH = _find_best_model(ROOT / "models")
-COLEGIOS    = ROOT / "data" / "primary" / "colegios_features_imputed.geojson"
-NMF_PATH    = ROOT / "data" / "images" / "embeddings" / "gsv_nmf_K8.parquet"
-FAM_PATH    = ROOT / "data" / "processed" / "familias_ubicadas.parquet"
-DIST_PATH   = ROOT / "data" / "processed" / "familias_distancias.parquet"
-OUT_DIR     = ROOT / "data" / "processed"
+COLEGIOS  = ROOT / "data" / "primary" / "colegios_features_imputed.geojson"
+NMF_PATH  = ROOT / "data" / "images" / "embeddings" / "gsv_nmf_K8.parquet"
+FAM_PATH  = ROOT / "data" / "processed" / "familias_expandidas.parquet"
+DIST_PATH = ROOT / "data" / "processed" / "distancias_expandidas.parquet"
+OUT_DIR   = ROOT / "data" / "processed"
 
-# Candelaria (17) → puede elegir en estas localidades también
+# Candelaria (17) puede elegir en estas localidades tambien
 CANDELARIA_EXTRA = {3, 14, 15}
 
-# Mapping nombre_localidad → código numérico (estándar Bogotá)
+# Mapping nombre_localidad -> codigo numerico (estandar Bogota)
 LOC_NAME_TO_CODE = {
-    "Usaquén": 1, "Chapinero": 2, "Santa Fe": 3, "San Cristóbal": 4,
+    "Usaquen": 1, "Chapinero": 2, "Santa Fe": 3, "San Cristobal": 4,
     "Usme": 5, "Tunjuelito": 6, "Bosa": 7, "Kennedy": 8,
-    "Fontibón": 9, "Engativá": 10, "Suba": 11, "Barrios Unidos": 12,
-    "Teusaquillo": 13, "Los Mártires": 14, "Antonio Nariño": 15,
+    "Fontibon": 9, "Engativa": 10, "Suba": 11, "Barrios Unidos": 12,
+    "Teusaquillo": 13, "Los Martires": 14, "Antonio Narino": 15,
     "Puente Aranda": 16, "La Candelaria": 17, "Rafael Uribe Uribe": 18,
-    "Ciudad Bolívar": 19, "Sumapaz": 20,
+    "Ciudad Bolivar": 19, "Sumapaz": 20,
 }
 
 ALPHA_0 = 0.30
-GAMMA   = np.log(3) / np.log(6)   # ≈ 0.613
+GAMMA   = np.log(3) / np.log(6)   # ~0.613
 TOP_K   = 20
 SEED    = 42
 
-# ── Step 1: Load model and predict q_j ────────────────────────────────────────
-log.info("Step 1 — Cargando modelo y prediciendo q_j...")
+# ── Step 1: Cargar modelo y predecir a_j ──────────────────────────────────────
+log.info("Step 1 -- Cargando modelo y prediciendo a_j...")
 model = joblib.load(MODEL_PATH)
 with open(META_PATH) as f:
     meta = json.load(f)
@@ -87,93 +93,79 @@ gdf = gpd.read_file(COLEGIOS)
 nmf = pd.read_parquet(NMF_PATH)
 gdf["id_establecimiento"] = gdf["id_establecimiento"].astype(str)
 nmf["id_establecimiento"] = nmf["id_establecimiento"].astype(str)
-df  = gdf.merge(nmf[["id_establecimiento"] + [c for c in nmf.columns if c.startswith("topic_")]],
-                on="id_establecimiento", how="inner")
+df = gdf.merge(nmf[["id_establecimiento"] + [c for c in nmf.columns if c.startswith("topic_")]],
+               on="id_establecimiento", how="inner")
 
 df["puntaje_icfes_promedio"] = df[["puntaje_2023", "punt_global_2022", "punt_global_2020"]].mean(axis=1)
 for k in range(2, 7):
     df[f"estrato_{k}"] = pd.to_numeric(df[f"pct_estrato_{k}"], errors="coerce")
 
-# Capacidad pública por localidad (excluyendo el propio colegio) — replica 04_regresion.py
 cap_loc = df.groupby("nombre_localidad")["matricula_total"].transform("sum")
 df["n_oficiales_localidad"] = (cap_loc - df["matricula_total"]).clip(lower=0)
 
 X_col = df[features]
-q_j   = model.predict(X_col)
+a_j   = model.predict(X_col)
 school_ids = df["id_establecimiento"].values
 
-# Crear código numérico de localidad para colegios
-# Normalizar encoding (el geojson puede tener tildes dañadas)
-import unicodedata
-def normalize_name(s):
-    if pd.isna(s):
-        return s
-    s = str(s).strip()
-    # Intentar normalizar unicode
-    try:
-        s = unicodedata.normalize("NFC", s)
-    except Exception:
-        pass
-    return s
+# Codigo numerico de localidad para colegios (con fallback para encoding)
+def strip_accents(s):
+    return "".join(c for c in unicodedata.normalize("NFD", str(s))
+                   if unicodedata.category(c) != "Mn").lower().strip()
 
-df["_nombre_loc_norm"] = df["nombre_localidad"].apply(normalize_name)
-# Build mapping with normalized keys too
 loc_map = {}
 for name, code in LOC_NAME_TO_CODE.items():
-    loc_map[name] = code
-    loc_map[normalize_name(name)] = code
+    loc_map[strip_accents(name)] = code
 
-df["cod_localidad"] = df["_nombre_loc_norm"].map(loc_map)
-# Fallback: fuzzy match for encoding issues
+df["cod_localidad"] = df["nombre_localidad"].apply(
+    lambda x: loc_map.get(strip_accents(x)) if pd.notna(x) else None
+)
+
 unmapped = df["cod_localidad"].isna().sum()
 if unmapped > 0:
-    log.warning(f"  {unmapped} colegios sin match de localidad — intentando match parcial")
+    log.warning(f"  {unmapped} colegios sin match de localidad -- fallback parcial")
     for idx in df[df["cod_localidad"].isna()].index:
-        raw = str(df.loc[idx, "nombre_localidad"])
+        raw = strip_accents(str(df.loc[idx, "nombre_localidad"]))
         for name, code in LOC_NAME_TO_CODE.items():
-            # Compare first 4 chars (ignoring encoding)
-            if raw[:4].lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u") == name[:4].lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u"):
+            if raw[:5] == strip_accents(name)[:5]:
                 df.loc[idx, "cod_localidad"] = code
                 break
 
 school_loc = df["cod_localidad"].values
 log.info(f"  Colegios con localidad asignada: {(~pd.isna(school_loc)).sum()} / {len(school_loc)}")
+log.info(f"  Colegios puntuados: {len(a_j)} | a_j min={a_j.min():.4f} max={a_j.max():.4f}")
 
-log.info(f"  Colegios puntuados: {len(q_j)} | q_j min={q_j.min():.4f} max={q_j.max():.4f}")
-
-# ── Step 2: Load families and distances ───────────────────────────────────────
-log.info("Step 2 — Cargando familias y distancias...")
+# ── Step 2: Cargar familias y distancias ──────────────────────────────────────
+log.info("Step 2 -- Cargando familias y distancias...")
 fam  = pd.read_parquet(FAM_PATH)
 dist = pd.read_parquet(DIST_PATH)
 
-# Align: keep families present in both, schools present in both
-common_fam     = fam["DIRECTORIO"].isin(dist.index)
-fam            = fam[common_fam].reset_index(drop=True)
-dist           = dist.loc[fam["DIRECTORIO"]]
+# distancias_expandidas usa indice posicional -- alinear por posicion
+n = min(len(fam), len(dist))
+fam  = fam.iloc[:n].reset_index(drop=True)
+dist = dist.iloc[:n].reset_index(drop=True)
 
 common_schools = [sid for sid in school_ids if sid in dist.columns]
 dist           = dist[common_schools]
 idx_schools    = [list(school_ids).index(sid) for sid in common_schools]
-q_j_aligned    = q_j[idx_schools]
+a_j_aligned    = a_j[idx_schools]
 school_ids_al  = np.array(common_schools)
 school_loc_al  = school_loc[idx_schools]
 
-dist_matrix    = dist.values.astype(np.float32)   # (n_fam, n_schools)
+dist_matrix = dist.values.astype(np.float32)
 log.info(f"  Familias: {len(fam):,} | Colegios: {len(school_ids_al)}")
 
-# ── Step 3: Compute alpha_s per family ────────────────────────────────────────
-log.info("Step 3 — Calculando alpha_s por estrato...")
+# ── Step 3: alpha_s por estrato ───────────────────────────────────────────────
+log.info("Step 3 -- Calculando alpha_s por estrato...")
 estrato = pd.to_numeric(fam["estrato_real"], errors="coerce").fillna(3).clip(1, 6).values
-alpha_s = ALPHA_0 / estrato ** GAMMA   # (n_fam,)
+alpha_s = ALPHA_0 / estrato ** GAMMA
 for s in range(1, 7):
-    n = (estrato == s).sum()
-    log.info(f"  Estrato {s}: {n:,} familias | alpha={ALPHA_0 / s**GAMMA:.4f}")
+    n_s = (estrato == s).sum()
+    log.info(f"  Estrato {s}: {n_s:,} familias | alpha={ALPHA_0 / s**GAMMA:.4f}")
 
-# ── Step 4: Build choice set mask ─────────────────────────────────────────────
-log.info("Step 4 — Construyendo choice sets por localidad...")
-fam_loc = pd.to_numeric(fam["COD_LOCALIDAD"], errors="coerce").values   # (n_fam,)
+# ── Step 4: Choice set mask por localidad ─────────────────────────────────────
+log.info("Step 4 -- Construyendo choice sets por localidad...")
+fam_loc = pd.to_numeric(fam["COD_LOCALIDAD"], errors="coerce").values
 
-# school_loc_al may be numeric or string — normalize to numeric if possible
 try:
     school_loc_num = pd.to_numeric(school_loc_al, errors="coerce")
 except Exception:
@@ -182,7 +174,7 @@ except Exception:
 mask = np.zeros((len(fam), len(school_ids_al)), dtype=bool)
 for i, loc_i in enumerate(fam_loc):
     if pd.isna(loc_i):
-        mask[i, :] = True   # no localidad info: allow all
+        mask[i, :] = True
         continue
     loc_i = int(loc_i)
     allowed = {loc_i}
@@ -193,43 +185,64 @@ for i, loc_i in enumerate(fam_loc):
 sizes = mask.sum(axis=1)
 log.info(f"  Choice set promedio: {sizes.mean():.1f} | min={sizes.min()} | max={sizes.max()}")
 
-# ── Step 5: Compute utility matrix ────────────────────────────────────────────
-log.info("Step 5 — Calculando matriz de utilidad...")
-rng     = np.random.default_rng(SEED)
-epsilon = rng.gumbel(0, 1, size=(len(fam), len(school_ids_al))).astype(np.float32)
+# ── Step 5 & 6: Utilidades y rankings en batches ──────────────────────────────
+log.info("Step 5 -- Calculando utilidades y rankings en batches...")
+BATCH_SIZE = 50_000
+rng = np.random.default_rng(SEED)
 
-log_dist = np.log1p(dist_matrix)   # ln(1 + d_ij)
-u = (q_j_aligned[None, :].astype(np.float32)
-     - alpha_s[:, None].astype(np.float32) * log_dist
-     + epsilon)
+n_fam = len(fam)
+all_rankings = []
 
-# Apply choice set: -inf outside
-u[~mask] = -np.inf
-log.info(f"  Utilidad matrix shape: {u.shape}")
+out_util = OUT_DIR / "utilidades_familias.parquet"
+util_writer = None
 
-# ── Step 6: Generate rankings ──────────────────────────────────────────────────
-log.info("Step 6 — Generando rankings top-20...")
-rankings_idx = np.argsort(-u, axis=1)[:, :TOP_K]   # (n_fam, TOP_K)
-rankings_ids = school_ids_al[rankings_idx]           # replace indices with IDs
+for batch_start in range(0, n_fam, BATCH_SIZE):
+    batch_end = min(batch_start + BATCH_SIZE, n_fam)
+    b_dist  = dist_matrix[batch_start:batch_end]
+    b_alpha = alpha_s[batch_start:batch_end]
+    b_mask  = mask[batch_start:batch_end]
 
+    epsilon  = rng.gumbel(0, 1, size=(batch_end - batch_start, len(school_ids_al))).astype(np.float32)
+    log_dist = np.log1p(b_dist)
+    u = (a_j_aligned[None, :].astype(np.float32)
+         - b_alpha[:, None].astype(np.float32) * log_dist
+         + epsilon)
+    u[~b_mask] = -np.inf
+
+    # Rankings
+    rankings_idx = np.argsort(-u, axis=1)[:, :TOP_K]
+    rankings_ids = school_ids_al[rankings_idx]
+    all_rankings.append(rankings_ids)
+
+    # Utilidades -- escribir batch a parquet incremental
+    u_df = pd.DataFrame(u, columns=school_ids_al)
+    u_df.insert(0, "DIRECTORIO", fam["DIRECTORIO"].values[batch_start:batch_end])
+    table = pa.Table.from_pandas(u_df, preserve_index=False)
+    if util_writer is None:
+        util_writer = pq.ParquetWriter(str(out_util), table.schema, compression="snappy")
+    util_writer.write_table(table)
+
+    if (batch_start // BATCH_SIZE) % 5 == 0:
+        log.info(f"  Procesados {batch_end:,} / {n_fam:,} familias...")
+
+if util_writer is not None:
+    util_writer.close()
+
+log.info(f"  Completado: ({n_fam}, {len(school_ids_al)}) en batches de {BATCH_SIZE:,}")
+
+rankings_arr = np.vstack(all_rankings)
 rankings_df = pd.DataFrame(
-    rankings_ids,
+    rankings_arr,
     index=fam["DIRECTORIO"].values,
     columns=[f"pref_{k+1}" for k in range(TOP_K)],
 )
 rankings_df.index.name = "DIRECTORIO"
 
-# ── Step 7: Save ──────────────────────────────────────────────────────────────
-log.info("Step 7 — Guardando outputs...")
+# ── Step 7: Guardar ───────────────────────────────────────────────────────────
+log.info("Step 7 -- Guardando outputs...")
 out_rank = ROOT / "data" / "primary" / "preferencias_familias.parquet"
-out_util = OUT_DIR / "utilidades_familias.parquet"
 
 rankings_df.to_parquet(out_rank)
 log.info(f"  preferencias_familias.parquet  ({out_rank.stat().st_size / 1e6:.1f} MB)")
-
-util_df = pd.DataFrame(u, index=fam["DIRECTORIO"].values, columns=school_ids_al)
-util_df.index.name = "DIRECTORIO"
-util_df.to_parquet(out_util)
 log.info(f"  utilidades_familias.parquet    ({out_util.stat().st_size / 1e6:.1f} MB)")
-
 log.info("Done.")

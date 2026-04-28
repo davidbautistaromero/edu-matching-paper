@@ -43,7 +43,7 @@ np.random.seed(42)
 random.seed(42)
 
 # ── Step 1: Load families ──────────────────────────────────────────────────────
-print("Step 1 — Loading families...")
+print("Step 1 - Loading families...")
 fam = pd.read_csv(FAMILIAS_CSV)
 
 n_total = len(fam)
@@ -58,14 +58,14 @@ print(f"  Families kept   : {len(fam):,}")
 print(f"  Families dropped: {n_dropped:,} (missing COD_UPZ_GRUPO)")
 
 # ── Step 2: Load UPZ polygons ──────────────────────────────────────────────────
-print("\nStep 2 — Loading UPZ polygons...")
+print("\nStep 2 - Loading UPZ polygons...")
 upz = gpd.read_file(UPZ_SHP)
 upz["cod_upz"] = upz["UPLCODIGO"].str.extract(r"(\d+)")[0].astype(int)
 upz = upz.to_crs("EPSG:4326")
 print(f"  UPZ polygons loaded: {len(upz):,}")
 
 # ── Step 3: Load manzanas (ESRI JSON format) ───────────────────────────────────
-print("\nStep 3 — Loading manzanas...")
+print("\nStep 3 - Loading manzanas...")
 with open(MANZANAS_JSON, encoding="utf-8") as f:
     raw = json.load(f)
 
@@ -89,8 +89,8 @@ estratos_disponibles = sorted(manzanas["estrato"].dropna().unique().tolist())
 print(f"  Total manzanas loaded : {len(manzanas):,}")
 print(f"  Estratos available    : {estratos_disponibles}")
 
-# ── Step 4: Spatial join — assign manzanas to UPZ, build lookup dicts ─────────
-print("\nStep 4 — Joining manzanas to UPZ polygons...")
+# ── Step 4: Spatial join - assign manzanas to UPZ, build lookup dicts ─────────
+print("\nStep 4 - Joining manzanas to UPZ polygons...")
 upz_proj = upz.to_crs("EPSG:3116")
 manzanas_upz = gpd.sjoin(
     manzanas[["estrato", "codigo_manzana", "geometry"]],
@@ -119,7 +119,7 @@ for cod_upz in upz_estratos_available:
     upz_estratos_available[cod_upz] = sorted(upz_estratos_available[cod_upz])
 
 # ── Step 5: Simulate household locations ──────────────────────────────────────
-print("\nStep 5 — Simulating household locations inside manzanas...")
+print("\nStep 5 - Simulating household locations inside manzanas...")
 
 lats: list[float] = []
 lons: list[float] = []
@@ -130,7 +130,7 @@ for i, (_, row) in enumerate(fam.iterrows()):
     estrato  = int(row["estrato_real"]) if pd.notna(row["estrato_real"]) else 3
 
     if cod_upz not in upz_estratos_available:
-        print(f"  WARNING: UPZ {cod_upz} not found in manzanas — skipping family.")
+        print(f"  WARNING: UPZ {cod_upz} not found in manzanas - skipping family.")
         lats.append(np.nan)
         lons.append(np.nan)
         skipped += 1
@@ -166,7 +166,7 @@ fam = fam.dropna(subset=["lat", "lon"])
 print(f"  Done. {len(fam):,} household locations simulated.")
 
 # ── Step 6: Load schools ───────────────────────────────────────────────────────
-print("\nStep 6 — Loading schools...")
+print("\nStep 6 - Loading schools...")
 schools = gpd.read_file(COLEGIOS_GEO)
 schools = schools.to_crs("EPSG:4326")
 schools["lat_school"] = schools.geometry.centroid.y
@@ -176,7 +176,7 @@ schools_coords = schools_coords.dropna(subset=["lat_school", "lon_school"])
 print(f"  Schools loaded: {len(schools_coords):,}")
 
 # ── Step 7: Haversine distance matrix ─────────────────────────────────────────
-print("\nStep 7 — Computing Haversine distance matrix...")
+print("\nStep 7 - Computing Haversine distance matrix...")
 
 
 def haversine_matrix(lat1, lon1, lat2, lon2):
@@ -204,7 +204,7 @@ print(f"  Min distance  : {dist_matrix.min():.4f} km")
 print(f"  Max distance  : {dist_matrix.max():.4f} km")
 
 # ── Step 8: Save outputs ───────────────────────────────────────────────────────
-print("\nStep 8 — Saving outputs...")
+print("\nStep 8 - Saving outputs...")
 
 out_fam = OUT_DIR / "familias_ubicadas.parquet"
 fam.to_parquet(out_fam, index=False)
@@ -224,7 +224,7 @@ print(f"  familias_distancias.parquet  saved ({out_dist.stat().st_size / 1e6:.1f
 print("\nDone.")
 
 # ── Step 9: Map of simulated households and schools ───────────────────────────
-print("\nStep 9 — Generating map of simulated household locations...")
+print("\nStep 9 - Generating map of simulated household locations...")
 
 FIGURES_DIR = ROOT / "reports" / "figures"
 FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -235,26 +235,26 @@ fam_gdf = gpd.GeoDataFrame(
     geometry=gpd.points_from_xy(fam["lon"], fam["lat"]),
     crs="EPSG:4326",
 ).to_crs("EPSG:3857")
-fam_gdf["ESTRATO2021"] = fam_gdf["ESTRATO2021"].astype(int)
+fam_gdf["estrato_real"] = pd.to_numeric(fam_gdf["estrato_real"], errors="coerce").fillna(3).astype(int)
 
 # Convert schools to Web Mercator
 schools_gdf = schools[["geometry"]].copy().to_crs("EPSG:3857")
 
-# Discrete colormap: 6 colors for estratos 1–6
+# Discrete colormap: 6 colors for estratos 1-6
 ESTRATOS = [1, 2, 3, 4, 5, 6]
-cmap = plt.colormaps["RdYlGn"]
-colors = [cmap(i / 5) for i in range(6)]  # low estrato = red, high = green
+# Colores discretos y saturados por estrato (1=rojo vivo, 6=azul oscuro)
+colors = ["#e41a1c", "#ff7f00", "#f7d800", "#4daf4a", "#377eb8", "#984ea3"]
 estrato_color = dict(zip(ESTRATOS, colors))
 
 fig, ax = plt.subplots(figsize=(10, 11))
 
 for estrato, color in estrato_color.items():
-    mask = fam_gdf["ESTRATO2021"] == estrato
+    mask = fam_gdf["estrato_real"] == estrato
     fam_gdf[mask].plot(
         ax=ax,
         color=color,
-        markersize=2,
-        alpha=0.4,
+        markersize=8,
+        alpha=0.65,
         linewidth=0,
     )
 
@@ -293,7 +293,7 @@ ax.add_artist(legend1)
 ax.legend(handles=[school_handle], loc="lower right", fontsize=7, framealpha=0.8)
 
 ax.set_title(
-    "Familias simuladas por estrato y colegios oficiales — Bogotá 2021",
+    "Familias simuladas por estrato y colegios oficiales - Bogotá 2021",
     fontsize=11,
     pad=10,
 )
