@@ -1,0 +1,4 @@
+Mecanismo,Asignados,Rank medio,Blocking pairs,Equidad (corr a_j),Sesgo visual (corr),Saber 11 medio,Tasa rechazo
+BM,97743,1.81,8256,0.2143,0.14,257.59,2.1%
+DA,97791,2.372,0,0.2169,0.1417,257.6,2.1%
+SED-lex,97765,2.062,0,0.1959,0.1387,257.6,2.1%

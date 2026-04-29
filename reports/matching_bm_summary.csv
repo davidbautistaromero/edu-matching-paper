@@ -1,0 +1,8 @@
+estrato,condicion,n_asignados,n_sin_asignar,rank_medio,blocking_pairs,equidad_aj,aj_estrato_1,aj_estrato_2,aj_estrato_3,aj_estrato_4,aj_estrato_5,aj_estrato_6,sesgo_visual,qj_medio,qj_estrato_1,qj_estrato_2,qj_estrato_3,qj_estrato_4,qj_estrato_5,qj_estrato_6,rechazo_total,rechazo_estrato_1,rechazo_estrato_2,rechazo_estrato_3,rechazo_estrato_4,rechazo_estrato_5,rechazo_estrato_6,eficiencia_q,equidad_corr,n_familias,a_j_media
+TOTAL,BM,97743,2147.0,1.81,8256.0,0.2143,0.0928,0.1111,0.116,0.152,0.1389,0.1474,0.14,257.5909,252.6215,256.6731,262.4319,262.3549,260.39,255.4017,0.0215,0.0242,0.0212,0.0162,0.0648,0.1025,0.0299,257.5909,0.2143,,
+1,,15258,,,,,,,,,,,,,,,,,,,,,,,,,,,,15637.0,0.0928
+2,,55896,,,,,,,,,,,,,,,,,,,,,,,,,,,,57109.0,0.1111
+3,,24747,,,,,,,,,,,,,,,,,,,,,,,,,,,,25154.0,0.116
+4,,1269,,,,,,,,,,,,,,,,,,,,,,,,,,,,1357.0,0.152
+5,,508,,,,,,,,,,,,,,,,,,,,,,,,,,,,566.0,0.1389
+6,,65,,,,,,,,,,,,,,,,,,,,,,,,,,,,67.0,0.1474
