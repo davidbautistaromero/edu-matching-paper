@@ -37,16 +37,7 @@
   },
   "corr_vj_qj": -0.03536,
   "utilidad": "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps",
-  "escenario_A": {
-    "sigma_cluster": null,
-    "corr_v_bias": -0.06613,
-    "corr_v_true": -0.003,
-    "delta": -0.06313
-  },
-  "escenario_B": {
-    "sigma_cluster": 0.15,
-    "corr_v_bias": -0.07311,
-    "corr_v_true": -0.04307,
-    "delta": -0.03004
-  }
+  "corr_v_bias": -0.06613,
+  "corr_v_true": -0.003,
+  "delta": -0.06313
 }

@@ -2,8 +2,8 @@
 08b_datos_sinteticos.py
 =======================
 Experimento completamente sintético de sesgo visual en elección escolar.
-Genera dos escenarios de segregación espacial para el análisis de sensibilidad
-del efecto del sesgo visual.
+Familias y colegios distribuidos uniformemente en [0,1]² — aísla el efecto
+puro del sesgo visual sin confundir con segregación residencial.
 
 Solo dos inputs de datos reales:
   1. mu_q, std_q del puntaje Saber 11 (colegios_features_imputed.geojson, col q_j)
@@ -26,31 +26,12 @@ Donde:
              de infraestructura escolar (Neilson 2021, Duarte et al. 2012).
     ε_ij     ~ Gumbel(0, SIGMA)
 
-Escenarios de segregación espacial
------------------------------------
-A — Sin segregación (sigma_cluster=None):
-    Familias y colegios en posiciones aleatorias uniformes [0,1]².
-    Aísla el efecto puro del sesgo visual sin confundir con segregación residencial.
-
-B — Con segregación (sigma_cluster=0.15):
-    Familias agrupadas en clusters por estrato (E1-E2 en zona sur, E5-E6 en zona
-    norte). Colegios distribuidos aleatoriamente — sin correlación con estratos.
-    Muestra cómo el sesgo visual se amplifica con segregación espacial preexistente.
-
-Función pública
----------------
-    generar_escenario(sigma_cluster, rng, ...) -> dict
-    Usada por 09b_matching_sinteticos.py para generar ambos escenarios.
-
-Outputs (cuando se corre directamente)
+Outputs
 -------
   data/primary/sinteticos_b_colegios.parquet
-  data/primary/sinteticos_b_estudiantes_A.parquet
-  data/primary/sinteticos_b_estudiantes_B.parquet
-  data/primary/sinteticos_b_preferencias_bias_A.parquet
-  data/primary/sinteticos_b_preferencias_true_A.parquet
-  data/primary/sinteticos_b_preferencias_bias_B.parquet
-  data/primary/sinteticos_b_preferencias_true_B.parquet
+  data/primary/sinteticos_b_estudiantes.parquet
+  data/primary/sinteticos_b_preferencias_bias.parquet
+  data/primary/sinteticos_b_preferencias_true.parquet
   reports/sinteticos_b_calibracion.json
 """
 
@@ -161,78 +142,43 @@ log.info(f"  Ratio cupos/estudiantes: {colegios['capacidad_sintetica'].sum() / N
 alpha_s = {s: ALPHA_0 / (s ** GAMMA_POW) for s in range(1, 7)}   # Gallego & Hernando 2009
 gamma_s = {s: 0.30 / s for s in range(1, 7)}                      # Neilson 2021
 
-# Centros de cluster por estrato — para escenario con segregación espacial
-# Inspirado en la geografía de Bogotá: sur-occidente (E1-E2) → centro (E3) → norte (E5-E6)
-# Separación mínima entre estratos adyacentes ~0.16 (~1.6 sigmas con sigma=0.10)
-# Separación E1-E6 ~0.99 (~10 sigmas) → sin solapamiento entre extremos
-CENTROS_CLUSTER = {
-    1: [0.15, 0.15],   # sur profundo (Ciudad Bolívar, Usme)
-    2: [0.30, 0.20],   # sur (San Cristóbal, Rafael Uribe)
-    3: [0.45, 0.35],   # centro-sur (Santa Fe, Los Mártires)
-    4: [0.55, 0.60],   # centro-norte (Teusaquillo, Barrios Unidos)
-    5: [0.70, 0.75],   # norte (Suba, Usaquén)
-    6: [0.85, 0.85],   # norte alto (Chapinero norte, Usaquén alto)
-}
-
-
 # ─────────────────────────────────────────────────────────────────────────────
-# Función principal: generar un escenario dado el grado de segregación
+# Función principal: generar datos sintéticos
 # ─────────────────────────────────────────────────────────────────────────────
 def generar_escenario(
-    sigma_cluster: float | None,
     rng_local: np.random.Generator,
     estrato_arr: np.ndarray,
     colegios: pd.DataFrame,
-    label: str = "A",
 ) -> dict:
     """
-    Genera las matrices de utilidad y rankings de preferencia para un escenario.
+    Genera las matrices de utilidad y rankings de preferencia.
+    Familias y colegios distribuidos uniformemente en [0,1]².
 
     Parameters
     ----------
-    sigma_cluster : float or None
-        None  → escenario A: coordenadas uniformes aleatorias (sin segregación)
-        float → escenario B: clusters gaussianos por estrato (sigma controla dispersión)
     rng_local : np.random.Generator
-        RNG con seed propio para reproducibilidad.
     estrato_arr : np.ndarray shape (N,)
-        Estrato de cada estudiante.
     colegios : pd.DataFrame
-        DataFrame con columnas q_j_std, v_j, capacidad_sintetica, coord_x, coord_y.
-    label : str
-        Etiqueta del escenario para logging.
 
     Returns
     -------
-    dict con: estrato_arr, pref_bias_df, pref_true_df, dist_matrix, U_bias, U_true,
-              coord_estudiantes, corr_v_bias, corr_v_true, delta
+    dict con: estrato_arr, pref_bias_df, pref_true_df, dist_matrix,
+              U_bias, U_true, coord_estudiantes, corr_v_bias, corr_v_true, delta
     """
     N = len(estrato_arr)
     M = len(colegios)
-    school_arr    = colegios["id_establecimiento"].to_numpy(dtype=str)
+    school_arr     = colegios["id_establecimiento"].to_numpy(dtype=str)
     coord_colegios = colegios[["coord_x", "coord_y"]].values
     q_j_std = colegios["q_j_std"].values
     v_j     = colegios["v_j"].values
 
-    # Coordenadas de estudiantes
-    if sigma_cluster is None:
-        coord_est = rng_local.uniform(size=(N, 2))
-        log.info(f"  [{label}] Coordenadas uniformes (sin segregación)")
-    else:
-        coord_est = np.zeros((N, 2))
-        for i, s in enumerate(estrato_arr):
-            centro = CENTROS_CLUSTER[int(s)]
-            coord_est[i] = np.clip(
-                rng_local.normal(centro, sigma_cluster, size=2), 0, 1
-            )
-        log.info(f"  [{label}] Clusters gaussianos sigma={sigma_cluster}")
-
+    coord_est   = rng_local.uniform(size=(N, 2))
     dist_matrix = cdist(coord_est, coord_colegios).astype(np.float32)
-    log.info(f"  [{label}] dist media={dist_matrix.mean():.4f}  max={dist_matrix.max():.4f}")
+    log.info(f"  dist media={dist_matrix.mean():.4f}  max={dist_matrix.max():.4f}")
 
-    alpha_i = np.array([alpha_s[int(s)] for s in estrato_arr])
-    gamma_i = np.array([gamma_s[int(s)] for s in estrato_arr])
-    eps     = rng_local.gumbel(0, SIGMA, size=(N, M))
+    alpha_i  = np.array([alpha_s[int(s)] for s in estrato_arr])
+    gamma_i  = np.array([gamma_s[int(s)] for s in estrato_arr])
+    eps      = rng_local.gumbel(0, SIGMA, size=(N, M))
     dist_pen = alpha_i[:, None] * np.log1p(dist_matrix)
 
     U_bias = q_j_std[None, :] - dist_pen + gamma_i[:, None] * v_j[None, :] + eps
@@ -253,20 +199,19 @@ def generar_escenario(
     corr_t  = float(np.corrcoef(estrato_arr, [v_by_id[s] for s in top1_t])[0, 1])
     delta   = corr_b - corr_t
 
-    log.info(f"  [{label}] corr(estrato,v_top1) bias={corr_b:+.4f}  true={corr_t:+.4f}  Δ={delta:+.4f}")
+    log.info(f"  corr(estrato,v_top1) bias={corr_b:+.4f}  true={corr_t:+.4f}  Δ={delta:+.4f}")
 
     return {
-        "label"              : label,
-        "estrato_arr"        : estrato_arr,
-        "pref_bias_df"       : pref_bias_df,
-        "pref_true_df"       : pref_true_df,
-        "dist_matrix"        : dist_matrix,
-        "U_bias"             : U_bias,
-        "U_true"             : U_true,
-        "coord_estudiantes"  : coord_est,
-        "corr_v_bias"        : corr_b,
-        "corr_v_true"        : corr_t,
-        "delta"              : delta,
+        "estrato_arr"       : estrato_arr,
+        "pref_bias_df"      : pref_bias_df,
+        "pref_true_df"      : pref_true_df,
+        "dist_matrix"       : dist_matrix,
+        "U_bias"            : U_bias,
+        "U_true"            : U_true,
+        "coord_estudiantes" : coord_est,
+        "corr_v_bias"       : corr_b,
+        "corr_v_true"       : corr_t,
+        "delta"             : delta,
     }
 
 
@@ -284,15 +229,12 @@ for s, count in zip(*np.unique(estrato_arr, return_counts=True)):
     log.info(f"  E{s}: {count} ({count/N_STUDENTS:.1%})")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. Generar los dos escenarios
+# 4. Generar datos sintéticos
 # ─────────────────────────────────────────────────────────────────────────────
-log.info("Paso 4 — Generando escenarios A y B...")
+log.info("Paso 4 — Generando datos sintéticos...")
 
-rng_A = np.random.default_rng(SEED + 1)
-rng_B = np.random.default_rng(SEED + 2)
-
-esc_A = generar_escenario(None,  rng_A, estrato_arr, colegios, label="A")
-esc_B = generar_escenario(0.10,  rng_B, estrato_arr, colegios, label="B")
+rng_main = np.random.default_rng(SEED + 1)
+esc = generar_escenario(rng_main, estrato_arr, colegios)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 5. Guardar outputs
@@ -301,24 +243,15 @@ log.info("Paso 5 — Guardando outputs...")
 
 colegios.to_parquet(OUT_P / "sinteticos_b_colegios.parquet", index=False)
 
-for esc in [esc_A, esc_B]:
-    lbl = esc["label"]
-    est_df = pd.DataFrame({
-        "id_estudiante": [f"S{i:04d}" for i in range(N_STUDENTS)],
-        "estrato":       estrato_arr,
-        "coord_x":       esc["coord_estudiantes"][:, 0],
-        "coord_y":       esc["coord_estudiantes"][:, 1],
-    })
-    est_df.to_parquet(OUT_P / f"sinteticos_b_estudiantes_{lbl}.parquet", index=False)
-    esc["pref_bias_df"].to_parquet(OUT_P / f"sinteticos_b_preferencias_bias_{lbl}.parquet")
-    esc["pref_true_df"].to_parquet(OUT_P / f"sinteticos_b_preferencias_true_{lbl}.parquet")
-    log.info(f"  sinteticos_b_estudiantes_{lbl}.parquet")
-    log.info(f"  sinteticos_b_preferencias_bias_{lbl}.parquet")
-    log.info(f"  sinteticos_b_preferencias_true_{lbl}.parquet")
-
-# Actualizar preferencias escenario A para compatibilidad con versión anterior
-esc_A["pref_bias_df"].to_parquet(OUT_P / "sinteticos_b_preferencias_bias.parquet")
-esc_A["pref_true_df"].to_parquet(OUT_P / "sinteticos_b_preferencias_true.parquet")
+est_df = pd.DataFrame({
+    "id_estudiante": [f"S{i:04d}" for i in range(N_STUDENTS)],
+    "estrato":       estrato_arr,
+    "coord_x":       esc["coord_estudiantes"][:, 0],
+    "coord_y":       esc["coord_estudiantes"][:, 1],
+})
+est_df.to_parquet(OUT_P / "sinteticos_b_estudiantes.parquet", index=False)
+esc["pref_bias_df"].to_parquet(OUT_P / "sinteticos_b_preferencias_bias.parquet")
+esc["pref_true_df"].to_parquet(OUT_P / "sinteticos_b_preferencias_true.parquet")
 
 cal = {
     "N_estudiantes"   : N_STUDENTS,
@@ -338,13 +271,17 @@ cal = {
     "gamma_s"         : {str(s): round(g, 6) for s, g in gamma_s.items()},
     "corr_vj_qj"      : round(float(np.corrcoef(colegios["v_j"], colegios["q_j_std"])[0,1]), 5),
     "utilidad"        : "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps",
-    "escenario_A"     : {"sigma_cluster": None,  **{k: round(esc_A[k], 5) for k in ["corr_v_bias","corr_v_true","delta"]}},
-    "escenario_B"     : {"sigma_cluster": 0.15,  **{k: round(esc_B[k], 5) for k in ["corr_v_bias","corr_v_true","delta"]}},
+    "corr_v_bias"     : round(esc["corr_v_bias"], 5),
+    "corr_v_true"     : round(esc["corr_v_true"], 5),
+    "delta"           : round(esc["delta"], 5),
 }
 
 with open(REP_DIR / "sinteticos_b_calibracion.json", "w", encoding="utf-8") as f:
     json.dump(cal, f, indent=2, ensure_ascii=False)
 
 log.info("  sinteticos_b_colegios.parquet")
+log.info("  sinteticos_b_estudiantes.parquet")
+log.info("  sinteticos_b_preferencias_bias.parquet")
+log.info("  sinteticos_b_preferencias_true.parquet")
 log.info("  sinteticos_b_calibracion.json")
 log.info("Done.")
