@@ -1,0 +1,52 @@
+{
+  "N_estudiantes": 1000,
+  "M_colegios": 50,
+  "ratio_d_o": 1.16,
+  "capacidad_total": 862,
+  "rho": 0.0,
+  "sigma": 1.0,
+  "seed": 42,
+  "alpha_0": 0.3,
+  "gamma_pow": 0.613147,
+  "mu_q": 258.404588,
+  "std_q": 14.006506,
+  "s_bar": 2.2353,
+  "strato_dist": {
+    "1": 0.13652,
+    "2": 0.54586,
+    "3": 0.27386,
+    "4": 0.03437,
+    "5": 0.00828,
+    "6": 0.00111
+  },
+  "alpha_s": {
+    "1": 0.3,
+    "2": 0.196131,
+    "3": 0.152959,
+    "4": 0.128224,
+    "5": 0.111828,
+    "6": 0.1
+  },
+  "gamma_s": {
+    "1": 0.3,
+    "2": 0.15,
+    "3": 0.1,
+    "4": 0.075,
+    "5": 0.06,
+    "6": 0.05
+  },
+  "corr_vj_qj": -0.03536,
+  "utilidad": "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps",
+  "escenario_A": {
+    "sigma_cluster": null,
+    "corr_v_bias": -0.06613,
+    "corr_v_true": -0.003,
+    "delta": -0.06313
+  },
+  "escenario_B": {
+    "sigma_cluster": 0.15,
+    "corr_v_bias": -0.07311,
+    "corr_v_true": -0.04307,
+    "delta": -0.03004
+  }
+}

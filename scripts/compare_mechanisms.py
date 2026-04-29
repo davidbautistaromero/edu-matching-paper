@@ -2,9 +2,9 @@
 compare_mechanisms.py
 =====================
 Genera figura y tabla comparativa de los 3 mecanismos de asignación:
-  - BM  : Boston Mechanism
-  - DA  : Deferred Acceptance puro distancia
-  - SED : DA con prioridad lexicográfica Resolución 1587/2025
+  - BM     : Boston Mechanism
+  - DA     : Deferred Acceptance puro distancia
+  - SED-lex: DA con prioridad lexicográfica Resolución 1587/2025
 
 Inputs
 ------
@@ -38,28 +38,39 @@ sed_df  = pd.read_csv(REP_DIR / "matching_sed_comparison.csv")
 sed_row = sed_df[sed_df["condicion"] == "SED-lex"].iloc[0]
 
 mecanismos = ["BM", "DA", "SED-lex"]
+
+def g(row, col):
+    return float(row[col]) if col in row.index else np.nan
+
 data = {
-    "rank_medio"     : [float(bm_row["rank_medio"]),    float(da_row["rank_medio"]),    float(sed_row["rank_medio"])],
-    "blocking_pairs" : [float(bm_row["blocking_pairs"]),float(da_row["blocking_pairs"]),float(sed_row["blocking_pairs"])],
-    "equidad_aj"     : [float(bm_row["equidad_aj"]),    float(da_row["equidad_aj"]),    float(sed_row["equidad_aj"])],
-    "sesgo_visual"   : [float(bm_row["sesgo_visual"]),  float(da_row["sesgo_visual"]),  float(sed_row["sesgo_visual"])],
-    "qj_medio"       : [float(bm_row["qj_medio"]),      float(da_row["qj_medio"]),      float(sed_row["qj_medio"])],
-    "rechazo_total"  : [float(bm_row["rechazo_total"]), float(da_row["rechazo_total"]), float(sed_row["rechazo_total"])],
-    "n_asignados"    : [float(bm_row["n_asignados"]),   float(da_row["n_asignados"]),   float(sed_row["n_asignados"])],
+    "rank_medio"      : [g(bm_row, "rank_medio"),      g(da_row, "rank_medio"),      g(sed_row, "rank_medio")],
+    "blocking_pairs"  : [g(bm_row, "blocking_pairs"),  g(da_row, "blocking_pairs"),  g(sed_row, "blocking_pairs")],
+    "equidad_aj"      : [g(bm_row, "equidad_aj"),       g(da_row, "equidad_aj"),       g(sed_row, "equidad_aj")],
+    "sesgo_visual"    : [g(bm_row, "sesgo_visual"),     g(da_row, "sesgo_visual"),     g(sed_row, "sesgo_visual")],
+    "rechazo_e1"      : [g(bm_row, "rechazo_estrato_1"),g(da_row, "rechazo_estrato_1"),g(sed_row, "rechazo_estrato_1")],
+    "rechazo_e2"      : [g(bm_row, "rechazo_estrato_2"),g(da_row, "rechazo_estrato_2"),g(sed_row, "rechazo_estrato_2")],
+    "rechazo_total"   : [g(bm_row, "rechazo_total"),    g(da_row, "rechazo_total"),    g(sed_row, "rechazo_total")],
+    "n_asignados"     : [g(bm_row, "n_asignados"),      g(da_row, "n_asignados"),      g(sed_row, "n_asignados")],
 }
+
+# Rechazo promedio E1+E2 (estratos vulnerables)
+data["rechazo_vulnerable"] = [
+    np.nanmean([data["rechazo_e1"][i], data["rechazo_e2"][i]])
+    for i in range(3)
+]
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. Tabla resumen
 # ─────────────────────────────────────────────────────────────────────────────
 tabla = pd.DataFrame({
-    "Mecanismo"           : mecanismos,
-    "Asignados"           : [int(v) for v in data["n_asignados"]],
-    "Rank medio"          : [round(v, 3) for v in data["rank_medio"]],
-    "Blocking pairs"      : [int(v) for v in data["blocking_pairs"]],
-    "Equidad (corr a_j)"  : [round(v, 4) for v in data["equidad_aj"]],
-    "Sesgo visual (corr)" : [round(v, 4) for v in data["sesgo_visual"]],
-    "Saber 11 medio"      : [round(v, 2) for v in data["qj_medio"]],
-    "Tasa rechazo"        : [f"{v:.1%}" for v in data["rechazo_total"]],
+    "Mecanismo"              : mecanismos,
+    "Asignados"              : [int(v) for v in data["n_asignados"]],
+    "Rank medio"             : [round(v, 3) for v in data["rank_medio"]],
+    "Blocking pairs"         : [int(v) for v in data["blocking_pairs"]],
+    "Equidad corr(E, a_j)"   : [round(v, 4) for v in data["equidad_aj"]],
+    "Sesgo visual corr"      : [round(v, 4) for v in data["sesgo_visual"]],
+    "Rechazo E1-2 (%)"       : [f"{v:.1%}" for v in data["rechazo_vulnerable"]],
+    "Rechazo total (%)"      : [f"{v:.1%}" for v in data["rechazo_total"]],
 })
 
 tabla.to_csv(REP_DIR / "comparativa_mecanismos.csv", index=False)
@@ -78,62 +89,61 @@ plt.rcParams.update({
 })
 
 colors = ["#4292c6", "#969696", "#fd8d3c"]
-x      = np.arange(len(mecanismos))
-w      = 0.55
+x = np.arange(len(mecanismos))
+w = 0.55
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 8))
 axes = axes.flatten()
 
-# Panel 1: rank medio (eficiencia Pareto — menor es mejor)
+# Panel 1: rank medio — eficiencia Pareto (menor es mejor)
 ax = axes[0]
 bars = ax.bar(x, data["rank_medio"], width=w, color=colors, edgecolor="white")
 ax.set_xticks(x); ax.set_xticklabels(mecanismos)
 ax.set_ylabel("Rank medio obtenido")
 ax.set_title("Eficiencia (Pareto)\nmenor = mejor")
-ax.set_ylim(0, max(data["rank_medio"]) * 1.2)
+ax.set_ylim(0, max(data["rank_medio"]) * 1.25)
 for bar, v in zip(bars, data["rank_medio"]):
     ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.03,
             f"{v:.2f}", ha="center", va="bottom", fontsize=9)
 
-# Panel 2: equidad_aj (correlación estrato × a_j — menor es mejor)
+# Panel 2: equidad — corr(estrato, a_j) (menor es mejor)
 ax = axes[1]
 bars = ax.bar(x, data["equidad_aj"], width=w, color=colors, edgecolor="white")
 ax.set_xticks(x); ax.set_xticklabels(mecanismos)
 ax.set_ylabel("corr(estrato, $a_j$)")
 ax.set_title("Equidad — atractivo asignado\nmenor = más equitativo")
-ymin = min(data["equidad_aj"]) * 0.9
-ymax = max(data["equidad_aj"]) * 1.1
+ymin = min(data["equidad_aj"]) * 0.90
+ymax = max(data["equidad_aj"]) * 1.10
 ax.set_ylim(ymin, ymax)
 for bar, v in zip(bars, data["equidad_aj"]):
-    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + (ymax-ymin)*0.01,
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + (ymax - ymin) * 0.01,
             f"{v:.4f}", ha="center", va="bottom", fontsize=9)
 
-# Panel 3: sesgo visual (correlación estrato × a_j_visual — menor es mejor)
+# Panel 3: sesgo visual — corr(estrato, a_j_visual) (menor es mejor)
 ax = axes[2]
 bars = ax.bar(x, data["sesgo_visual"], width=w, color=colors, edgecolor="white")
 ax.set_xticks(x); ax.set_xticklabels(mecanismos)
-ax.set_ylabel("corr(estrato, $a_j^{visual}$)")
+ax.set_ylabel("corr(estrato, $a_j^{\\mathrm{visual}}$)")
 ax.set_title("Sesgo visual\nmenor = menos sesgo")
-ymin = min(data["sesgo_visual"]) * 0.9
-ymax = max(data["sesgo_visual"]) * 1.1
+ymin = min(data["sesgo_visual"]) * 0.90
+ymax = max(data["sesgo_visual"]) * 1.10
 ax.set_ylim(ymin, ymax)
 for bar, v in zip(bars, data["sesgo_visual"]):
-    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + (ymax-ymin)*0.01,
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + (ymax - ymin) * 0.01,
             f"{v:.4f}", ha="center", va="bottom", fontsize=9)
 
-# Panel 4: Saber 11 medio (calidad académica — mayor es mejor)
+# Panel 4: tasa de rechazo estratos vulnerables E1-E2 (menor es mejor)
 ax = axes[3]
-bars = ax.bar(x, data["qj_medio"], width=w, color=colors, edgecolor="white")
+bars = ax.bar(x, [v * 100 for v in data["rechazo_vulnerable"]],
+              width=w, color=colors, edgecolor="white")
 ax.set_xticks(x); ax.set_xticklabels(mecanismos)
-ax.set_ylabel("Puntaje Saber 11 medio ($q_j$)")
-ax.set_title("Calidad académica asignada\nmayor = mejor")
-ymin = min(data["qj_medio"]) * 0.998
-ymax = max(data["qj_medio"]) * 1.002
-ax.set_ylim(ymin, ymax)
-ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.1f"))
-for bar, v in zip(bars, data["qj_medio"]):
-    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + (ymax-ymin)*0.01,
-            f"{v:.1f}", ha="center", va="bottom", fontsize=9)
+ax.set_ylabel("Tasa de rechazo (%)")
+ax.set_title("Rechazo estratos vulnerables (E1-E2)\nmenor = más inclusivo")
+ymax = max(v * 100 for v in data["rechazo_vulnerable"]) * 1.3
+ax.set_ylim(0, ymax)
+for bar, v in zip(bars, data["rechazo_vulnerable"]):
+    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + ymax * 0.01,
+            f"{v:.1%}", ha="center", va="bottom", fontsize=9)
 
 plt.suptitle("Comparativa de mecanismos de asignación escolar — Bogotá\n"
              "Población de primer ingreso (99,890 familias expandidas)",
@@ -142,5 +152,5 @@ plt.tight_layout()
 fig.savefig(FIG_DIR / "comparativa_mecanismos.png", bbox_inches="tight")
 plt.close(fig)
 
-print(f"\nFigura guardada: reports/figures/matching/comparativa_mecanismos.png")
-print(f"Tabla guardada:  reports/comparativa_mecanismos.csv")
+print(f"\nFigura: reports/figures/matching/comparativa_mecanismos.png")
+print(f"Tabla:  reports/comparativa_mecanismos.csv")
