@@ -423,52 +423,68 @@ def compute_metrics(
     visual_col: str,
     estrato_arr: np.ndarray,
     label: str = "",
+    localidad_arr: np.ndarray | None = None,
 ) -> dict:
     """
     Calcula el conjunto completo de métricas de evaluación de un matching.
 
-    Métricas
-    --------
-    eficiencia_q  : calidad media (quality_col) del colegio asignado a los estudiantes
-                    matched. Refleja qué tan bien el mecanismo maximiza calidad agregada.
+    Framework de métricas
+    ---------------------
+    1. EFICIENCIA (sentido Pareto)
+       rank_medio    : posición media (1-based) del colegio asignado en la lista
+                       declarada de cada familia. rank=1 → obtuvo su primera opción.
+                       Fundamentado en Abdulkadiroğlu & Sönmez (2003): la comparación
+                       de mecanismos se hace sobre el rank obtenido respecto a prefs
+                       verdaderas. No depende de ninguna variable externa.
 
-    equidad_corr  : correlación de Pearson entre estrato del estudiante y calidad
-                    quality_col de su colegio asignado. Un sistema equitativo debería
-                    tener esta correlación ≈ 0 (acceso a calidad independiente del estrato).
+    2. EQUIDAD
+       equidad_aj    : correlación de Pearson entre estrato y a_j del colegio asignado.
+                       a_j captura el atractivo compuesto revelado por la demanda
+                       (calidad académica + entorno visual + seguridad + transporte).
+                       Correlación ≈ 0 → el mecanismo distribuye el atractivo sin
+                       sesgo socioeconómico.
+       aj_estrato_{s}: a_j media asignada a familias de estrato s. Permite ver la
+                       distribución desagregada del atractivo.
 
-    sesgo_visual  : correlación de Pearson entre estrato y visual_col del colegio
-                    asignado. Si estratos altos terminan en colegios más visualmente
-                    atractivos (mayor v_j o sobre_demanda), hay sesgo visual en la asignación.
+    3. SESGO VISUAL
+       sesgo_visual  : correlación de Pearson entre estrato y visual_col (v_j) del
+                       colegio asignado. Mide si el atractivo visual específico —
+                       la contribución metodológica del paper — favorece estratos altos.
 
-    rank_medio    : posición media (1-based) del colegio asignado en la lista de prefs.
-                    Mide cuán bien se respetan las preferencias declaradas.
+    4. CALIDAD ACADÉMICA (política pública)
+       qj_medio      : media de quality_col (q_j) entre familias asignadas.
+                       Variable de bienestar de política: ¿los estudiantes acceden
+                       a colegios académicamente buenos?
+       qj_estrato_{s}: q_j media por estrato. ¿Los estratos bajos acceden a calidad?
 
-    blocking_pairs: número de pares (estudiante, colegio) que harían preferir
-                    mutuamente cambiar el matching. DA = 0, BM > 0 generalmente.
-
-    q_estrato_{s} : calidad media asignada a estudiantes de estrato s (s=1..6).
-                    Permite analizar distribución de calidad por estrato.
+    5. DÉFICIT SECTORIZADO
+       rechazo_total    : fracción de familias sin asignación en la población total.
+       rechazo_estrato_{s}: fracción de familias sin asignación por estrato s.
+       Si localidad_arr se provee: rechazo_loc_{nombre} por localidad.
 
     Parameters
     ----------
     assignment : list[str | None]
         Resultado de boston_mechanism o deferred_acceptance.
     pref_lists : list[list[str]]
-        Listas de preferencias usadas en el matching (necesarias para rank y BP).
+        Listas de preferencias (para rank_medio y blocking_pairs).
     school_cap : dict[str, int]
-        Capacidades (necesario para contar blocking pairs).
+        Capacidades (para blocking_pairs).
     priority_fn : callable
-        Función de prioridad (necesaria para blocking pairs).
+        Función de prioridad (para blocking_pairs).
     school_info : pd.DataFrame
-        DataFrame indexado por school_id con al menos quality_col y visual_col.
+        Indexado por school_id. Debe contener quality_col, visual_col y "a_j".
     quality_col : str
-        Columna de calidad (ej. "q_j" para datos reales, "q_j_std" para sintéticos).
+        Columna de calidad académica (ej. "q_j", "q_j_std").
     visual_col : str
-        Columna de señal visual (ej. "sobre_demanda_j" o "v_j").
+        Columna de señal visual pura (ej. "v_j").
     estrato_arr : np.ndarray
-        Estrato socioeconómico de cada estudiante (índice = posición en assignment).
+        Estrato socioeconómico de cada familia (1–6).
     label : str
-        Etiqueta para logging (ej. "BM", "DA", "BM-bias").
+        Etiqueta del mecanismo (ej. "BM", "DA").
+    localidad_arr : np.ndarray | None
+        Localidad de cada familia (nombre string). Si se provee, calcula
+        tasas de rechazo por localidad.
 
     Returns
     -------
@@ -477,59 +493,106 @@ def compute_metrics(
     N            = len(assignment)
     matched_mask = np.array([a is not None for a in assignment])
 
-    # Extraer calidad y señal visual del colegio asignado a cada estudiante
-    # np.nan para los no asignados (excluidos de correlaciones)
-    q_assigned = np.array([
-        school_info.loc[a, quality_col] if (a is not None and a in school_info.index)
-        else np.nan
-        for a in assignment
-    ])
-    v_assigned = np.array([
-        school_info.loc[a, visual_col] if (a is not None and a in school_info.index)
-        else np.nan
-        for a in assignment
-    ])
+    # ── Extraer atributos del colegio asignado ────────────────────────────────
+    # a_j: atractivo compuesto (siempre desde school_info["a_j"] si existe)
+    has_aj = "a_j" in school_info.columns
 
-    # Restringir al subconjunto de estudiantes matched para las correlaciones
-    q_matched = q_assigned[matched_mask]
-    v_matched = v_assigned[matched_mask]
-    s_matched = estrato_arr[matched_mask]
+    def get_col(col):
+        return np.array([
+            school_info.loc[a, col]
+            if (a is not None and a in school_info.index and col in school_info.columns)
+            else np.nan
+            for a in assignment
+        ])
 
-    eficiencia = float(np.nanmean(q_matched))
+    q_assigned  = get_col(quality_col)
+    v_assigned  = get_col(visual_col)
+    aj_assigned = get_col("a_j") if has_aj else q_assigned  # fallback a quality_col
 
-    # Correlaciones: usar np.corrcoef que devuelve la matriz de correlación 2×2;
-    # el elemento [0,1] es la correlación entre las dos variables
-    corr_eq = float(np.corrcoef(s_matched, q_matched)[0, 1]) if len(s_matched) > 1 else np.nan
-    corr_vj = float(np.corrcoef(s_matched, v_matched)[0, 1]) if len(s_matched) > 1 else np.nan
+    # ── Subconjunto matched ───────────────────────────────────────────────────
+    q_m  = q_assigned[matched_mask]
+    v_m  = v_assigned[matched_mask]
+    aj_m = aj_assigned[matched_mask]
+    s_m  = estrato_arr[matched_mask]
 
-    # Calidad media por estrato (para analizar distribución desagregada)
-    q_by_strato = {}
+    def safe_corr(x, y):
+        mask = ~(np.isnan(x) | np.isnan(y))
+        if mask.sum() < 2:
+            return np.nan
+        return float(np.corrcoef(x[mask], y[mask])[0, 1])
+
+    # ── 1. Eficiencia (Pareto) ────────────────────────────────────────────────
+    rank_med = mean_rank_obtained(assignment, pref_lists)
+    bp       = count_blocking_pairs(assignment, pref_lists, school_cap, priority_fn)
+
+    # ── 2. Equidad (a_j) ─────────────────────────────────────────────────────
+    equidad_aj = safe_corr(s_m, aj_m)
+    aj_by_s    = {}
     for s in range(1, 7):
         mask_s = (estrato_arr == s) & matched_mask
-        q_by_strato[s] = float(np.nanmean(q_assigned[mask_s])) if mask_s.sum() > 0 else np.nan
+        aj_by_s[s] = float(np.nanmean(aj_assigned[mask_s])) if mask_s.sum() > 0 else np.nan
 
-    # Rank medio: posición del colegio asignado en la lista del estudiante
-    rank_med = mean_rank_obtained(assignment, pref_lists)
+    # ── 3. Sesgo visual (v_j) ─────────────────────────────────────────────────
+    sesgo_visual = safe_corr(s_m, v_m)
 
-    # Blocking pairs: pares (estudiante, colegio) mutuamente preferibles
-    bp = count_blocking_pairs(assignment, pref_lists, school_cap, priority_fn)
+    # ── 4. Calidad académica (q_j) ────────────────────────────────────────────
+    qj_medio  = float(np.nanmean(q_m))
+    qj_by_s   = {}
+    for s in range(1, 7):
+        mask_s = (estrato_arr == s) & matched_mask
+        qj_by_s[s] = float(np.nanmean(q_assigned[mask_s])) if mask_s.sum() > 0 else np.nan
 
+    # ── 5. Déficit sectorizado ────────────────────────────────────────────────
+    rechazo_total = float((~matched_mask).sum() / N) if N > 0 else np.nan
+
+    rechazo_by_s = {}
+    for s in range(1, 7):
+        mask_s = estrato_arr == s
+        n_s    = mask_s.sum()
+        n_rec  = (~matched_mask[mask_s]).sum() if n_s > 0 else 0
+        rechazo_by_s[s] = float(n_rec / n_s) if n_s > 0 else np.nan
+
+    rechazo_by_loc = {}
+    if localidad_arr is not None:
+        for loc in np.unique(localidad_arr):
+            mask_l  = localidad_arr == loc
+            n_l     = mask_l.sum()
+            n_rec_l = (~matched_mask[mask_l]).sum() if n_l > 0 else 0
+            rechazo_by_loc[str(loc)] = float(n_rec_l / n_l) if n_l > 0 else np.nan
+
+    # ── Ensamblar métricas ────────────────────────────────────────────────────
     metrics = {
-        "condicion"      : label,
-        "n_asignados"    : int(matched_mask.sum()),
-        "n_sin_asignar"  : int((~matched_mask).sum()),
-        "eficiencia_q"   : round(eficiencia, 4),
-        "equidad_corr"   : round(corr_eq, 4),
-        "sesgo_visual"   : round(corr_vj, 4),
-        "rank_medio"     : round(rank_med, 3),
-        "blocking_pairs" : bp,
-        **{f"q_estrato_{s}": round(q_by_strato[s], 4) for s in range(1, 7)},
+        "condicion"        : label,
+        "n_asignados"      : int(matched_mask.sum()),
+        "n_sin_asignar"    : int((~matched_mask).sum()),
+        # Eficiencia Pareto
+        "rank_medio"       : round(rank_med, 3),
+        "blocking_pairs"   : bp,
+        # Equidad (a_j compuesto)
+        "equidad_aj"       : round(equidad_aj, 4) if not np.isnan(equidad_aj) else np.nan,
+        **{f"aj_estrato_{s}": round(aj_by_s[s], 4) if not np.isnan(aj_by_s[s]) else np.nan
+           for s in range(1, 7)},
+        # Sesgo visual
+        "sesgo_visual"     : round(sesgo_visual, 4) if not np.isnan(sesgo_visual) else np.nan,
+        # Calidad académica
+        "qj_medio"         : round(qj_medio, 4),
+        **{f"qj_estrato_{s}": round(qj_by_s[s], 4) if not np.isnan(qj_by_s[s]) else np.nan
+           for s in range(1, 7)},
+        # Déficit
+        "rechazo_total"    : round(rechazo_total, 4),
+        **{f"rechazo_estrato_{s}": round(rechazo_by_s[s], 4) if not np.isnan(rechazo_by_s[s]) else np.nan
+           for s in range(1, 7)},
+        **{f"rechazo_loc_{k}": round(v, 4) for k, v in rechazo_by_loc.items()},
+        # Backward-compat (scripts de Jhoan usan estos nombres)
+        "eficiencia_q"     : round(qj_medio, 4),
+        "equidad_corr"     : round(equidad_aj, 4) if not np.isnan(equidad_aj) else np.nan,
     }
 
     log.info(
         f"  [{label}] asignados={metrics['n_asignados']:,} | "
-        f"q̄={eficiencia:.3f} | corr_q={corr_eq:+.4f} | "
-        f"corr_v={corr_vj:+.4f} | rank={rank_med:.2f} | BP={bp:,}"
+        f"rank={rank_med:.2f} | BP={bp:,} | "
+        f"equidad_aj={equidad_aj:+.4f} | sesgo_v={sesgo_visual:+.4f} | "
+        f"qj={qj_medio:.3f} | rechazo={rechazo_total:.1%}"
     )
 
     return metrics

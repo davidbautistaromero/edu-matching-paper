@@ -1,5 +1,5 @@
 """
-06b_capacidad_colegios.py
+04b_build_capacidad.py
 =========================
 Calcula la capacidad estimada de cada colegio oficial y genera un parquet
 con la informacion de colegios que entra al modelo de matching.
