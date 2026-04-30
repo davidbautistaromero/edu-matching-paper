@@ -226,7 +226,7 @@ w = 0.35
 METRICAS = [
     ("rank_medio",   "Rank medio obtenido",  "Eficiencia (Pareto)\nmenor = mejor",         ".2f"),
     ("equidad_qj",   "corr(estrato, $q_j$)", "Equidad — calidad académica\nmenor = mejor", ".3f"),
-    ("sesgo_visual", "corr(estrato, $v_j$)", "Sesgo visual\nmenor = menos sesgo",           ".3f"),
+    ("sesgo_visual", "corr(estrato, $v_j$)", "Sesgo visual\n(negativo = favorece E1-2)",    ".3f"),
 ]
 
 fig, axes = plt.subplots(1, 3, figsize=(14, 5))
