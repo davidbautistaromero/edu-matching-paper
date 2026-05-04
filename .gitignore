@@ -14,11 +14,21 @@ data/images/gsv/gsv_catalog.csv
 data/images/gsv/gsv_catalog_muestra.csv
 data/images/mapillary/mapillary_catalog.csv
 data/images/mapillary/resumen_fechas.csv
+reports/paper/ppt.tex
 
 # Archivos auxiliares temporales
 scripts/_*.py
 _*.py
 _*.txt
+*.log
+*.nav
+*.aux
+*.snm
+*.toc
+*.out
+*.gz
+*.tex
+
 
 # Parquet y outputs grandes
 data/embeddings/

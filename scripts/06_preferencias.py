@@ -63,8 +63,8 @@ LOC_NAME_TO_CODE = {
     "Ciudad Bolivar": 19, "Sumapaz": 20,
 }
 
-ALPHA_0 = 0.30
-GAMMA   = np.log(3) / np.log(4)   # ~0.792 — calibrado para ratio A/D = 3x con 4 categorías SISBEN
+ALPHA_0 = 1.0
+GAMMA   = np.log(3) / np.log(17.5)  # ≈ 0.384 — log(3)/log(17.5) donde 17.5 = y_p90/y_p10 = 1400000/80000
 
 # Umbrales DANE 2024 — líneas de pobreza monetaria (ingreso per cápita mensual, pesos corrientes)
 # Fuente: DANE, Pobreza Monetaria Colombia 2024
@@ -118,16 +118,13 @@ df["cod_localidad"] = df["nombre_localidad"].apply(
 
 unmapped = df["cod_localidad"].isna().sum()
 if unmapped > 0:
-    log.warning(f"  {unmapped} colegios sin match de localidad -- fallback parcial")
-    for idx in df[df["cod_localidad"].isna()].index:
-        raw = strip_accents(str(df.loc[idx, "nombre_localidad"]))
-        for name, code in LOC_NAME_TO_CODE.items():
-            if raw[:5] == strip_accents(name)[:5]:
-                df.loc[idx, "cod_localidad"] = code
-                break
+    log.info(f"  Eliminando {unmapped} colegios sin match de localidad (sin fallback)")
+    df = df[df["cod_localidad"].notna()].reset_index(drop=True)
+    a_j = model.predict(df[features])
+    school_ids = df["id_establecimiento"].values
+log.info(f"  Colegios restantes tras filtro de localidad: {len(df)}")
 
 school_loc = df["cod_localidad"].values
-log.info(f"  Colegios con localidad asignada: {(~pd.isna(school_loc)).sum()} / {len(school_loc)}")
 log.info(f"  Colegios puntuados: {len(a_j)} | a_j min={a_j.min():.4f} max={a_j.max():.4f}")
 
 # ── Step 2: Cargar familias y distancias ──────────────────────────────────────
@@ -150,21 +147,18 @@ school_loc_al  = school_loc[idx_schools]
 dist_matrix = dist.values.astype(np.float32)
 log.info(f"  Familias: {len(fam):,} | Colegios: {len(school_ids_al)}")
 
-# ── Step 3: alpha_s por categoría SISBEN (N_ingpc) ────────────────────────────
-log.info("Step 3 -- Calculando alpha_s por categoría SISBEN (N_ingpc)...")
+# ── Step 3: alpha continuo por N_ingpc individual ─────────────────────────────
+log.info("Step 3 -- Calculando alpha continuo por N_ingpc individual...")
 
-# sisben_cat precalculado en 05b_expandir_familias.py — leer directamente
-estrato = pd.to_numeric(fam["estrato_real"], errors="coerce").fillna(3).clip(1, 6).values
+# sisben_cat se mantiene para Step 8 (mapa)
 sisben_cat = pd.to_numeric(fam["sisben_cat"], errors="coerce").fillna(3).astype(int).values
 
-# alpha_s: categoría A (posición 1) → 0.30, D (posición 4) → 0.30/4^0.613 ≈ 0.100
-# Se usa (cat + 1) como índice ordinal en la power law
-alpha_s = ALPHA_0 / (sisben_cat + 1) ** GAMMA
+y_bar = float(np.nanmean(pd.to_numeric(fam["N_ingpc"], errors="coerce")))
+N_ingpc_arr = pd.to_numeric(fam["N_ingpc"], errors="coerce").values
+ingpc_safe = np.where(np.isnan(N_ingpc_arr) | (N_ingpc_arr <= 0), y_bar, N_ingpc_arr)
+alpha_arr = ALPHA_0 * (y_bar / ingpc_safe) ** GAMMA
 
-SISBEN_LABELS = ["A (pobreza extrema)", "B (pobreza moderada)", "C (vulnerable)", "D (no priorizado)"]
-for cat, label in enumerate(SISBEN_LABELS):
-    n_cat = (sisben_cat == cat).sum()
-    log.info(f"  SISBEN {label}: {n_cat:,} ({n_cat/len(sisben_cat)*100:.1f}%) | alpha={ALPHA_0/(cat+1)**GAMMA:.4f}")
+log.info(f"  y_bar={y_bar:.0f} | alpha media={alpha_arr.mean():.4f} | min={alpha_arr.min():.4f} | max={alpha_arr.max():.4f}")
 
 # ── Step 4: Choice set mask por localidad ─────────────────────────────────────
 log.info("Step 4 -- Construyendo choice sets por localidad...")
@@ -203,7 +197,7 @@ util_writer = None
 for batch_start in range(0, n_fam, BATCH_SIZE):
     batch_end = min(batch_start + BATCH_SIZE, n_fam)
     b_dist  = dist_matrix[batch_start:batch_end]
-    b_alpha = alpha_s[batch_start:batch_end]
+    b_alpha = alpha_arr[batch_start:batch_end]
     b_mask  = mask[batch_start:batch_end]
 
     epsilon  = rng.gumbel(0, 1, size=(batch_end - batch_start, len(school_ids_al))).astype(np.float32)
@@ -294,6 +288,13 @@ try:
                  zorder=5)
 
     ctx.add_basemap(ax, source=ctx.providers.CartoDB.Positron, zoom=12)
+
+    # Recortar extent sur: mínimo lat de familias - 0.05° (~5.5 km)
+    familia_lat_min = fam_plot["lat"].min()
+    pt_bottom = gpd.GeoDataFrame(
+        geometry=[Point(0, familia_lat_min - 0.05)], crs="EPSG:4326"
+    ).to_crs("EPSG:3857")
+    ax.set_ylim(bottom=pt_bottom.geometry[0].y)
 
     legend_patches = [
         mpatches.Patch(color=SISBEN_COLORS[i], label=SISBEN_LABELS_MAP[i]) for i in range(4)

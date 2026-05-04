@@ -217,29 +217,43 @@ Para cada familia: identifica UPZ → selecciona manzana con mismo `estrato_real
 ### S3. Modelo de utilidad y rankings
 
 ```
-u_ij = β·X_j  −  α_s · ln(1 + d_ij)  +  ε_ij
+u_ij = β·X_j  −  α(y_i) · ln(1 + d_ij)  +  ε_ij
 ```
 
 | Componente | Descripción |
 |---|---|
-| `β·X_j` | Score de calidad predicho por Ridge M1 — homogéneo entre estratos |
-| `α_s · ln(1+d_ij)` | Penalización distancia heterogénea por estrato |
+| `β·X_j` | Score de calidad predicho por Ridge M1 — homogéneo entre hogares |
+| `α(y_i) · ln(1+d_ij)` | Penalización distancia heterogénea por ingreso per cápita del hogar |
 | `ε_ij ~ Gumbel(0,1)` | Ruido logístico (seed=42) |
 
-**Penalización por distancia** — power law calibrada con ratio α₁/α₆ = 3× (Hastings et al. 2009):
+**Penalización por distancia** — función continua del ingreso per cápita; γ calibrado imponiendo α(p10)/α(p90) = 3× (ratio de Hastings et al. 2009 entre p10 y p90 de la distribución de ingreso bogotana), donde p10 = $80,000 y p90 = $1,400,000 (ratio y_p90/y_p10 = 17.5×), de modo que γ = log(3)/log(17.5) = 0.384:
 
 ```
-α_s = 0.30 / s^0.613
+α(y_i) = α₀ · (ȳ / y_i)^γ
 ```
 
-| Estrato | α_s |
-|---|---|
-| 1 | 0.300 |
-| 2 | 0.196 |
-| 3 | 0.153 |
-| 4 | 0.128 |
-| 5 | 0.112 |
-| 6 | 0.100 |
+donde `y_i` = `N_ingpc` del hogar _i_ (COP mensuales), `ȳ` = ingreso medio muestral (≈ $507,000 según `familias_expandidas.parquet`), `α₀ = 1.0` y `γ = log(3)/log(17.5) = 0.384`. Por construcción, `α(ȳ) = α₀ = 1.0`.
+
+**¿Por qué ingreso continuo en lugar de estrato?**
+
+- **Estrato ≠ ingreso:** el estrato en Colombia clasifica la infraestructura del *barrio* para subsidiar servicios públicos, no el ingreso del hogar. La correlación empírica estrato–ingreso es positiva pero moderada; dos hogares en el mismo estrato pueden tener ingresos muy distintos.
+- **Heterogeneidad intra-grupo:** el estrato discreto colapsa la variación continua del ingreso en seis categorías, perdiendo toda la dispersión dentro de cada grupo. Con ingreso continuo, cada hogar recibe su propia penalización.
+- **Fundamento teórico:** la forma `(ȳ/y_i)^γ` se motiva directamente por la teoría de costo de oportunidad — el costo de transporte pesa *proporcionalmente más* cuando el presupuesto es menor. La especificación con estrato era una aproximación discreta de esta relación.
+
+**α implícito por percentil de ingreso** (`ȳ ≈ $507,000`, `α(y) = 1.0 · (507,000/y)^0.384`):
+
+| Percentil | y_i (COP/mes) | ȳ/y_i | α(y_i) |
+|---|---|---|---|
+| p10 | $80,000 | 6.34 | 1.74 |
+| p25 | $180,000 | 2.82 | 1.40 |
+| p50 | $380,000 | 1.33 | 1.11 |
+| ȳ (media) | $507,000 | 1.00 | 1.00 |
+| p75 | $720,000 | 0.70 | 0.86 |
+| p90 | $1,400,000 | 0.36 | 0.58 |
+
+**¿Por qué α₀ = 1.0?**
+
+La familia con ingreso igual a la media acepta ir aproximadamente 1.7 km extra por +1 desviación estándar de calidad académica. Con la especificación log-distancia: `α(ȳ) · log(1+d) = 1` → `d = e^(1/α₀) − 1 = e^(1/1.0) − 1 ≈ 1.72 km`. Esto es consistente con la movilidad observada en Bogotá, donde la mayoría de familias elige colegios dentro de un radio de 2–3 km de su residencia.
 
 **Choice set:** colegios de la misma localidad. Excepción: La Candelaria (localidad 17) puede elegir en localidades 3 (Santa Fe), 14 (Los Mártires) y 15 (Antonio Nariño).
 
@@ -255,15 +269,23 @@ u_ij = β·X_j  −  α_s · ln(1 + d_ij)  +  ε_ij
 - Prioridad = distancia Haversine (réplica del criterio SED Bogotá)
 - Choice set = localidad (heredado de `06_preferencias.py`)
 
-**Resultados:**
+**Resultados (datos reales — población expandida FEX_C, α continuo por N_ingpc):**
 
-| Mecanismo | Asignados | Eficiencia q | corr(estrato, q) | Rank medio | Blocking pairs |
-|---|---|---|---|---|---|
-| Boston (BM) | 13,568 (100%) | 258.72 | +0.193 | 1.18 | **8,194** |
-| DA (Gale-Shapley) | 13,568 (100%) | 258.73 | +0.192 | 1.19 | **0** ✓ |
-| SED-lex | 13,568 (100%) | — | — | — | **0** ✓ |
+| Mecanismo | Asignados | Rank medio | Blocking pairs | corr(ingreso, a_j) | corr(ingreso, v_j) | Rechazo A-B (%) | Rechazo total (%) |
+|---|---|---|---|---|---|---|---|
+| Boston (BM) | 97,965 | **1.740** | **8,072** | 0.20 | 0.14 | 1.9% | 1.9% |
+| DA (Gale-Shapley) | 97,970 | 2.100 | **0** ✓ | 0.21 | 0.13 | 2.4% | 1.9% |
+| SED-lex | 97,968 | 1.872 | **0** ✓ | **0.17** | **0.13** | **0.0%** | 1.9% |
 
-DA: 0 blocking pairs (estable por construcción). La diferencia de eficiencia BM vs DA es mínima — la capacidad total (45,119 cupos) supera ampliamente la demanda (13,568 familias). La competencia existe dentro de localidades, pero casi todos obtienen su primera o segunda preferencia. Grupos A-B: rechazo 0.0% en datos reales para SED-lex.
+**Lectura:**
+
+- **Eficiencia (rank medio):** BM es el más eficiente (1.74 ≈ primera opción promedio), DA el más costoso (2.10). SED-lex intermedio (1.87). El costo de strategy-proofness es ~0.36 posiciones de rank (BM→DA).
+- **Estabilidad:** solo DA y SED-lex son estables (BP=0). BM genera 8,072 blocking pairs — pares familia-colegio donde ambos preferirían estar juntos pero no están asignados.
+- **Equidad (corr ingreso-atractivo):** SED-lex tiene la correlación más baja (0.17) — las familias de menor ingreso acceden a colegios relativamente más atractivos. BM y DA ≈ 0.20-0.21.
+- **Sesgo visual:** prácticamente idéntico entre mecanismos (0.13-0.14) — el mecanismo no suprime ni amplifica el peso de lo visual en la asignación final.
+- **Rechazo grupos vulnerables (SISBEN A+B):** SED-lex = **0.0%** por diseño (prioridad lexicográfica). DA = 2.4% (peor que BM por mayor competencia inducida por strategy-proofness). Rechazo total idéntico (1.9%) — la capacidad del sistema es la restricción binding.
+
+**Resultado central:** SED-lex domina en equidad e inclusión sin sacrificar eficiencia sustancialmente (+0.13 rank vs BM). El mecanismo actual de la SED (prioridad por distancia+vulnerabilidad) ya está bien diseñado en términos de equidad — el problema no es el mecanismo sino el sesgo en las preferencias declaradas.
 
 ### M2. Experimento sintético — modelo de utilidad
 
@@ -319,7 +341,7 @@ Grid: `γ₀ ∈ {0.25, 0.50, 0.75, 1.00, 1.25, 1.50}`, paso 0.25, mundo fijo se
 - Gale, D. & Shapley, L. (1962). College Admissions and the Stability of Marriage. *American Mathematical Monthly*, 69(1), 9–15.
 
 ### Preferencias y distancia en school choice
-- Hastings, J., Kane, T. & Staiger, D. (2009). Heterogeneous Preferences and the Efficacy of Public School Choice. *NBER Working Paper* 12145. [Fuente de α₀=0.30 y ratio α₁/α₆=3×]
+- Hastings, J., Kane, T. & Staiger, D. (2009). Heterogeneous Preferences and the Efficacy of Public School Choice. *NBER Working Paper* 12145. [Fuente del ratio α(p10)/α(p90)=3×; γ=0.384 se calibra imponiendo este ratio sobre la distribución bogotana (y_p90/y_p10=17.5×)]
 - Burgess, S., Greaves, E., Vignoles, A. & Wilson, D. (2015). What Parents Want: School Preferences and School Choice. *Economic Journal*, 125(587), 1262–1289. [Gradiente de distancia heterogéneo por estrato, especificación log-distancia]
 - Gallego, F. & Hernando, A. (2009). School Choice in Chile: Looking at the Demand Side. *Pontificia Universidad Católica de Chile*, Working Paper. [Contexto LatAm: restricción geográfica como principal determinante en familias de bajos ingresos]
 - Einav, L. & Levin, J. (2010). Empirical Industrial Organization: A Progress Report. *Journal of Economic Perspectives*, 24(2), 145–162. [Especificación log-log de parámetros heterogéneos]

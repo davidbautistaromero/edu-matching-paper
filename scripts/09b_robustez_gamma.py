@@ -54,8 +54,8 @@ RATIO_D_O      = 1.16
 RHO            = 0.00
 SIGMA          = 1.0
 SEED           = 42
-ALPHA_0        = 0.30
-GAMMA_POW      = np.log(3) / np.log(6)   # ≈ 0.613
+ALPHA_0        = 1.0
+GAMMA_POW      = np.log(3) / np.log(17.5)  # ≈ 0.384 — log(3)/log(17.5) donde 17.5 = y_p90/y_p10 = 1400000/80000
 CAPACIDAD_TOTAL = round(N_STUDENTS / RATIO_D_O)   # ≈ 862
 N_REPS         = 1   # mundo fijo coincide con seed=42 de 09_matching_sinteticos.py
 
@@ -84,12 +84,15 @@ ingpc_pool = {
     for c in range(4)
 }
 
-# alpha indexado por sisben_cat (0-3), proxy estrato: A≈E1, B≈E2, C≈E3, D≈E5
-_estrato_proxy = {0: 1, 1: 2, 2: 3, 3: 5}
-alpha_s = {c: ALPHA_0 / (_estrato_proxy[c] ** GAMMA_POW) for c in range(4)}
+# alpha: continuo por N_ingpc individual (igual que 06_preferencias.py)
+# gamma: sigue indexado por sisben_cat (susceptibilidad al sesgo visual)
+_estrato_proxy = {0: 1, 1: 2, 2: 3, 3: 5}  # para gamma únicamente
+
+# y_bar: media del ingreso real de familias expandidas
+y_bar = float(fam_df['N_ingpc'].mean())
 
 log.info(f'  mu_q={mu_q:.4f}  std_q={std_q:.4f}')
-log.info(f'  alpha_s: { {s: round(a,4) for s,a in alpha_s.items()} }')
+log.info(f'  y_bar (ingreso medio real) = ${y_bar:,.0f}')
 
 # ── 2. Funciones auxiliares ───────────────────────────────────────────────────
 
@@ -268,8 +271,10 @@ for rep in range(N_REPS):
         perm = rng.permutation(N_STUDENTS)
         lottery[j] = {int(idx): int(rank) for rank, idx in enumerate(perm)}
 
-    alpha_i  = np.array([alpha_s[int(c)] for c in sisben_arr])
-    dist_pen = alpha_i[:, None] * np.log1p(dist_matrix)
+    # alpha continuo por ingreso individual
+    ingpc_safe = np.where(np.isnan(ingpc_arr) | (ingpc_arr <= 0), y_bar, ingpc_arr)
+    alpha_i    = ALPHA_0 * (y_bar / ingpc_safe) ** GAMMA_POW
+    dist_pen   = alpha_i[:, None] * np.log1p(dist_matrix)
     eps      = rng.gumbel(0, SIGMA, size=(N_STUDENTS, M_SCHOOLS))
 
     # Preferencias sin sesgo — iguales para todos los gamma de esta réplica

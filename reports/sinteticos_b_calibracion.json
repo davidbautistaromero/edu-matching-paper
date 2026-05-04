@@ -6,8 +6,8 @@
   "rho": 0.0,
   "sigma": 1.0,
   "seed": 42,
-  "alpha_0": 0.3,
-  "gamma_pow": 0.613147,
+  "alpha_0": 1.0,
+  "gamma_pow": 0.383835,
   "mu_q": 258.404588,
   "std_q": 14.006506,
   "sisben_dist": {
@@ -16,12 +16,7 @@
     "2": 0.28542,
     "3": 0.11615
   },
-  "alpha_s": {
-    "0": 0.3,
-    "1": 0.196131,
-    "2": 0.152959,
-    "3": 0.111828
-  },
+  "y_bar": 548294.36,
   "gamma_s": {
     "0": 1.0,
     "1": 0.5,
@@ -29,8 +24,8 @@
     "3": 0.2
   },
   "corr_vj_qj": 0.0945,
-  "utilidad": "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps | gamma_s=1.0/proxy_estrato (γ₀=1: relación 1:1 v_j/q_j para cat A)",
-  "corr_v_bias": -0.26379,
-  "corr_v_true": -0.00267,
-  "delta": -0.26113
+  "utilidad": "U_bias = q_j_std - alpha_i*log1p(d) + gamma_s*v_j + eps | alpha_i=ALPHA_0*(y_bar/N_ingpc_i)^GAMMA_POW (continuo) | gamma_s=1.0/proxy_estrato",
+  "corr_v_bias": -0.26426,
+  "corr_v_true": 0.00205,
+  "delta": -0.26631
 }

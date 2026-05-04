@@ -66,8 +66,8 @@ RHO        = 0.00          # contrafactual: v_j ⊥ q_j (datos reales = 0.30)
 # académica están desacopladas. Justificación en docstring del módulo.
 SIGMA      = 1.0
 SEED       = 42
-ALPHA_0    = 0.30
-GAMMA_POW  = np.log(3) / np.log(6)   # ≈ 0.613
+ALPHA_0    = 1.0
+GAMMA_POW  = np.log(3) / np.log(17.5)  # ≈ 0.384 — log(3)/log(17.5) donde 17.5 = y_p90/y_p10 = 1400000/80000
 
 CAPACIDAD_TOTAL = round(N_STUDENTS / RATIO_D_O)   # ≈ 862
 
@@ -150,12 +150,13 @@ log.info(f"  Ratio cupos/estudiantes: {colegios['capacidad_sintetica'].sum() / N
 # ─────────────────────────────────────────────────────────────────────────────
 # Parámetros de utilidad (constantes, no calibrados con OLS)
 # ─────────────────────────────────────────────────────────────────────────────
-# alpha y gamma indexados por SISBEN cat (0-3), más vulnerable = mayor penalización distancia
-# Mapeo SISBEN → proxy estrato: A≈E1, B≈E2, C≈E3, D≈E5
-# alpha: Gallego & Hernando 2009 (escala por vulnerabilidad relativa)
-# gamma: calibrado desde datos reales por estrato
-_estrato_proxy = {0: 1, 1: 2, 2: 3, 3: 5}  # cat SISBEN → estrato proxy
-alpha_s = {c: ALPHA_0 / (_estrato_proxy[c] ** GAMMA_POW) for c in range(4)}
+# alpha: continuo por N_ingpc individual (igual que 06_preferencias.py)
+#   alpha_i = ALPHA_0 * (y_bar / N_ingpc_i) ^ GAMMA_POW
+#   Gallego & Hernando 2009: familias de menor ingreso tienen penalización de
+#   distancia 3x mayor que las de mayor ingreso.
+# gamma: sigue indexado por SISBEN cat (0-3) porque depende de susceptibilidad
+#   al sesgo visual, no del ingreso directamente
+_estrato_proxy = {0: 1, 1: 2, 2: 3, 3: 5}  # cat SISBEN → proxy para gamma
 gamma_s = {c: 1.0 / _estrato_proxy[c] for c in range(4)}   # γ₀=1: relación 1:1 v_j vs q_j para cat A
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -164,7 +165,9 @@ gamma_s = {c: 1.0 / _estrato_proxy[c] for c in range(4)}   # γ₀=1: relación 
 def generar_escenario(
     rng_local: np.random.Generator,
     estrato_arr: np.ndarray,
+    ingpc_arr: np.ndarray,
     colegios: pd.DataFrame,
+    y_bar: float,
 ) -> dict:
     """
     Genera las matrices de utilidad y rankings de preferencia.
@@ -173,8 +176,10 @@ def generar_escenario(
     Parameters
     ----------
     rng_local : np.random.Generator
-    estrato_arr : np.ndarray shape (N,)
-    colegios : pd.DataFrame
+    estrato_arr : np.ndarray shape (N,)  — sisben_cat 0-3 (para gamma)
+    ingpc_arr   : np.ndarray shape (N,)  — N_ingpc individual (para alpha continuo)
+    colegios    : pd.DataFrame
+    y_bar       : float — ingreso medio de referencia (de familias_expandidas)
 
     Returns
     -------
@@ -192,7 +197,11 @@ def generar_escenario(
     dist_matrix = cdist(coord_est, coord_colegios).astype(np.float32)
     log.info(f"  dist media={dist_matrix.mean():.4f}  max={dist_matrix.max():.4f}")
 
-    alpha_i  = np.array([alpha_s[int(s)] for s in estrato_arr])
+    # alpha continuo por ingreso individual (igual que 06_preferencias.py)
+    ingpc_safe = np.where(np.isnan(ingpc_arr) | (ingpc_arr <= 0), y_bar, ingpc_arr)
+    alpha_i    = ALPHA_0 * (y_bar / ingpc_safe) ** GAMMA_POW
+    log.info(f"  alpha_i: media={alpha_i.mean():.4f}  min={alpha_i.min():.4f}  max={alpha_i.max():.4f}")
+
     gamma_i  = np.array([gamma_s[int(s)] for s in estrato_arr])
     eps      = rng_local.gumbel(0, SIGMA, size=(N, M))
     dist_pen = alpha_i[:, None] * np.log1p(dist_matrix)
@@ -261,8 +270,12 @@ for c, count in zip(*np.unique(sisben_arr, return_counts=True)):
 # ─────────────────────────────────────────────────────────────────────────────
 log.info("Paso 4 — Generando datos sintéticos...")
 
+# y_bar: media del ingreso real de familias expandidas (referencia para alpha continuo)
+y_bar = float(np.nanmean(fam_df["N_ingpc"].values))
+log.info(f"  y_bar (ingreso medio real) = ${y_bar:,.0f}")
+
 rng_main = np.random.default_rng(SEED + 1)
-esc = generar_escenario(rng_main, estrato_arr, colegios)
+esc = generar_escenario(rng_main, estrato_arr, ingpc_arr, colegios, y_bar)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 5. Guardar outputs
@@ -295,10 +308,10 @@ cal = {
     "mu_q"            : round(mu_q, 6),
     "std_q"           : round(std_q, 6),
     "sisben_dist"     : {str(c): round(p, 5) for c, p in sisben_dist.items()},
-    "alpha_s"         : {str(s): round(a, 6) for s, a in alpha_s.items()},
+    "y_bar"           : round(y_bar, 2),
     "gamma_s"         : {str(s): round(g, 6) for s, g in gamma_s.items()},
     "corr_vj_qj"      : round(float(np.corrcoef(colegios["v_j"], colegios["q_j_std"])[0,1]), 5),
-    "utilidad"        : "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps | gamma_s=1.0/proxy_estrato (γ₀=1: relación 1:1 v_j/q_j para cat A)",
+    "utilidad"        : "U_bias = q_j_std - alpha_i*log1p(d) + gamma_s*v_j + eps | alpha_i=ALPHA_0*(y_bar/N_ingpc_i)^GAMMA_POW (continuo) | gamma_s=1.0/proxy_estrato",
     "corr_v_bias"     : round(esc["corr_v_bias"], 5),
     "corr_v_true"     : round(esc["corr_v_true"], 5),
     "delta"           : round(esc["delta"], 5),
