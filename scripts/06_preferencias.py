@@ -64,7 +64,11 @@ LOC_NAME_TO_CODE = {
 }
 
 ALPHA_0 = 0.30
-GAMMA   = np.log(3) / np.log(6)   # ~0.613
+GAMMA   = np.log(3) / np.log(4)   # ~0.792 — calibrado para ratio A/D = 3x con 4 categorías SISBEN
+
+# Umbrales DANE 2024 — líneas de pobreza monetaria (ingreso per cápita mensual, pesos corrientes)
+# Fuente: DANE, Pobreza Monetaria Colombia 2024
+SISBEN_UMBRALES = [227_220, 460_198, 897_987]  # A|B, B|C, C|D
 TOP_K   = 20
 SEED    = 42
 
@@ -146,13 +150,21 @@ school_loc_al  = school_loc[idx_schools]
 dist_matrix = dist.values.astype(np.float32)
 log.info(f"  Familias: {len(fam):,} | Colegios: {len(school_ids_al)}")
 
-# ── Step 3: alpha_s por estrato ───────────────────────────────────────────────
-log.info("Step 3 -- Calculando alpha_s por estrato...")
+# ── Step 3: alpha_s por categoría SISBEN (N_ingpc) ────────────────────────────
+log.info("Step 3 -- Calculando alpha_s por categoría SISBEN (N_ingpc)...")
+
+# sisben_cat precalculado en 05b_expandir_familias.py — leer directamente
 estrato = pd.to_numeric(fam["estrato_real"], errors="coerce").fillna(3).clip(1, 6).values
-alpha_s = ALPHA_0 / estrato ** GAMMA
-for s in range(1, 7):
-    n_s = (estrato == s).sum()
-    log.info(f"  Estrato {s}: {n_s:,} familias | alpha={ALPHA_0 / s**GAMMA:.4f}")
+sisben_cat = pd.to_numeric(fam["sisben_cat"], errors="coerce").fillna(3).astype(int).values
+
+# alpha_s: categoría A (posición 1) → 0.30, D (posición 4) → 0.30/4^0.613 ≈ 0.100
+# Se usa (cat + 1) como índice ordinal en la power law
+alpha_s = ALPHA_0 / (sisben_cat + 1) ** GAMMA
+
+SISBEN_LABELS = ["A (pobreza extrema)", "B (pobreza moderada)", "C (vulnerable)", "D (no priorizado)"]
+for cat, label in enumerate(SISBEN_LABELS):
+    n_cat = (sisben_cat == cat).sum()
+    log.info(f"  SISBEN {label}: {n_cat:,} ({n_cat/len(sisben_cat)*100:.1f}%) | alpha={ALPHA_0/(cat+1)**GAMMA:.4f}")
 
 # ── Step 4: Choice set mask por localidad ─────────────────────────────────────
 log.info("Step 4 -- Construyendo choice sets por localidad...")
@@ -238,4 +250,70 @@ rankings_df.to_parquet(out_rank)
 log.info(f"  preferencias_familias.parquet  ({out_rank.stat().st_size / 1e6:.1f} MB)")
 
 log.info(f"  utilidades_familias.parquet    ({out_util.stat().st_size / 1e6:.1f} MB)")
+
+# ── Step 8: Mapa clasificación SISBEN ─────────────────────────────────────────
+log.info("Step 8 -- Generando mapa de clasificación SISBEN...")
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+    import contextily as ctx
+    import geopandas as gpd
+    from shapely.geometry import Point
+
+    SISBEN_COLORS  = ["#d73027", "#fc8d59", "#fee090", "#91bfdb"]  # A→D: rojo→azul
+    SISBEN_LABELS_MAP = ["SISBEN A\n(pobreza extrema)", "SISBEN B\n(pobreza moderada)",
+                         "SISBEN C\n(vulnerable)", "SISBEN D\n(no priorizado)"]
+
+    # Construir GeoDataFrame con categoría SISBEN (sample para velocidad si N > 50K)
+    fam_plot = fam.copy()
+    fam_plot["sisben_cat"] = sisben_cat
+    fam_plot = fam_plot.dropna(subset=["lat", "lon"])
+
+    MAX_PLOT = 40_000
+    if len(fam_plot) > MAX_PLOT:
+        fam_plot = fam_plot.sample(MAX_PLOT, random_state=42)
+
+    gdf_fam = gpd.GeoDataFrame(
+        fam_plot,
+        geometry=[Point(lon, lat) for lon, lat in zip(fam_plot["lon"], fam_plot["lat"])],
+        crs="EPSG:4326"
+    ).to_crs("EPSG:3857")
+
+    # Colegios
+    gdf_col = gpd.read_file(ROOT / "data" / "primary" / "colegios_features_imputed.geojson")
+    gdf_col = gdf_col.to_crs("EPSG:3857")
+
+    fig, ax = plt.subplots(figsize=(11, 12))
+
+    for cat_i in range(4):
+        sub = gdf_fam[gdf_fam["sisben_cat"] == cat_i]
+        sub.plot(ax=ax, color=SISBEN_COLORS[cat_i], markersize=8, alpha=0.65,
+                 linewidth=0, label=SISBEN_LABELS_MAP[cat_i], zorder=2)
+
+    gdf_col.plot(ax=ax, color="black", marker="^", markersize=15,
+                 zorder=5)
+
+    ctx.add_basemap(ax, source=ctx.providers.CartoDB.Positron, zoom=12)
+
+    legend_patches = [
+        mpatches.Patch(color=SISBEN_COLORS[i], label=SISBEN_LABELS_MAP[i]) for i in range(4)
+    ] + [plt.Line2D([0], [0], marker="^", color="w", markerfacecolor="black",
+                    markersize=7, label="Colegio oficial")]
+
+    ax.legend(handles=legend_patches, loc="lower left", fontsize=9,
+              framealpha=0.85, title="Categoría SISBEN", title_fontsize=9)
+    ax.set_title("Distribución espacial de familias por categoría SISBEN\n(Bogotá, EM2021)",
+                 fontsize=13, fontweight="bold", pad=12)
+    ax.axis("off")
+
+    fig_dir = ROOT / "reports" / "figures"
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    out_map = fig_dir / "mapa_sisben_familias.png"
+    fig.savefig(out_map, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    log.info(f"  mapa_sisben_familias.png  ({out_map.stat().st_size / 1e6:.1f} MB)")
+
+except Exception as e:
+    log.warning(f"  Mapa SISBEN no generado: {e}")
+
 log.info("Done.")

@@ -35,6 +35,9 @@ DIST_OUT   = Path(r"C:\paper-AI\data\processed\distancias_expandidas.parquet")
 
 rng = np.random.default_rng(SEED)
 
+# Umbrales DANE 2024 — ingreso per cápita mensual (pesos corrientes)
+SISBEN_UMBRALES = [227_220, 460_198, 897_987]
+
 # ── Cargar datos ──────────────────────────────────────────────────────────────
 print("Cargando familias_ubicadas.parquet...")
 fam = pd.read_parquet(FAM_PATH)
@@ -79,6 +82,28 @@ print(f"  Min distancia: {dist_exp.min():.4f} km  |  Max: {dist_exp.max():.4f} k
 # ── Guardar ───────────────────────────────────────────────────────────────────
 print("\nGuardando outputs...")
 fam_exp = fam_exp.drop(columns=["_idx_original"])
+
+# ── Calcular sisben_cat una sola vez ──────────────────────────────────────────
+# cat 0=A (extrema), 1=B (moderada), 2=C (vulnerable), 3=D (no priorizado)
+# Fallback: si N_ingpc nulo → E1→A, E2→B, E3→C, E4-6→D
+ingpc   = pd.to_numeric(fam_exp.get("N_ingpc",      pd.Series(dtype=float)), errors="coerce").values
+estrato = pd.to_numeric(fam_exp.get("estrato_real", pd.Series(dtype=float)), errors="coerce").fillna(3).clip(1, 6).values
+
+fam_exp["sisben_cat"] = np.where(
+    ~np.isnan(ingpc),
+    np.where(ingpc < SISBEN_UMBRALES[0], 0,
+    np.where(ingpc < SISBEN_UMBRALES[1], 1,
+    np.where(ingpc < SISBEN_UMBRALES[2], 2, 3))),
+    np.where(estrato <= 1, 0,
+    np.where(estrato <= 2, 1,
+    np.where(estrato <= 3, 2, 3)))
+).astype(int)
+
+labels = ["A (extrema)", "B (moderada)", "C (vulnerable)", "D (no priorizado)"]
+for cat_i, label in enumerate(labels):
+    n = (fam_exp["sisben_cat"] == cat_i).sum()
+    print(f"  SISBEN {label}: {n:,} ({n/len(fam_exp)*100:.1f}%)")
+
 fam_exp.to_parquet(FAM_OUT, index=False)
 size_fam = FAM_OUT.stat().st_size / 1e6
 print(f"  {FAM_OUT.name}  ({len(fam_exp):,} filas, {size_fam:.1f} MB)")

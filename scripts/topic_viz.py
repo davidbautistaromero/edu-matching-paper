@@ -1,10 +1,6 @@
 """
 topic_viz.py
 ============
-Grid de top-6 colegios por tópico Ridge M1 relevante.
-- topic_5 (+0.012) — positivo: más sobre-demanda
-- topic_2 (-0.009) — más negativo: menos sobre-demanda
-- topic_1 (-0.006) — segundo negativo
 
 Una imagen por colegio (id_establecimiento): se toma el heading
 con mayor peso en ese tópico para cada colegio, luego top-6 colegios únicos.

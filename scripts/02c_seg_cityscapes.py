@@ -28,7 +28,7 @@ Ejecutar desde cualquier directorio:
 # =============================================================================
 
 import os       # para manejar rutas de archivos y carpetas
-import sys      # para modificar el path de Python (necesario para importar 'network')
+import sys      # para modificar el path de Python (necesario para importar 'deeplabv3')
 import logging  # para imprimir mensajes con hora y nivel (INFO, WARNING, etc.)
 from pathlib import Path  # para crear carpetas si no existen
 
@@ -39,11 +39,11 @@ from tqdm import tqdm       # barra de progreso en el loop principal
 import torch                # framework de deep learning
 from torchvision import transforms  # transformaciones estándar de imagen (resize, normalizar)
 
-# El módulo 'network' vive en la misma carpeta que este script.
+# El módulo 'deeplabv3' vive en la misma carpeta que este script.
 # Usamos __file__ para que la ruta sea absoluta y funcione sin importar
 # desde qué directorio se ejecute el script.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from network import modeling  # aquí está la definición de DeepLabV3+
+from deeplabv3 import modeling  # aquí está la definición de DeepLabV3+
 
 
 # =============================================================================

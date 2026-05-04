@@ -8,6 +8,7 @@ within its UPZ, rather than anywhere inside the full UPZ polygon.
 Inputs
 ------
 - data/raw/em2021_familias_escolar.csv        : households (COD_UPZ_GRUPO, ESTRATO2021, …)
+- data/raw/em2021_variables_adicionales.csv   : N_pobre_monetario, N_pobre_extremo, N_ingpc
 - data/raw/upz/upz.shp                        : UPZ polygons (UPLCODIGO field)
 - data/raw/manzana_estratificacion.geojson    : manzanas in ESRI JSON format (EPSG:3116)
 - data/primary/colegios_features.geojson      : schools with Point geometry
@@ -33,6 +34,7 @@ from shapely.geometry import Point, Polygon, shape  # noqa: F401
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT          = Path(__file__).resolve().parent.parent
 FAMILIAS_CSV  = ROOT / "data" / "raw" / "em2021_familias_escolar.csv"
+VARS_ADIC_CSV = ROOT / "data" / "raw" / "em2021_variables_adicionales.csv"
 UPZ_SHP       = ROOT / "data" / "raw" / "upz" / "upz.shp"
 MANZANAS_JSON = ROOT / "data" / "raw" / "manzana_estratificacion.geojson"
 COLEGIOS_GEO  = ROOT / "data" / "primary" / "colegios_features.geojson"
@@ -54,8 +56,25 @@ fam["COD_UPZ_GRUPO"] = fam["COD_UPZ_GRUPO"].astype(float).astype(int)
 fam["ESTRATO2021"]   = fam["ESTRATO2021"].astype(float).astype(int)
 fam["estrato_real"]  = pd.to_numeric(fam["NVCBP11AA"], errors="coerce").replace(0, pd.NA).astype("Int64")
 
+# Join con variables adicionales: pobreza e ingreso per cápita
+vars_adic = pd.read_csv(
+    VARS_ADIC_CSV,
+    usecols=["directorio_hog", "N_pobre_monetario", "N_pobre_extremo", "N_ingpc"],
+    dtype={"directorio_hog": str, "N_pobre_monetario": "Int8", "N_pobre_extremo": "Int8"},
+)
+vars_adic["N_ingpc"] = pd.to_numeric(vars_adic["N_ingpc"], errors="coerce")
+# directorio_hog = DIRECTORIO + dígito de orden de hogar — truncar último dígito para hacer join
+vars_adic["DIRECTORIO"] = vars_adic["directorio_hog"].str[:-1]
+# Agregar a nivel hogar (tomar primera fila por DIRECTORIO — N_ingpc es a nivel hogar)
+vars_adic = vars_adic.drop_duplicates(subset="DIRECTORIO")
+fam["DIRECTORIO"] = fam["DIRECTORIO"].astype(str)
+fam = fam.merge(vars_adic[["DIRECTORIO", "N_pobre_monetario", "N_pobre_extremo", "N_ingpc"]],
+                on="DIRECTORIO", how="left")
+
+n_matched = fam["N_ingpc"].notna().sum()
 print(f"  Families kept   : {len(fam):,}")
 print(f"  Families dropped: {n_dropped:,} (missing COD_UPZ_GRUPO)")
+print(f"  Matched with vars adicionales: {n_matched:,} / {len(fam):,} (N_ingpc not null)")
 
 # ── Step 2: Load UPZ polygons ──────────────────────────────────────────────────
 print("\nStep 2 - Loading UPZ polygons...")

@@ -8,10 +8,13 @@ Solo familias de primer ingreso (n_hijos_ingreso > 0).
 Modelo de prioridad
 -------------------
 La Resolución 1587/2025 (Art. 19-20) establece un orden lexicográfico de
-categorías priorizadas antes que la población general. Con la EM2021 solo
-podemos identificar limpiamente dos categorías:
-  - SISBEN A-B → aproximada por estrato 1-2 (cat = 0, prioridad alta)
-  - General    → estrato 3-6              (cat = 1, prioridad baja)
+categorías priorizadas antes que la población general. Con EM2021 se usan
+los umbrales DANE 2024 sobre N_ingpc (ingreso per cápita mensual):
+  - SISBEN A → N_ingpc < 227,220             (cat = 0, prioridad máxima)
+  - SISBEN B → N_ingpc < 460,198             (cat = 1, prioridad alta)
+  - SISBEN C → N_ingpc < 897,987             (cat = 2, prioridad media)
+  - SISBEN D → N_ingpc ≥ 897,987             (cat = 3, prioridad baja)
+  Fallback: si N_ingpc es nulo → E1→A, E2→B, E3→C, E4-6→D.
 
 Codificación:
     priority(i, j) = cat(i) × 1e6 + dist_haversine(i, j)
@@ -141,12 +144,20 @@ estrato_arr = (
     .fillna(3).clip(1, 6).astype(int).values
 )
 
-# cat = 0 → SISBEN A-B (estrato 1-2, prioridad alta)
-# cat = 1 → general    (estrato 3-6, prioridad baja)
-categoria = (estrato_arr > 2).astype(int)
+# Categoría de prioridad SED — leer sisben_cat precalculado en familias_expandidas.parquet
+# Fallback cat=3 (D, no priorizado) si la columna aún no existe (pipeline no recorrido)
+if "sisben_cat" in fam_df.columns:
+    categoria = pd.to_numeric(fam_df["sisben_cat"], errors="coerce").fillna(3).astype(int).values
+else:
+    log.warning("  sisben_cat no encontrado — fallback por estrato (correr 05b primero)")
+    categoria = np.where(estrato_arr <= 1, 0,
+                np.where(estrato_arr <= 2, 1,
+                np.where(estrato_arr <= 3, 2, 3))).astype(int)
 
-log.info(f"  SISBEN A-B (E1-2): {(categoria == 0).sum():,} ({(categoria == 0).mean()*100:.1f}%)")
-log.info(f"  General    (E3-6): {(categoria == 1).sum():,} ({(categoria == 1).mean()*100:.1f}%)")
+SISBEN_LABELS = ["A (pobreza extrema)", "B (pobreza moderada)", "C (vulnerable)", "D (no priorizado)"]
+for cat, label in enumerate(SISBEN_LABELS):
+    n = (categoria == cat).sum()
+    log.info(f"  SISBEN {label}: {n:,} ({n/len(categoria)*100:.1f}%)")
 
 pref_lists = [
     [s for s in row.values if isinstance(s, str) and s in valid_schools]
@@ -224,7 +235,7 @@ def build_df(asgn, label):
     return pd.DataFrame({
         "DIRECTORIO"         : fam_df["DIRECTORIO"].values,
         "estrato_real"       : estrato_arr,
-        "categoria_sed"      : categoria,
+        "sisben_cat"         : categoria,
         "id_establecimiento" : asgn,
     }).merge(
         school_info[["a_j", "q_j", "sobre_demanda_j", "nombre_localidad"]].reset_index(),
@@ -241,7 +252,7 @@ comp.to_csv(REP_DIR / "matching_sed_comparison.csv", index=False)
 log.info("  matching_sed_comparison.csv")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9. Figura: equidad por estrato — SED-lex vs DA-dist
+# 9. Figuras: equidad por estrato y por categoría SISBEN
 # ─────────────────────────────────────────────────────────────────────────────
 log.info("Paso 9 — Generando figuras...")
 
@@ -253,28 +264,56 @@ plt.rcParams.update({
     "figure.facecolor": "white", "figure.dpi": 150,
 })
 
+w = 0.35
+COLOR_LEX  = "#4292c6"
+COLOR_DIST = "#969696"
+
+# ── Panel A: por estrato ──────────────────────────────────────────────────────
 estratos = list(range(1, 7))
 labels_e = [f"E{s}" for s in estratos]
-w = 0.35
+qj_lex_e  = [met_lex.get(f"qj_estrato_{s}",  np.nan) for s in estratos]
+qj_dist_e = [met_dist.get(f"qj_estrato_{s}", np.nan) for s in estratos]
 
-qj_lex  = [met_lex.get(f"qj_estrato_{s}",  np.nan) for s in estratos]
-qj_dist = [met_dist.get(f"qj_estrato_{s}", np.nan) for s in estratos]
-x = np.arange(len(estratos))
+# ── Panel B: por categoría SISBEN (calculado directamente desde los matchings) ─
+SISBEN_LABELS_SHORT = ["A\n(ext.)", "B\n(mod.)", "C\n(vuln.)", "D\n(no prior.)"]
+result_lex  = build_df(asgn_lex,  "SED-lex")
+result_dist = build_df(asgn_dist, "DA-dist")
 
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.bar(x - w/2, qj_lex,  w, label="SED lexicográfico", color="#4292c6", edgecolor="white")
-ax.bar(x + w/2, qj_dist, w, label="DA puro distancia", color="#969696", edgecolor="white")
-vals = [v for v in qj_lex + qj_dist if not np.isnan(v)]
-ax.set_ylim(min(vals) * 0.995, max(vals) * 1.005)
-ax.set_xlabel("Estrato del hogar")
-ax.set_ylabel("Puntaje Saber 11 medio del colegio asignado ($q_j$)")
-ax.set_xticks(x)
-ax.set_xticklabels(labels_e)
-ax.legend(fontsize=9)
+qj_lex_s, qj_dist_s = [], []
+for cat_i in range(4):
+    mask_cat = result_lex["sisben_cat"] == cat_i
+    qj_lex_s.append(pd.to_numeric(result_lex.loc[mask_cat, "q_j"], errors="coerce").mean())
+    mask_cat = result_dist["sisben_cat"] == cat_i
+    qj_dist_s.append(pd.to_numeric(result_dist.loc[mask_cat, "q_j"], errors="coerce").mean())
+
+# ── Figura combinada 1×2 ──────────────────────────────────────────────────────
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for ax, labels, qj_lex_v, qj_dist_v, xlabel, title in [
+    (axes[0], labels_e,           qj_lex_e, qj_dist_e,
+     "Estrato del hogar",         "(a) Calidad asignada por estrato"),
+    (axes[1], SISBEN_LABELS_SHORT, qj_lex_s, qj_dist_s,
+     "Categoría SISBEN",          "(b) Calidad asignada por categoría SISBEN"),
+]:
+    x = np.arange(len(labels))
+    ax.bar(x - w/2, qj_lex_v,  w, label="SED lexicográfico", color=COLOR_LEX,  edgecolor="white")
+    ax.bar(x + w/2, qj_dist_v, w, label="DA puro distancia", color=COLOR_DIST, edgecolor="white")
+    vals = [v for v in qj_lex_v + qj_dist_v if v is not None and not np.isnan(v)]
+    if vals:
+        ax.set_ylim(min(vals) * 0.995, max(vals) * 1.005)
+    ax.set_xlabel(xlabel, fontsize=10)
+    ax.set_ylabel("$q_j$ medio (Saber 11 estandarizado)", fontsize=9)
+    ax.set_title(title, fontsize=10, loc="left")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, fontsize=9)
+    ax.legend(fontsize=8, frameon=False)
+
+fig.suptitle("Equidad en calidad académica asignada — SED lexicográfico vs DA distancia",
+             fontsize=11, fontweight="bold")
 plt.tight_layout()
 fig.savefig(FIG_DIR / "sed_equidad.png", bbox_inches="tight")
 plt.close(fig)
-log.info("  sed_equidad.png")
+log.info("  sed_equidad.png (panel estrato + panel SISBEN)")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 10. Resumen en consola

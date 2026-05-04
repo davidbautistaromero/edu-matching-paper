@@ -1,4 +1,4 @@
-Mecanismo,Asignados,Rank medio,Blocking pairs,"Equidad corr(E, a_j)",Sesgo visual corr,Rechazo E1-2 (%),Rechazo total (%)
-BM,97743,1.81,8256,0.2143,0.14,2.3%,2.1%
-DA,97791,2.372,0,0.2169,0.1417,2.8%,2.1%
-SED-lex,97765,2.062,0,0.1959,0.1387,1.2%,2.1%
+Mecanismo,Asignados,Rank medio,Blocking pairs,"Equidad corr(ingreso, a_j)","Sesgo visual corr(ingreso, v_j)",Rechazo grupos A-B (%),Rechazo total (%)
+BM,97752,1.808,8194,0.21,0.14,2.1%,2.1%
+DA,97797,2.374,0,0.22,0.14,2.6%,2.1%
+SED-lex,97773,1.922,0,0.19,0.13,0.0%,2.1%

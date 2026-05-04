@@ -16,7 +16,7 @@ Modelo de utilidad
 
 Donde:
     alpha_s  = ALPHA_0 / s^GAMMA_POW   (Gallego & Hernando 2009)
-    gamma_s  = 0.30 / s                (Neilson 2021)
+    gamma_s  = 0.26 / s                (calibrado desde datos reales)
     v_j      generado con corr(v_j, q_j_std) = RHO controlada
              RHO=0 → escenario contrafactual: infraestructura y calidad académica
              son señales independientes. En los datos reales corr(v_j, q_j)≈0.30;
@@ -53,13 +53,13 @@ log = logging.getLogger(__name__)
 
 ROOT    = Path(__file__).resolve().parent.parent
 COL_P   = ROOT / "data" / "primary" / "colegios_features_imputed.geojson"
-FAM_P   = ROOT / "data" / "processed" / "familias_ubicadas.parquet"
+FAM_P   = ROOT / "data" / "processed" / "familias_expandidas.parquet"   # tiene sisben_cat
 OUT_P   = ROOT / "data" / "primary"
 REP_DIR = ROOT / "reports"
 
 # ─── Parámetros globales ──────────────────────────────────────────────────────
-N_STUDENTS = 1_000
-M_SCHOOLS  = 50
+N_STUDENTS = 10_000
+M_SCHOOLS  = 100
 RATIO_D_O  = 1.16          # calibrado San Cristóbal
 RHO        = 0.00          # contrafactual: v_j ⊥ q_j (datos reales = 0.30)
 # Nota: RHO=0 simula el escenario de riesgo donde infraestructura y calidad
@@ -86,14 +86,25 @@ std_q = float(q_all.std())
 log.info(f"  mu_q={mu_q:.4f}  std_q={std_q:.4f}  (n={len(q_all)} colegios reales)")
 
 fam_df = pd.read_parquet(FAM_P)
-vc     = fam_df["estrato_real"].value_counts()
-strato_counts = {int(s): int(n) for s, n in vc.items() if int(s) in range(1, 7)}
-total_fam     = sum(strato_counts.values())
-strato_dist   = {s: strato_counts[s] / total_fam for s in sorted(strato_counts)}
-s_bar         = sum(s * p for s, p in strato_dist.items())
+fam_df["sisben_cat"] = pd.to_numeric(fam_df["sisben_cat"], errors="coerce").astype("Int64")
+fam_df["N_ingpc"]    = pd.to_numeric(fam_df["N_ingpc"],    errors="coerce")
 
-log.info(f"  s_bar = {s_bar:.3f}")
-log.info(f"  Distribución estratos: { {s: f'{p:.2%}' for s, p in strato_dist.items()} }")
+# Distribución por categoría SISBEN (0=A extrema, 1=B moderada, 2=C vulnerable, 3=D no priorizado)
+vc     = fam_df["sisben_cat"].dropna().astype(int).value_counts()
+sisben_counts = {int(c): int(n) for c, n in vc.items() if int(c) in range(4)}
+total_fam     = sum(sisben_counts.values())
+sisben_dist   = {c: sisben_counts[c] / total_fam for c in sorted(sisben_counts)}
+SISBEN_LABELS = {0: "A (extrema)", 1: "B (moderada)", 2: "C (vulnerable)", 3: "D (no priorizado)"}
+
+# Pool de ingresos reales por categoría SISBEN — para asignar N_ingpc a estudiantes sintéticos
+ingpc_pool = {
+    c: fam_df.loc[fam_df["sisben_cat"] == c, "N_ingpc"].dropna().values
+    for c in range(4)
+}
+
+log.info(f"  Distribución SISBEN:")
+for c, p in sisben_dist.items():
+    log.info(f"    Cat {c} — {SISBEN_LABELS[c]}: {p:.2%}  | pool N_ingpc: {len(ingpc_pool[c]):,}")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. Generar M=50 colegios sintéticos
@@ -139,8 +150,13 @@ log.info(f"  Ratio cupos/estudiantes: {colegios['capacidad_sintetica'].sum() / N
 # ─────────────────────────────────────────────────────────────────────────────
 # Parámetros de utilidad (constantes, no calibrados con OLS)
 # ─────────────────────────────────────────────────────────────────────────────
-alpha_s = {s: ALPHA_0 / (s ** GAMMA_POW) for s in range(1, 7)}   # Gallego & Hernando 2009
-gamma_s = {s: 0.30 / s for s in range(1, 7)}                      # Neilson 2021
+# alpha y gamma indexados por SISBEN cat (0-3), más vulnerable = mayor penalización distancia
+# Mapeo SISBEN → proxy estrato: A≈E1, B≈E2, C≈E3, D≈E5
+# alpha: Gallego & Hernando 2009 (escala por vulnerabilidad relativa)
+# gamma: calibrado desde datos reales por estrato
+_estrato_proxy = {0: 1, 1: 2, 2: 3, 3: 5}  # cat SISBEN → estrato proxy
+alpha_s = {c: ALPHA_0 / (_estrato_proxy[c] ** GAMMA_POW) for c in range(4)}
+gamma_s = {c: 1.0 / _estrato_proxy[c] for c in range(4)}   # γ₀=1: relación 1:1 v_j vs q_j para cat A
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Función principal: generar datos sintéticos
@@ -218,15 +234,27 @@ def generar_escenario(
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. Generar estudiantes (compartidos entre escenarios — mismos estratos)
 # ─────────────────────────────────────────────────────────────────────────────
-log.info(f"Paso 3 — Generando N={N_STUDENTS} estudiantes...")
+log.info(f"Paso 3 — Generando N={N_STUDENTS} estudiantes (grupos SISBEN + ingreso real)...")
 
-strategos   = sorted(strato_dist.keys())
-probs       = np.array([strato_dist[s] for s in strategos])
-probs       = probs / probs.sum()
-estrato_arr = rng.choice(strategos, size=N_STUDENTS, p=probs)
+cats  = sorted(sisben_dist.keys())
+probs = np.array([sisben_dist[c] for c in cats])
+probs = probs / probs.sum()
+sisben_arr  = rng.choice(cats, size=N_STUDENTS, p=probs)  # 0,1,2,3
+estrato_arr = sisben_arr  # alias para compatibilidad
 
-for s, count in zip(*np.unique(estrato_arr, return_counts=True)):
-    log.info(f"  E{s}: {count} ({count/N_STUDENTS:.1%})")
+# Asignar ingreso per cápita real sorteando del pool empírico por categoría
+ingpc_arr = np.zeros(N_STUDENTS, dtype=float)
+for c in cats:
+    mask = sisben_arr == c
+    pool = ingpc_pool[c]
+    if len(pool) > 0:
+        ingpc_arr[mask] = rng.choice(pool, size=mask.sum(), replace=True)
+    else:
+        ingpc_arr[mask] = np.nan
+
+for c, count in zip(*np.unique(sisben_arr, return_counts=True)):
+    log.info(f"  Cat {c} ({SISBEN_LABELS[c]}): {count} ({count/N_STUDENTS:.1%}) | "
+             f"ingreso medio = ${ingpc_arr[sisben_arr==c].mean():,.0f}")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. Generar datos sintéticos
@@ -245,7 +273,8 @@ colegios.to_parquet(OUT_P / "sinteticos_b_colegios.parquet", index=False)
 
 est_df = pd.DataFrame({
     "id_estudiante": [f"S{i:04d}" for i in range(N_STUDENTS)],
-    "estrato":       estrato_arr,
+    "estrato":       sisben_arr,      # sisben_cat 0-3
+    "N_ingpc":       ingpc_arr,       # ingreso per cápita real sorteado del pool empírico
     "coord_x":       esc["coord_estudiantes"][:, 0],
     "coord_y":       esc["coord_estudiantes"][:, 1],
 })
@@ -265,12 +294,11 @@ cal = {
     "gamma_pow"       : round(GAMMA_POW, 6),
     "mu_q"            : round(mu_q, 6),
     "std_q"           : round(std_q, 6),
-    "s_bar"           : round(s_bar, 4),
-    "strato_dist"     : {str(s): round(p, 5) for s, p in strato_dist.items()},
+    "sisben_dist"     : {str(c): round(p, 5) for c, p in sisben_dist.items()},
     "alpha_s"         : {str(s): round(a, 6) for s, a in alpha_s.items()},
     "gamma_s"         : {str(s): round(g, 6) for s, g in gamma_s.items()},
     "corr_vj_qj"      : round(float(np.corrcoef(colegios["v_j"], colegios["q_j_std"])[0,1]), 5),
-    "utilidad"        : "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps",
+    "utilidad"        : "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps | gamma_s=1.0/proxy_estrato (γ₀=1: relación 1:1 v_j/q_j para cat A)",
     "corr_v_bias"     : round(esc["corr_v_bias"], 5),
     "corr_v_true"     : round(esc["corr_v_true"], 5),
     "delta"           : round(esc["delta"], 5),

@@ -96,7 +96,11 @@ pref_true = pd.read_parquet(IN_DIR / "sinteticos_b_preferencias_true.parquet")
 N = len(est_df)
 log.info(f"  N={N} | M={M} | Cupos={sum(school_cap.values())} | Ratio={sum(school_cap.values())/N:.3f}x")
 
-estrato_arr = est_df["estrato"].values
+# "estrato" en este parquet contiene sisben_cat (0=A extrema, 1=B moderada, 2=C, 3=D)
+sisben_arr  = est_df["estrato"].values.astype(int)
+# ingreso per cápita real — se usa como variable continua para corr(ingreso, v_j)
+ingpc_arr   = pd.to_numeric(est_df["N_ingpc"], errors="coerce").values
+estrato_arr = ingpc_arr   # compute_metrics usa estrato_arr para las correlaciones
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. Preparar listas de preferencias
@@ -127,14 +131,13 @@ for sid in school_ids:
     perm = rng.permutation(N)
     lottery[sid] = {int(idx): int(rank) for rank, idx in enumerate(perm)}
 
-# cat para SED: 0=E1-E2 (prioridad alta), 1=E3-E6
-categoria = (estrato_arr > 2).astype(int)
-
-def priority_lottery(i, sid, _cat=None):
+def priority_lottery(i, sid):
     return lottery[sid][i]
 
-def priority_sed(i, sid, _cat=categoria):
-    return int(_cat[i]) * CAT_OFFSET + lottery[sid][i]
+def priority_sed(i, sid, _sisben=sisben_arr):
+    # Cat 0 (A, extrema) = máxima prioridad; cat 3 (D) = mínima
+    # sisben_cat ya es 0-3: menor valor = mayor prioridad
+    return int(_sisben[i]) * CAT_OFFSET + lottery[sid][i]
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. Ejecutar 6 condiciones
@@ -169,15 +172,25 @@ for cond_label, fn, plists, pfn in CONDITIONS:
         label       = cond_label,
     )
     met["equidad_qj"] = met.pop("equidad_aj")
+    # limpiar métricas por estrato (no aplican con sisben_cat)
     for s in range(1, 7):
         met.pop(f"aj_estrato_{s}", None)
+        met.pop(f"rechazo_estrato_{s}", None)
     results.append(met)
+
+    # Rechazo por categoría SISBEN
+    SISBEN_LABELS = {0: "A_extrema", 1: "B_moderada", 2: "C_vulnerable", 3: "D_no_prio"}
+    for cat, label in SISBEN_LABELS.items():
+        mask_cat = sisben_arr == cat
+        n_cat    = mask_cat.sum()
+        n_sin_asgn = sum(1 for i, a in enumerate(asgn) if mask_cat[i] and a is None)
+        met[f"rechazo_sisben_{label}"] = round(n_sin_asgn / n_cat, 4) if n_cat > 0 else np.nan
 
     for i, a in enumerate(asgn):
         all_rows.append({
             "condicion"          : cond_label,
             "id_estudiante"      : est_df.iloc[i]["id_estudiante"],
-            "estrato"            : int(estrato_arr[i]),
+            "sisben_cat"         : int(sisben_arr[i]),
             "id_establecimiento" : a,
         })
 
@@ -224,9 +237,9 @@ x = np.arange(len(mecanismos))
 w = 0.35
 
 METRICAS = [
-    ("rank_medio",   "Rank medio obtenido",  "Eficiencia (Pareto)\nmenor = mejor",         ".2f"),
-    ("equidad_qj",   "corr(estrato, $q_j$)", "Equidad — calidad académica\nmenor = mejor", ".3f"),
-    ("sesgo_visual", "corr(estrato, $v_j$)", "Sesgo visual\n(negativo = favorece E1-2)",    ".3f"),
+    ("rank_medio",   "Rank medio obtenido",        "Eficiencia (Pareto)\nmenor = mejor",                ".2f"),
+    ("equidad_qj",   r"corr(ingreso, $q_j$)",      "Equidad — calidad académica\nmayor = más equitativo", ".3f"),
+    ("sesgo_visual", r"corr(ingreso, $v_j^{vis}$)","Sesgo visual\n(positivo = ricos en mejores instalaciones)", ".3f"),
 ]
 
 fig, axes = plt.subplots(1, 3, figsize=(14, 5))
@@ -261,7 +274,7 @@ for col_j, (metric, ylabel, title, fmt) in enumerate(METRICAS):
 
 plt.suptitle(
     "Experimento sintético — Comparativa de mecanismos\n"
-    "N=1,000 estudiantes | M=50 colegios | ratio=1.16x | "
+    "N=10,000 estudiantes | M=100 colegios | ratio=1.16x | "
     "Supuesto contrafactual: corr($v_j$, $q_j$) = 0",
     fontsize=11, fontweight="bold"
 )
@@ -277,9 +290,10 @@ log.info("=" * 60)
 log.info("RESUMEN COMPARATIVO")
 log.info("=" * 60)
 
+SISBEN_LABELS = {0: "A_extrema", 1: "B_moderada", 2: "C_vulnerable", 3: "D_no_prio"}
 cols_main = ["condicion", "n_asignados", "rank_medio", "blocking_pairs",
              "equidad_qj", "sesgo_visual", "rechazo_total"]
-cols_rec  = ["condicion"] + [f"rechazo_estrato_{s}" for s in range(1, 7)]
+cols_rec  = ["condicion"] + [f"rechazo_sisben_{l}" for l in SISBEN_LABELS.values()]
 
 print(comp_df[cols_main].to_string(index=False))
 print()

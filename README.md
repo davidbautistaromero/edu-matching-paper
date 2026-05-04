@@ -1,28 +1,105 @@
-# Matching Escolar 
+# Matching Escolar – Bogotá
 
-Analisis de mecanismos de asignacion escolar en Bogota con modelos de matching y senales visuales.
+Código de reproducción del paper *"Señales Visuales y Mecanismos de Asignación Escolar en Bogotá"*. Estima el índice visual de colegios oficiales a partir de imágenes GSV, lo incorpora en un modelo de utilidad de familias y compara tres mecanismos de asignación (BM, DA, SED-lex) sobre datos reales y una población sintética calibrada.
 
 ---
 
-## Instalacion rapida
+## Setup
 
 ```powershell
 cd C:\ruta\al\repo
 .\setup.ps1
 ```
 
-El script `setup.ps1` hace todo automaticamente:
-1. Crea el entorno virtual `.venv`
-2. Detecta si hay GPU NVIDIA disponible
-   - **Con GPU:** instala torch con soporte CUDA 12.4 (recomendado — el full run tarda ~5-8 min)
-   - **Sin GPU:** instala torch CPU (el full run puede tardar ~80 min)
-3. Instala el resto de dependencias (`requirements.txt`)
-4. Descarga el checkpoint DeepLabV3+ ResNet-101 (~449 MB) si no existe en `checkpoints/`
+`setup.ps1` crea el entorno virtual `.venv`, detecta GPU NVIDIA e instala PyTorch con CUDA 12.4 (o CPU si no hay GPU), instala `requirements.txt` y descarga el checkpoint DeepLabV3+ ResNet-101 (~449 MB) en `checkpoints/`.
 
-> **Nota:** El checkpoint no esta en git por su tamano. El setup lo descarga automaticamente
-> desde Google Drive. Si la descarga falla, bajalo manualmente desde:
+> Si la descarga del checkpoint falla, bajarlo manualmente desde:
 > https://drive.google.com/file/d/1t7TC8mxQaFECt4jutdq_NMnWxdm6B-Nb
-> y guardalo en `checkpoints/best_deeplabv3plus_resnet101_cityscapes_os16.pth`
+> y guardarlo en `checkpoints/best_deeplabv3plus_resnet101_cityscapes_os16.pth`
+
+Activar el entorno antes de correr cualquier script:
+
+```powershell
+.venv\Scripts\activate
+```
+
+---
+
+## Reproducir resultados
+
+El pipeline completo sigue el orden numérico de los scripts. Correr cada uno desde la raíz del repositorio:
+
+```
+# 1. Descargar y limpiar datos
+python scripts/00_fetch_geodata.py
+python scripts/00_fetch_saber11_bogota.py
+python scripts/00_fetch_em2021_variables.py
+python scripts/00_fetch_poblacion_upz.py
+python scripts/00_colegios_csv_to_geojson.py
+python scripts/00_merge_saber_geojson.py
+python scripts/00_demand_capacity_colegios.py
+python scripts/00_build_em2021_por_upz.py
+python scripts/00_clean_sitp.py
+python scripts/00_clean_parques.py
+python scripts/00_clean_delitos.py
+python scripts/00_build_competencia_privada.py
+
+# 2. Imágenes GSV (requiere API key en gsv_config.py)
+python scripts/00_download_gsv_colegios.py
+
+# 3. Dataset maestro de colegios
+python scripts/01_build_dataset.py
+
+# 4. Features visuales
+python scripts/02a_extract_embeddings.py
+python scripts/02b_diagnose_embeddings.py
+python scripts/02c_seg_cityscapes.py      # requiere GPU recomendado
+python scripts/03a_lda_topics.py
+python scripts/03b_nmf_topics.py
+python scripts/03c_clip_features.py
+python scripts/03d_imputacion_espacial.py
+
+# 5. Regresión y atractivo
+python scripts/04a_regresion.py
+python scripts/04b_build_capacidad.py
+python scripts/04c_decompose_aj.py
+python scripts/05c_visual_index_validation.py
+
+# 6. Simulación de familias
+python scripts/05a_simular_distancias.py
+python scripts/05b_expandir_familias.py
+python scripts/06_preferencias.py
+
+# 7. Matching sobre datos reales
+python scripts/07_boston_mechanism.py
+python scripts/07_da_mechanism.py
+python scripts/07_sed_lex.py
+python scripts/compare_mechanisms.py
+
+# 8. Experimento sintético
+python scripts/08_datos_sinteticos.py
+python scripts/09a_matching_sinteticos.py
+python scripts/09b_robustez_gamma.py
+```
+
+---
+
+## Datos externos
+
+Los siguientes archivos deben descargarse manualmente y colocarse en `data/raw/` antes de correr el pipeline:
+
+| Archivo | Fuente |
+|---|---|
+| `estaciones_transmilenio.geojson` | [Datos Abiertos Bogotá](https://datosabiertos.bogota.gov.co) – Transmilenio S.A. |
+| `paraderos_sitp.geojson` | Datos Abiertos Bogotá – Transmilenio S.A. |
+| `parques_bogota.geojson` | Datos Abiertos Bogotá – Secretaría Distrital de Planeación |
+| `delitos_alto_impacto.geojson` | Datos Abiertos Bogotá – Secretaría Distrital de Seguridad |
+| `localidades_bogota.geojson` | Datos Abiertos Bogotá – IDECA |
+| `manzana_estratificacion.geojson` | Datos Abiertos Bogotá – UAESP |
+| `poblacion-localidad-upz-bogota-2018-2024.xlsx` | DANE – Proyecciones de población |
+| `upz/upz.shp` (+ archivos `.dbf`, `.prj`, `.shx`) | Datos Abiertos Bogotá – IDECA |
+
+Las imágenes GSV y Mapillary no se incluyen en el repositorio. Ver `scripts/gsv_config.py` y `scripts/mapillary_filtros.py` para configurar las descargas.
 
 ---
 
@@ -39,18 +116,16 @@ paper-AI/
 │   │   ├── matriculatotal04_2024.geojson
 │   │   ├── em2021_encuesta_principal.csv
 │   │   ├── em2021_variables_adicionales.csv
-│   │   ├── em2021_familias_escolar.csv    <- Hogares con hijos en colegio oficial, estrato real 1-6
+│   │   ├── em2021_familias_escolar.csv
 │   │   ├── estaciones_transmilenio.geojson
 │   │   ├── paraderos_sitp.geojson
 │   │   ├── parques_bogota.geojson
 │   │   ├── delitos_alto_impacto.geojson
-│   │   ├── localidades_bogota.geojson     <- Polígonos oficiales de localidades (Datos Abiertos)
-│   │   ├── manzana_estratificacion.geojson <- Estrato por manzana (Datos Abiertos Bogotá)
+│   │   ├── localidades_bogota.geojson
+│   │   ├── manzana_estratificacion.geojson
 │   │   ├── poblacion-localidad-upz-bogota-2018-2024.xlsx
 │   │   └── upz/
-│   │       ├── upz.shp                    <- Polígonos UPZ Bogotá
-│   │       └── upz.*                      <- Archivos shapefile auxiliares
-│   ├── processed/                  <- Intermedios limpios, output de scripts 00_* y 05_*
+│   ├── processed/                  <- Intermedios limpios
 │   │   ├── colegios_dataset.geojson
 │   │   ├── saber_bogota_merged.geojson
 │   │   ├── demanda_clean.geojson
@@ -60,861 +135,218 @@ paper-AI/
 │   │   ├── parques_clean.geojson
 │   │   ├── delitos_por_localidad.csv
 │   │   ├── competencia_privada_localidad.csv
-│   │   ├── poblacion_upz_2024.parquet     <- Población <18 años por UPZ (DANE 2024)
-│   │   ├── familias_ubicadas.parquet      <- 13,568 familias con lat/lon por manzana y estrato
-│   │   ├── familias_distancias.parquet    <- Matriz Haversine (13,568 × 303) en km
-│   │   ├── familias_expandidas.parquet    <- Familias expandidas con factor de expansión EM2021
-│   │   ├── distancias_expandidas.parquet  <- Distancias para la muestra expandida
-│   │   └── utilidades_familias.parquet    <- Utilidades u_ij completas (float32)
+│   │   ├── poblacion_upz_2024.parquet
+│   │   ├── familias_ubicadas.parquet
+│   │   ├── familias_distancias.parquet
+│   │   ├── familias_expandidas.parquet
+│   │   ├── distancias_expandidas.parquet
+│   │   └── utilidades_familias.parquet
 │   ├── primary/                    <- Datos de análisis principal
-│   │   ├── colegios_features.geojson          <- Dataset maestro, output de 01_build_dataset.py
-│   │   ├── colegios_features_imputed.geojson  <- Idem con imputación espacial (03b)
-│   │   ├── colegios_capacidad.parquet         <- Capacidad estimada y atractivo a_j (04b/04c)
-│   │   ├── preferencias_familias.parquet      <- Rankings top-20 por familia (06)
-│   │   ├── sinteticos_b_colegios.parquet      <- Colegios del experimento sintético (08)
-│   │   ├── sinteticos_b_estudiantes.parquet   <- Estudiantes sintéticos (08)
-│   │   ├── sinteticos_b_preferencias_bias.parquet  <- Preferencias con sesgo visual (08)
-│   │   └── sinteticos_b_preferencias_true.parquet  <- Preferencias sin sesgo (08)
+│   │   ├── colegios_features.geojson
+│   │   ├── colegios_features_imputed.geojson
+│   │   ├── colegios_capacidad.parquet
+│   │   ├── vj_scores.parquet
+│   │   ├── preferencias_familias.parquet
+│   │   ├── sinteticos_b_colegios.parquet
+│   │   ├── sinteticos_b_estudiantes.parquet
+│   │   ├── sinteticos_b_preferencias_bias.parquet
+│   │   └── sinteticos_b_preferencias_true.parquet
 │   ├── results/                    <- Asignaciones finales de cada mecanismo
-│   │   ├── matching_bm.parquet             <- Boston Mechanism sobre datos reales
-│   │   ├── matching_da.parquet             <- Deferred Acceptance sobre datos reales
-│   │   ├── matching_sed_lex.parquet        <- SED-lex sobre datos reales
-│   │   ├── matching_sed_dist.parquet       <- SED-dist (control) sobre datos reales
-│   │   ├── sinteticos_b_resultados.parquet <- Resultados consolidados experimento sintético
-│   │   ├── sinteticos_bm_bias.parquet      <- BM + preferencias con sesgo
-│   │   ├── sinteticos_bm_true.parquet      <- BM + preferencias verdaderas
-│   │   ├── sinteticos_da_bias.parquet      <- DA + preferencias con sesgo
-│   │   └── sinteticos_da_true.parquet      <- DA + preferencias verdaderas
+│   │   ├── matching_bm.parquet
+│   │   ├── matching_da.parquet
+│   │   ├── matching_sed_lex.parquet
+│   │   ├── matching_sed_dist.parquet
+│   │   ├── sinteticos_b_resultados.parquet
+│   │   ├── sinteticos_bm_bias.parquet
+│   │   ├── sinteticos_bm_true.parquet
+│   │   ├── sinteticos_da_bias.parquet
+│   │   └── sinteticos_da_true.parquet
 │   └── images/
-│       ├── gsv/                    <- Imágenes Google Street View (558 sedes × 10 headings)
-│       │   ├── {id_establecimiento}/
-│       │   │   └── {id_sede}_{heading:03d}.jpg
-│       │   ├── gsv_catalog.csv     <- Metadatos de descarga (ignorado en git)
+│       ├── gsv/                    <- Imágenes GSV (ignoradas en git)
+│       │   ├── {id_establecimiento}/{id_sede}_{heading:03d}.jpg
+│       │   ├── gsv_catalog.csv
 │       │   └── mapa_cobertura_gsv.png
 │       ├── mapillary/              <- Catálogo Mapillary (imágenes ignoradas en git)
-│       │   ├── mapillary_catalog.csv  <- ignorado en git (>100 MB)
-│       │   ├── resumen_fechas.csv     <- ignorado en git
+│       │   ├── mapillary_catalog.csv
+│       │   ├── resumen_fechas.csv
 │       │   ├── mapa_cobertura_total.png
 │       │   └── mapa_cobertura_filtrada.png
-│       └── embeddings/             <- Embeddings y tópicos visuales
-│           ├── gsv_vgg19_raw.parquet          <- 1 fila por imagen (5,580 × 512)
-│           ├── gsv_nmf_K{k}.parquet           <- Proporciones NMF por establecimiento
-│           ├── gsv_nmf_K{k}_images.parquet    <- Proporciones NMF por imagen
-│           ├── gsv_nmf_K{k}_topics.json       <- Top features por tópico NMF
-│           ├── gsv_lda_K{k}.parquet           <- Proporciones LDA (referencia)
-│           └── diagnostico_embeddings.json    <- Resultados de pruebas de calidad
+│       └── embeddings/
+│           ├── gsv_vgg19_raw.parquet
+│           ├── gsv_nmf_K{k}.parquet
+│           ├── gsv_nmf_K{k}_images.parquet
+│           ├── gsv_nmf_K{k}_topics.json
+│           ├── gsv_lda_K{k}.parquet
+│           └── diagnostico_embeddings.json
 ├── checkpoints/
-│   └── best_deeplabv3plus_resnet101_cityscapes_os16.pth  <- ~449 MB, descargado por setup.ps1
-├── docs/                           <- Diccionarios de variables y documentacion de referencia
+│   └── best_deeplabv3plus_resnet101_cityscapes_os16.pth
+├── docs/
 │   ├── em2021_diccionario.ods
 │   └── em2021_variablesadicionales_diccionario.ods
-├── models/                         <- Modelos entrenados por 04_regresion.py
-│   ├── ridge_m1.joblib             <- Modelo seleccionado (consumido por 04b, 04c, 06)
+├── models/
+│   ├── ridge_m1.joblib
 │   ├── ridge_m1_meta.json
-│   └── {ols,ridge,lasso,elasticnet}_m{0-4}.joblib + _meta.json  <- Comparativa completa
+│   └── {ols,ridge,lasso,elasticnet}_m{0-4}.joblib + _meta.json
 ├── notebooks/
-│   └── 01_eda.ipynb                <- Analisis exploratorio de datos
+│   └── 01_eda.ipynb
 ├── reports/
-│   ├── comparativa_estimadores.csv     <- Tabla comparativa de modelos (04_regresion.py)
-│   ├── comparativa_mecanismos.csv      <- Tabla resumen mecanismos (compare_mechanisms.py)
-│   ├── matching_bm_summary.csv         <- Métricas BM por estrato (07_boston_mechanism.py)
-│   ├── matching_da_summary.csv         <- Métricas DA por estrato (07_da_mechanism.py)
-│   ├── matching_sed_comparison.csv     <- Métricas SED-lex vs SED-dist (07_sed_lex.py)
-│   ├── mejores_coefs.csv               <- Coeficientes del modelo seleccionado (04_regresion.py)
-│   ├── sinteticos_b_calibracion.json   <- Parámetros calibrados del experimento sintético (08)
-│   ├── sinteticos_b_comparativa.csv    <- Comparativa 4 condiciones experimento sintético (09)
-│   ├── figures/
-│   │   ├── eda/                    <- Figuras del análisis exploratorio (notebooks)
-│   │   ├── matching/               <- Figuras de mecanismos y experimento sintético
-│   │   │   ├── bm_equidad_estrato.png
-│   │   │   ├── bm_distribucion_qj.png
-│   │   │   ├── da_equidad_estrato.png
-│   │   │   ├── da_distribucion_qj.png
-│   │   │   ├── sed_equidad.png
-│   │   │   ├── comparativa_mecanismos.png
-│   │   │   └── sinteticos_b_comparativa.png
-│   │   ├── topic_1_top8.png ... topic_8_top8.png  <- Visualización de tópicos NMF
-│   │   ├── mapa_familias_simuladas.png
-│   │   └── pca_component_selection.png
-│   └── paper/                      <- Documento final
+│   ├── comparativa_estimadores.csv
+│   ├── comparativa_mecanismos.csv
+│   ├── matching_bm_summary.csv
+│   ├── matching_da_summary.csv
+│   ├── matching_sed_comparison.csv
+│   ├── mejores_coefs.csv
+│   ├── tabla_ridge_m1.tex
+│   ├── sinteticos_b_calibracion.json
+│   ├── sinteticos_b_comparativa.csv
+│   ├── robustez_gamma.csv
+│   └── figures/
+│       ├── eda/
+│       ├── matching/
+│       │   ├── bm_equidad_estrato.png
+│       │   ├── bm_distribucion_qj.png
+│       │   ├── da_equidad_estrato.png
+│       │   ├── da_distribucion_qj.png
+│       │   ├── sed_equidad.png
+│       │   ├── comparativa_mecanismos.png
+│       │   └── sinteticos_b_comparativa.png
+│       ├── visual_index_validation.png
+│       ├── robustez_gamma.png
+│       ├── topic_1_top8.png ... topic_8_top8.png
+│       ├── mapa_familias_simuladas.png
+│       └── pca_component_selection.png
+│   └── paper/
 ├── scripts/
-│   ├── — Descarga y limpieza de datos —
-│   ├── 00_fetch_geodata.py         <- Descarga geodatos SED, ICFES y parques
-│   ├── 00_fetch_saber11_bogota.py  <- Descarga resultados ICFES
-│   ├── 00_fetch_em2021_variables.py <- Descarga EM2021 (encuesta principal + familias escolares)
-│   ├── 00_fetch_poblacion_upz.py   <- Limpia Excel población DANE por UPZ
-│   ├── 00_colegios_csv_to_geojson.py <- Geocodificacion directorio SED
-│   ├── 00_merge_saber_geojson.py   <- Unifica Saber 11 multi-ano
-│   ├── 00_demand_capacity_colegios.py <- Limpia demanda y matricula
-│   ├── 00_build_em2021_por_upz.py  <- Agrega EM2021 por UPZ
-│   ├── 00_clean_sitp.py            <- Normaliza GeoJSON SITP (formato ESRI)
-│   ├── 00_clean_parques.py         <- Convierte MAGNA-SIRGAS a WGS84
-│   ├── 00_clean_delitos.py         <- Agrega delitos por localidad
-│   ├── 00_build_competencia_privada.py <- Calcula % sedes no oficiales por localidad
-│   ├── 00_analyze_mapillary_colegios.py <- Catalogo Mapillary y mapas de cobertura
-│   ├── 00_download_mapillary_colegios.py <- Descarga imágenes Mapillary
-│   ├── 00_download_gsv_colegios.py <- Descarga imágenes Google Street View (fuente principal)
+│   ├── — Descarga y limpieza —
+│   ├── 00_fetch_geodata.py
+│   ├── 00_fetch_saber11_bogota.py
+│   ├── 00_fetch_em2021_variables.py
+│   ├── 00_fetch_poblacion_upz.py
+│   ├── 00_colegios_csv_to_geojson.py
+│   ├── 00_merge_saber_geojson.py
+│   ├── 00_demand_capacity_colegios.py
+│   ├── 00_build_em2021_por_upz.py
+│   ├── 00_clean_sitp.py
+│   ├── 00_clean_parques.py
+│   ├── 00_clean_delitos.py
+│   ├── 00_build_competencia_privada.py
+│   ├── 00_analyze_mapillary_colegios.py
+│   ├── 00_download_mapillary_colegios.py
+│   ├── 00_download_gsv_colegios.py
 │   ├── — Features visuales —
-│   ├── 01_build_dataset.py         <- Integra todas las fuentes -> primary/colegios_features.geojson
-│   ├── 02_extract_embeddings.py    <- Extrae embeddings VGG19 por imagen (512d, sin agregar)
-│   ├── 02_seg_cityscapes.py        <- Segmentación semántica DeepLabV3+ (19 clases Cityscapes)
-│   ├── 02a_diagnose_embeddings.py  <- Diagnóstico de calidad + selección d PCA
-│   ├── 03_clip_features.py         <- Features perceptuales CLIP (mantenimiento, vegetación, etc.)
-│   ├── 03_lda_topics.py            <- PCA(68d) + LDA sobre imágenes (referencia)
-│   ├── 03_nmf_topics.py            <- PCA(68d) + NMF sobre imágenes -> tópicos por establecimiento
-│   ├── 03b_imputacion_espacial.py  <- Imputación espacial por vecindad (BallTree haversine)
-│   ├── — Regresión y capacidad —
-│   ├── 04_regresion.py             <- Comparativa OLS/Ridge/Lasso/ElasticNet -> models/
-│   ├── 04b_build_capacidad.py      <- Capacidad estimada y atractivo a_j por colegio
-│   ├── 04c_decompose_aj.py         <- Descomposición de a_j en componentes visual y no-visual
+│   ├── 01_build_dataset.py
+│   ├── 02a_extract_embeddings.py
+│   ├── 02b_diagnose_embeddings.py
+│   ├── 02c_seg_cityscapes.py
+│   ├── 03a_lda_topics.py
+│   ├── 03b_nmf_topics.py
+│   ├── 03c_clip_features.py
+│   ├── 03d_imputacion_espacial.py
+│   ├── — Regresión y validación —
+│   ├── 04a_regresion.py
+│   ├── 04b_build_capacidad.py
+│   ├── 04c_decompose_aj.py
+│   ├── 05c_visual_index_validation.py
 │   ├── — Simulación de familias —
-│   ├── 05_simular_distancias.py    <- Ubica familias en manzana por estrato + Haversine
-│   ├── 05b_expandir_familias.py    <- Expande muestra con factor de expansión EM2021
-│   ├── 06_preferencias.py          <- Utilidades u_ij + rankings top-20 por localidad
-│   ├── — Mecanismos de matching —
-│   ├── 07_boston_mechanism.py      <- Boston Mechanism sobre datos reales
-│   ├── 07_da_mechanism.py          <- Deferred Acceptance sobre datos reales
-│   ├── 07_sed_lex.py               <- SED-lex y SED-dist sobre datos reales
+│   ├── 05a_simular_distancias.py
+│   ├── 05b_expandir_familias.py
+│   ├── 06_preferencias.py
+│   ├── — Matching —
+│   ├── 07_boston_mechanism.py
+│   ├── 07_da_mechanism.py
+│   ├── 07_sed_lex.py
 │   ├── — Experimento sintético —
-│   ├── 08_datos_sinteticos.py      <- Genera población sintética con sesgo visual explícito
-│   ├── 09_matching_sinteticos.py   <- Matching en 4 condiciones (BM/DA × sesgo/verdad)
+│   ├── 08_datos_sinteticos.py
+│   ├── 09a_matching_sinteticos.py
+│   ├── 09b_robustez_gamma.py
 │   ├── — Utilidades —
-│   ├── matching_utils.py           <- BM, DA, métricas compartidas
-│   ├── compare_mechanisms.py       <- Tabla y figura comparativa de mecanismos
-│   ├── topic_viz.py                <- Visualización de tópicos NMF
-│   ├── mapa_cobertura_gsv.py       <- Mapa de cobertura GSV
-│   ├── gsv_config.py               <- Parámetros GSV (modo prueba, headings, resolución)
-│   ├── mapillary_filtros.py        <- Parámetros de selección Mapillary
-│   └── network/                    <- Implementación DeepLabV3+ (usado por 02_seg_cityscapes.py)
+│   ├── matching_utils.py
+│   ├── compare_mechanisms.py
+│   ├── compare_mapillary_filters.py
+│   ├── topic_viz.py
+│   ├── mapa_cobertura_gsv.py
+│   ├── gsv_config.py
+│   ├── mapillary_filtros.py
+│   └── deeplabv3/
 │       ├── modeling.py
 │       ├── _deeplab.py
 │       ├── utils.py
-│       └── backbone/               <- ResNet, MobileNetV2, HRNetV2, Xception
+│       └── backbone/
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Extraccion de datos
+## Scripts
 
-### 1. Directorio de colegios oficiales - SED Bogota
+### Descarga y limpieza
 
-| | |
-|---|---|
-| **Fuente** | Secretaria de Educacion del Distrito via datos abiertos Bogota |
-| **Script** | `scripts/00_fetch_geodata.py` |
-| **Output raw** | `data/raw/colegios_dataset.csv` |
-| **Output processed** | `data/processed/colegios_dataset.geojson` <- generado por `00_colegios_csv_to_geojson.py` |
-| **Contenido** | Nombre, direccion, coordenadas, localidad, UPZ, naturaleza juridica y caracteristicas academicas de cada sede educativa oficial |
-
----
-
-### 2. Resultados Saber 11 - ICFES
-
-| | |
-|---|---|
-| **Fuente** | ICFES via datos abiertos Bogota |
-| **Script** | `scripts/00_fetch_saber11_bogota.py` |
-| **Output raw** | `data/raw/saber11_bogota_2020_2022.csv` - `data/raw/pruebassaber2023.geojson` |
-| **Output processed** | `data/processed/saber_bogota_merged.geojson` <- generado por `00_merge_saber_geojson.py` |
-| **Contenido** | Puntaje promedio Saber 11 por establecimiento educativo para los anos 2020, 2022 y 2023. Variable `q_j` (calidad academica del colegio) |
-
----
-
-### 3. Demanda y matricula por colegio - SED Bogota
-
-| | |
-|---|---|
-| **Fuente** | Secretaria de Educacion del Distrito via datos abiertos Bogota |
-| **Script** | `scripts/00_fetch_geodata.py` (descarga conjunta con directorio) |
-| **Output raw** | `data/raw/demandacupos04_2024.geojson` - `data/raw/matriculatotal04_2024.geojson` |
-| **Output processed** | `data/processed/demanda_clean.geojson` - `data/processed/matriculas_clean.geojson` <- generados por `00_demand_capacity_colegios.py` |
-| **Contenido** | Numero de cupos demandados y matricula total por colegio. Se usa para construir `sobre_demanda_j = demanda / matricula`, variable dependiente de la regresion que estima `alpha` |
-
----
-
-### 4. Encuesta Multiproposito 2021 - SDP / DANE
-
-| | |
-|---|---|
-| **Fuente** | Secretaria Distrital de Planeacion via datos abiertos Bogota |
-| **Script** | `scripts/00_fetch_em2021_variables.py` |
-| **Output raw** | `data/raw/em2021_encuesta_principal.csv` - `data/raw/em2021_variables_adicionales.csv` |
-| **Contenido** | Dos tablas descargadas por separado y cruzadas por `DIRECTORIO` / `directorio_hog` |
-
-**Encuesta principal** (`em2021_encuesta_principal.csv`):
-
-| Variable | Descripcion |
-|---|---|
-| `DIRECTORIO` | Llave de cruce entre tablas |
-| `COD_UPZ_GRUPO` | UPZ de residencia del hogar |
-| `COD_LOCALIDAD` | Localidad de residencia |
-| `ESTRATO2021` | Estrato de muestreo |
-| `NVCBP11AA` | Estrato para tarifa (real del hogar) |
-| `FEX_C` | Factor de expansion muestral |
-
-**Variables adicionales** (`em2021_variables_adicionales.csv`):
-
-| Variable | Descripcion |
-|---|---|
-| `directorio_hog` | Llave de cruce entre tablas |
-| `N_pobre_monetario` | Pobreza monetaria (0/1) |
-| `N_pobre_extremo` | Pobreza extrema (0/1) |
-| `N_pobre_ipm` | Indice de Pobreza Multidimensional (0/1) |
-| `N_ingpc` | Ingreso per capita del hogar |
-| `N_sin_cp` | Indice de capacidad de pago |
-| `N_nper` | Numero de personas en el hogar |
-| `N_gm_educ_hog` | Gasto mensual en educacion |
-| `N_deficit_cuantitativo` | Deficit cuantitativo de vivienda (0/1) |
-| `N_deficit_cualitativo` | Deficit cualitativo de vivienda (0/1) |
-| `N_deficit_habitacional` | Deficit habitacional total (0/1) |
-
-> Los diccionarios de variables estan en `docs/em2021_diccionario.ods` y `docs/em2021_variablesadicionales_diccionario.ods`.
-
----
-
-### 5. Variables de control geograficas y de seguridad
-
-Estas fuentes se descargan **manualmente** desde el portal de datos abiertos de Bogota y se ubican directamente en `data/raw/`. No hay script de descarga automatizado.
-
-| Archivo | Fuente | Contenido |
+| Script | Descripción | Output |
 |---|---|---|
-| `estaciones_transmilenio.geojson` | Transmilenio S.A. | Estaciones troncales de TransMilenio. Control de accesibilidad al transporte publico |
-| `paraderos_sitp.geojson` | Transmilenio S.A. | Paraderos SITP. Control de accesibilidad al transporte |
-| `parques_bogota.geojson` | Secretaria Distrital de Planeacion | Parques del POT Bogota. Control de infraestructura verde del entorno |
-| `delitos_alto_impacto.geojson` | Secretaria Distrital de Seguridad | Delitos de alto impacto por localidad. Control de seguridad del entorno |
+| `00_fetch_geodata.py` | Descarga directorio SED, demanda y matrícula desde datos abiertos Bogotá | `colegios_dataset.csv`, `demandacupos04_2024.geojson`, `matriculatotal04_2024.geojson` |
+| `00_fetch_saber11_bogota.py` | Descarga resultados ICFES Saber 11 | `saber11_bogota_2020_2022.csv` |
+| `00_fetch_em2021_variables.py` | Descarga EM2021 (encuesta principal + variables adicionales + familias escolares) | `em2021_*.csv` |
+| `00_fetch_poblacion_upz.py` | Limpia Excel DANE de población por UPZ | `poblacion_upz_2024.parquet` |
+| `00_colegios_csv_to_geojson.py` | Geocodifica directorio SED, filtra sector Oficial | `data/processed/colegios_dataset.geojson` |
+| `00_merge_saber_geojson.py` | Unifica Saber 11 multi-año por establecimiento | `saber_bogota_merged.geojson` |
+| `00_demand_capacity_colegios.py` | Limpia demanda y matrícula | `demanda_clean.geojson`, `matriculas_clean.geojson` |
+| `00_build_em2021_por_upz.py` | Agrega EM2021 por UPZ con ponderación `FEX_C` | `em2021_por_upz.csv` |
+| `00_clean_sitp.py` | Normaliza GeoJSON paraderos SITP | `sitp_clean.geojson` |
+| `00_clean_parques.py` | Convierte parques de MAGNA-SIRGAS a WGS84 | `parques_clean.geojson` |
+| `00_clean_delitos.py` | Agrega delitos por localidad | `delitos_por_localidad.csv` |
+| `00_build_competencia_privada.py` | Calcula % sedes no oficiales por localidad | `competencia_privada_localidad.csv` |
+| `00_download_gsv_colegios.py` | Descarga imágenes GSV (requiere API key en `gsv_config.py`) | `data/images/gsv/` |
+| `00_analyze_mapillary_colegios.py` | Construye catálogo Mapillary y mapas de cobertura | `mapillary_catalog.csv`, mapas |
+| `00_download_mapillary_colegios.py` | Descarga imágenes Mapillary filtradas | `data/images/mapillary/` |
 
-**URL de descarga:** https://datosabiertos.bogota.gov.co
+### Features visuales
 
----
-
-### 6. Imágenes de entorno de colegios - Google Street View *(fuente principal)*
-
-| | |
-|---|---|
-| **Fuente** | Google Street View Static API |
-| **Script** | `scripts/00_download_gsv_colegios.py` |
-| **Config** | `scripts/gsv_config.py` (parámetros editables: `MODO_MUESTRA`, `N_HEADINGS`, resolución) |
-| **Output catálogo** | `data/images/gsv/gsv_catalog.csv` *(ignorado en git — reproducible con el script)* |
-| **Output imágenes** | `data/images/gsv/{id_establecimiento}/{id_sede}_{heading:03d}.jpg` *(ignoradas en git)* |
-| **Output mapa** | `data/images/gsv/mapa_cobertura_gsv.png` |
-
-**Parámetros de descarga:**
-- `N_HEADINGS = 10` headings uniformes (0°, 36°, 72°, … 324°) para capturar la fachada desde múltiples ángulos
-- Resolución: `640×640` px, `FOV = 90°`, `PITCH = 0`
-- Reanudable: si `gsv_catalog.csv` existe, salta las imágenes ya descargadas
-
-**Cobertura resultante:**
-- Imágenes descargadas: **5,580** (558 sedes × 10 headings)
-- Sedes cubiertas: **558 / 558 (100%)**
-- Costo: ~$39 USD (dentro del crédito gratuito mensual de Google Cloud)
-
-**Por qué GSV como fuente principal:** A diferencia de Mapillary (crowdsourced, calidad variable), GSV usa cámaras calibradas a altura estandarizada (~2.5 m) con resolución y encuadre consistentes. Esto reduce el ruido en los embeddings VGG19 que no proviene del colegio sino de la cámara o el ángulo.
-
-**Modo prueba:** Activar `MODO_MUESTRA = True` en `gsv_config.py` para probar con `N_MUESTRA = 5` sedes antes del run completo. El catálogo de prueba se guarda como `gsv_catalog_muestra.csv`.
-
----
-
-### 7. Imágenes de entorno de colegios - Mapillary *(referencia / exploración)*
-
-| | |
-|---|---|
-| **Fuente** | Mapillary Graph API v4 (imágenes públicas con licencia CC) |
-| **Scripts** | `scripts/00_analyze_mapillary_colegios.py` / `scripts/00_download_mapillary_colegios.py` |
-| **Config** | `scripts/mapillary_filtros.py` (parámetros editables: fecha, ángulo, radio) |
-| **Output catálogo** | `data/images/mapillary/mapillary_catalog.csv` *(ignorado en git — >100 MB)* |
-| **Output resumen** | `data/images/mapillary/resumen_fechas.csv` *(ignorado en git)* |
-| **Output mapas** | `data/images/mapillary/mapa_cobertura_total.png` / `mapa_cobertura_filtrada.png` |
-| **Convención de nombre** | `{DANE12_EST}_{YYYY-MM-DD}_{image_id}.jpg` |
-
-**Parámetros de búsqueda** (configurables en `mapillary_filtros.py`):
-- Radio: `RADIO_M = 100` m alrededor del punto de cada colegio
-- Fecha mínima: `FECHA_DESDE = "2020-01-01"`
-- Ángulo máximo cámara→colegio: `ANGULO_MAX_DEG = 90°`
-- Deduplicación por secuencia y espacial (10 m mínimo entre imágenes)
-- Máximo por colegio: `N_MAX_POR_COLEGIO = 10`
-
-**Cobertura del catálogo:**
-- Imágenes en catálogo: ~89,856
-- Sedes cubiertas: 292 / 558 (52%) tras filtros
-
-**Nota:** Mapillary se mantiene como fuente secundaria para análisis de robustez. La fuente principal para los embeddings VGG19 es GSV (cobertura 100%).
-
----
-
-### 8. Embeddings visuales de colegios
-
-| | |
-|---|---|
-| **Fuente** | Imágenes GSV descargadas (5,580 imágenes — 558 sedes × 10 headings) |
-| **Script** | `scripts/02_extract_embeddings.py` |
-| **Output** | `data/images/embeddings/gsv_vgg19_raw.parquet` (5,580 filas × 512 features) |
-| **Contenido** | Un vector de 512 dimensiones por imagen, sin agregar — la agregación ocurre en `03_lda_topics.py` |
-
-**Metodología de extracción:**
-- Modelo: VGG19 preentrenado en ImageNet, sin cabeza de clasificación
-- Capa de salida: `block5_pool` + `AdaptiveAvgPool2d(1,1)` → vector de 512d no-negativo (ReLU)
-- Preprocesamiento: `Resize(256)` → `CenterCrop(224)` → normalización ImageNet
-- Procesamiento en lotes de 32 imágenes; tolerante a imágenes corruptas
-
-**Por qué no se agrega aquí:** promediar los vectores por sede o establecimiento antes de LDA reduce artificialmente la variabilidad entre colegios. LDA aprende tópicos más estables sobre imágenes individuales; la agregación de proporciones ocurre *después* en espacio ya interpretable.
-
----
-
-## Transformacion de datos
-
-Los scripts de transformacion toman los archivos de `raw/` y producen versiones limpias y enriquecidas en `processed/`. Cada transformacion tiene una justificacion metodologica dentro del modelo de matching.
-
----
-
-### T1. Directorio de colegios -> GeoJSON
-
-**Script:** `scripts/colegios_csv_to_geojson.py`
-**Input:** `data/raw/colegios_dataset.csv`
-**Output:** `data/processed/colegios_dataset.geojson`
-
-**Que hace:**
-- Normaliza nombres de columnas (elimina tildes, espacios, mayusculas)
-- Filtra solo colegios del sector **Oficial** -- el analisis se restringe a oferta publica
-- Convierte coordenadas `coord_x` / `coord_y` (con coma decimal) a geometria Point en EPSG:4326
-- Descarta registros sin coordenadas validas
-
-**Por que:** El GeoJSON es la base espacial del analisis. Necesitamos la geometria de cada colegio para calcular distancias a equipamientos (TransMilenio, parques) y para asignar la UPZ de residencia a cada estudiante sintetico.
-
----
-
-### T2. Resultados Saber 11 -> dataset unificado
-
-**Script:** `scripts/merge_saber_geojson.py`
-**Input:** `data/raw/saber11_bogota_2020_2022.csv` - `data/raw/pruebassaber2023.geojson`
-**Output:** `data/processed/saber_bogota_merged.geojson`
-
-**Que hace:**
-- Agrega el CSV (2020-2022) por establecimiento y ano, promediando `punt_global`
-- Pivota: genera columnas `punt_global_2020`, `punt_global_2022` por colegio
-- Toma el GeoJSON 2023 como base georreferenciada y le une los puntajes historicos por codigo DANE
-- Si hay duplicados por establecimiento (multiples jornadas), conserva el de menor `ORDEN_DE_S` y promedia puntajes
-
-**Por que:** La variable `q_j` (calidad academica del colegio) se construye como el promedio de puntajes Saber 11 de los anos disponibles. Usar varios anos reduce el ruido de un ano atipico. El codigo DANE del establecimiento es la llave de cruce con el directorio de colegios.
-
----
-
-### T3. Demanda y matricula -> variables limpias
-
-**Script:** `scripts/demand_capacity_colegios.py`
-**Input:** `data/raw/demandacupos04_2024.geojson` - `data/raw/matriculatotal04_2024.geojson`
-**Output:** `data/processed/demanda_clean.geojson` - `data/processed/matriculas_clean.geojson`
-
-**Que hace:**
-- Filtra cada GeoJSON conservando solo los campos relevantes:
-  - Demanda: `DANE12_EST`, `NOMBRE_EST`, `DTotal` (cupos solicitados)
-  - Matricula: `DANE12_EST`, `NOMBRE_EST`, `NOMBRE_SED`, `ORDEN_DE_S`, `TMATRIC_GE` (matricula total)
-- Descarta toda columna irrelevante para mantener archivos manejables
-
-**Por que:** La variable `sobre_demanda_j = DTotal / TMATRIC_GE` es la variable dependiente de la regresion que estima `alpha` -- el peso que los hogares le dan a la apariencia visual del colegio versus su calidad academica. Un colegio con alta sobre-demanda es mas deseado de lo que su calidad objetiva justificaria, lo que puede reflejar sesgo visual.
-
----
-
-### T4. Encuesta Multiproposito 2021 -> controles por UPZ
-
-**Script:** `scripts/build_em2021_por_upz.py`
-**Input:** `data/raw/em2021_encuesta_principal.csv` - `data/raw/em2021_variables_adicionales.csv`
-**Output:** `data/processed/em2021_por_upz.csv`
-
-**Que hace:**
-
-1. **Join entre tablas:** La encuesta principal y las variables adicionales comparten un identificador de vivienda, pero con formato distinto (`DIRECTORIO = "166238"` vs `directorio_hog = "1662381"` -- el ultimo digito codifica el numero de hogar). Se reconstruye la llave truncando el ultimo caracter de `directorio_hog` antes del merge.
-
-2. **Filtro geografico:** Se excluyen los ~65K hogares sin `COD_UPZ_GRUPO` asignado (municipios de Cundinamarca fuera de Bogota incluidos en la encuesta).
-
-3. **Agregacion ponderada por UPZ:** Todas las metricas se calculan usando `FEX_C` (factor de expansion muestral) como peso. Sin ponderar, las UPZs con mayor intensidad de muestreo quedarian sobrerepresentadas.
-
-**Variables construidas y su rol en el modelo:**
-
-| Variable output | Fuente | Rol |
+| Script | Descripción | Output |
 |---|---|---|
-| `tasa_pobreza_monetaria` | Media ponderada de `N_pobre_monetario` | Control socioeconomico de la UPZ |
-| `tasa_pobreza_extrema` | Media ponderada de `N_pobre_extremo` | Control socioeconomico |
-| `tasa_ipm` | Media ponderada de `N_pobre_ipm` | Control multidimensional de pobreza |
-| `ingreso_percapita_promedio` | Media ponderada de `N_ingpc` | Control de ingreso |
-| `capacidad_pago_promedio` | Media ponderada de `N_sin_cp` | Control de capacidad adquisitiva |
-| `tamano_hogar_promedio` | Media ponderada de `N_nper` | Control demografico |
-| `gasto_educ_promedio` | Media ponderada de `N_gm_educ_hog` | Proxy de valoracion educativa -- hogares que gastan mas en educacion pueden ser menos susceptibles al sesgo visual |
-| `tasa_deficit_cuantitativo` | Media ponderada de `N_deficit_cuantitativo` | Control de calidad del entorno fisico -- separa "el barrio se ve mal" de "el colegio se ve mal" |
-| `tasa_deficit_cualitativo` | Media ponderada de `N_deficit_cualitativo` | Idem |
-| `tasa_deficit_habitacional` | Media ponderada de `N_deficit_habitacional` | Resumen del entorno |
-| `pct_estrato_1` ... `pct_estrato_6` | Proporcion ponderada de `NVCBP11AA` | Distribucion de estrato en la UPZ -- control y calibracion de datos sinteticos |
-| `n_hogares_muestra` | Conteo sin ponderar | Indicador de confiabilidad de la celda UPZ |
-| `poblacion_expandida` | Suma de `FEX_C` | Aproximacion al total de hogares reales en la UPZ |
+| `01_build_dataset.py` | Integra todas las fuentes en dataset maestro de colegios | `colegios_features.geojson` |
+| `02a_extract_embeddings.py` | Extrae embeddings VGG19 (512d) por imagen GSV | `gsv_vgg19_raw.parquet` |
+| `02b_diagnose_embeddings.py` | Diagnóstico de calidad y selección de d PCA | `diagnostico_embeddings.json`, `pca_component_selection.png` |
+| `02c_seg_cityscapes.py` | Segmentación semántica DeepLabV3+ (19 clases Cityscapes) | `gsv_cs_raw.parquet`, `gsv_cs_establecimiento.parquet` |
+| `03a_lda_topics.py` | PCA(68d) + LDA sobre imágenes individuales | `gsv_lda_K{k}*.parquet` |
+| `03b_nmf_topics.py` | PCA(68d) + NMF sobre imágenes → tópicos por establecimiento (modelo principal) | `gsv_nmf_K{k}*.parquet` |
+| `03c_clip_features.py` | Scores perceptuales CLIP (mantenimiento, vegetación, accesibilidad, seguridad) | `gsv_clip_establecimiento.parquet` |
+| `03d_imputacion_espacial.py` | Imputa NaN por media de vecinos en radio 2 km | `colegios_features_imputed.geojson` |
 
-> **Limitacion:** `COD_UPZ_GRUPO` en la EM2021 agrupa UPZs pequenas bajo un mismo codigo. El cruce posterior con el directorio de colegios puede dejar algunos sin match directo. Esta limitacion se documenta en el paper.
+### Regresión y validación
 
----
-
-### T5. Delitos de alto impacto -> controles de seguridad por localidad
-
-**Script:** `scripts/00_clean_delitos.py`
-**Input:** `data/raw/delitos_alto_impacto.geojson`
-**Output:** `data/processed/delitos_por_localidad.csv`
-
-**Que hace:**
-- Lee el GeoJSON (1 fila por localidad, columnas `CM**[YY]CONT` con conteos anuales por periodo)
-- Suma las columnas de cada periodo por tipo de delito para obtener el acumulado real por localidad
-- Estandariza el nombre de localidad para el cruce con el directorio de colegios (`CANDELARIA` -> `LA CANDELARIA`)
-- Excluye la fila `SIN LOCALIZACION`
-
-> **Nota:** El campo `CM**TOTAL` del GeoJSON fuente es el total de Bogota entera, no el de la localidad. Los valores correctos por localidad se obtienen sumando las columnas `CM**[YY]CONT`.
-
-**Variables de salida:** `homicidios`, `lesiones_personales`, `hurto_personas`, `hurto_residencias`, `hurto_automotores`, `hurto_bicicletas`, `hurto_comercio`, `hurto_entidades`, `violencia_intrafam`, `delitos_sexuales`.
-
-**Por que:** El entorno de seguridad afecta las preferencias de los hogares. Una localidad con alta criminalidad puede reducir la demanda de colegios aunque tengan buena calidad o apariencia. Incluirlo como control aísla el efecto de la señal visual.
-
----
-
-### T6. Competencia del sector privado -> porcentaje por localidad
-
-**Script:** `scripts/00_build_competencia_privada.py`
-**Input:** `data/raw/colegios_dataset.csv` (directorio completo oficial + no oficial)
-**Output:** `data/processed/competencia_privada_localidad.csv`
-
-**Que hace:**
-- Carga el directorio completo (sector Oficial y No Oficial)
-- Agrupa por `nombre_localidad` y calcula:
-  - `n_sedes_total`: total de sedes en la localidad
-  - `n_sedes_no_oficial`: sedes del sector no oficial
-  - `pct_no_oficial`: porcentaje de sedes no oficiales
-- Normaliza el nombre de localidad para el cruce posterior
-
-**Variables de salida:** `localidad_norm`, `n_sedes_total`, `n_sedes_no_oficial`, `pct_no_oficial`.
-
-**Por que:** La intensidad competitiva del mercado educativo local puede moderar el efecto visual. En localidades con alta oferta privada, los hogares tienen mas opciones y pueden ser mas sensibles a senales de calidad -- tanto academica como visual. Se incluye como control en la regresion de `alpha` y como variable descriptiva en el EDA (Figura 4).
-
----
-
-### T7. Extracción de embeddings VGG19
-
-**Script:** `scripts/02_extract_embeddings.py`
-**Input:** `data/images/gsv/{id_establecimiento}/*.jpg` + `data/images/gsv/gsv_catalog.csv`
-**Output:** `data/images/embeddings/gsv_vgg19_raw.parquet`
-
-**Que hace:**
-- Filtra el catálogo GSV para quedarse solo con imágenes descargadas
-- Carga VGG19 (ImageNet) y construye extractor `block5_pool → AvgPool → 512d`
-- Procesa las 5,580 imágenes en lotes de 32, tolerante a archivos corruptos
-- Guarda una fila por imagen con metadatos (`id_establecimiento`, `id_sede`, `heading`) y 512 features
-
-**Por que la agregación no ocurre aquí:** agregar por sede/establecimiento antes de LDA suaviza los vectores y concentra los embeddings en una región más homogénea del espacio, lo que produce colapso de tópicos en LDA. La agregación se realiza en T9 una vez que las proporciones de tópicos ya son interpretables.
-
----
-
-### T8. Diagnóstico de calidad de embeddings y selección de d PCA
-
-**Script:** `scripts/02a_diagnose_embeddings.py`
-**Input:** `data/images/embeddings/gsv_vgg19_raw.parquet`
-**Outputs:** `data/images/embeddings/diagnostico_embeddings.json` · `reports/figures/pca_component_selection.png`
-
-**Que hace:**
-1. **Varianza por feature:** verifica que ninguna dimensión esté degenerada (var ≈ 0)
-2. **Similitud coseno entre pares:** muestrea 5,000 pares aleatorios y reporta la distribución de similitudes — alerta si la media supera 0.85 (señal de colapso potencial en LDA)
-3. **PCA + selección de d:** calcula hasta 150 PCs y construye la figura de sedimentación con el codo y d\* seleccionado
-
-**Resultados sobre los datos actuales:**
-
-| Test | Resultado | Estado |
+| Script | Descripción | Output |
 |---|---|---|
-| Varianza por feature | Var min: 0.000343, 0% features nulas | ✅ OK |
-| Similitud coseno (imágenes) | Media: 0.61 | ✅ OK |
-| PCA — codo | d = 18 (∼55% varianza) | — |
-| PCA — umbral 70% | d = 37 | — |
-| PCA — umbral 80% | d = 68 | ✅ seleccionado |
-| PCA — umbral 90% | d = 141 | — |
+| `04a_regresion.py` | Comparativa OLS/Ridge/Lasso/ElasticNet sobre `log(sobredemanda)` | `models/`, `comparativa_estimadores.csv`, `mejores_coefs.csv` |
+| `04b_build_capacidad.py` | Capacidad estimada (`matrícula / 13`) y atractivo `a_j` por colegio | `colegios_capacidad.parquet` |
+| `04c_decompose_aj.py` | Descompone `a_j` en componente visual y no-visual | — |
+| `05c_visual_index_validation.py` | Construye índice visual `v_j`, rank y quintil; genera figura de validación | `vj_scores.parquet`, `visual_index_validation.png` |
 
-**Criterio de selección de d\*:** se elige el umbral más alto alcanzado dentro de 150 PCs que sea ≥ 80%. Si ninguno se alcanza, se usa el 80% como piso. El codo (d=18) se reporta como referencia pero no se usa directamente porque captura solo ∼55% de la varianza visual.
+### Simulación de familias
 
-**Por que d=68 y no d=37 ni d=141:** el tramo 70%→80% cuesta 31 PCs adicionales con una ganancia de 0.32% por PC — eficiente. El tramo 80%→90% cuesta 73 PCs con 0.14% por PC — ineficiente. d=68 está en el punto donde la curva entra en su zona plana, con N/d = 82 (cómodo para LDA).
-
----
-
-### T9. Tópicos visuales con LDA
-
-**Script:** `scripts/03_lda_topics.py`
-**Input:** `data/images/embeddings/gsv_vgg19_raw.parquet`
-**Outputs (por cada K ∈ {6, 8, 10}):**
-- `data/images/embeddings/gsv_lda_K{k}_images.parquet` — proporciones por imagen
-- `data/images/embeddings/gsv_lda_K{k}.parquet` — proporciones por establecimiento
-- `data/images/embeddings/gsv_lda_K{k}_topics.json` — top features por tópico
-
-**Que hace:**
-1. **PCA(68):** reduce 512d → 68d y shift a no-negativo (requerido por LDA). Retiene el 80% de la varianza visual
-2. **Normalización L1:** transforma cada vector a una distribución de probabilidad (suma = 1)
-3. **LDA sobre imágenes individuales:** aprende K tópicos visuales con más datos y mayor variabilidad que si se corriera sobre promedios por establecimiento
-4. **Agregación:** promedia las proporciones de tópicos por establecimiento → 1 vector de K dimensiones por colegio
-
-**Por que LDA sobre imágenes y no sobre establecimientos:** con 5,580 imágenes la relación N/d = 82, suficiente para que LDA estime distribuciones estables. Correr LDA sobre los 306 vectores promediados (N/d = 4.5) producía colapso: todos los tópicos excepto uno recibían peso uniforme 1/K.
-
-**Parámetro principal:** `K_DEFAULT = 8` tópicos. Se evalúan K ∈ {6, 8, 10} para análisis de robustez.
-
-**Nota:** LDA colapsa en este dataset (std=0 en todos los tópicos para cualquier K). El prior de Dirichlet domina cuando los embeddings VGG19 de fachadas escolares son suficientemente homogéneos. Se reemplaza por NMF en T10.
-
----
-
-### T10. Tópicos visuales con NMF (reemplaza LDA)
-
-**Script:** `scripts/03_nmf_topics.py`
-**Input:** `data/images/embeddings/gsv_vgg19_raw.parquet`
-**Outputs (por cada K ∈ {6, 8, 10}):**
-- `data/images/embeddings/gsv_nmf_K{k}_images.parquet` — proporciones por imagen
-- `data/images/embeddings/gsv_nmf_K{k}.parquet` — proporciones por establecimiento
-- `data/images/embeddings/gsv_nmf_K{k}_topics.json` — top features por tópico
-
-**Por que NMF y no LDA:** NMF (Non-negative Matrix Factorization, Lee & Seung 1999) no asume distribuciones probabilísticas. Trabaja directamente sobre los features no-negativos (garantizados por ReLU en VGG19) y produce tópicos parts-based con varianza real entre establecimientos (std ≈ 0.05–0.12 vs std=0 en LDA).
-
-**Parámetro principal:** `K_DEFAULT = 8`. Modelo principal en `gsv_nmf_K8.parquet`.
-
----
-
-### T11. Segmentación semántica con DeepLabV3+ Cityscapes
-
-**Script:** `scripts/02b_seg_cityscapes.py`
-**Input:** `data/images/gsv/{id_establecimiento}/*.jpg`
-**Outputs:**
-- `data/images/segmentation/gsv_cs_raw.parquet` — proporciones por imagen
-- `data/images/segmentation/gsv_cs_establecimiento.parquet` — proporciones por establecimiento
-- `data/images/segmentation/diagnostico_primera_foto.png` — validación visual
-
-**Que hace:**
-- Pasa cada imagen por DeepLabV3+ ResNet-101 (Cityscapes, 19 clases) — cada píxel recibe una etiqueta semántica
-- Agrupa las 19 clases en 7 categorías temáticas para la regresión:
-
-| Grupo | Clases Cityscapes | Media (558 colegios) |
+| Script | Descripción | Output |
 |---|---|---|
-| `infraestructura_vial` | road, sidewalk | 33.1% |
-| `edificacion` | building | 25.9% |
-| `referencia` | sky, person, rider | 23.9% |
-| `vegetacion` | vegetation, terrain | 9.6% |
-| `cerramiento` | wall, fence | 3.7% |
-| `vehiculos` | car, truck, bus, train, moto, bici | 2.7% |
-| `mobiliario_urbano` | pole, traffic light, traffic sign | 1.0% |
+| `05a_simular_distancias.py` | Ubica familias en manzana por estrato + distancias Haversine a colegios | `familias_ubicadas.parquet`, `familias_distancias.parquet` |
+| `05b_expandir_familias.py` | Expande muestra con factor `FEX_C` y asigna grupo SISBEN `s` por ingreso | `familias_expandidas.parquet`, `distancias_expandidas.parquet` |
+| `06_preferencias.py` | Modelo de utilidad RUM + rankings top-20 por familia | `preferencias_familias.parquet`, `utilidades_familias.parquet` |
 
-- En regresión se excluye `referencia` para evitar multicolinealidad perfecta (las 7 suman 1)
+### Matching sobre datos reales
 
-**Checkpoint requerido:** `checkpoints/best_deeplabv3plus_resnet101_cityscapes_os16.pth` (~449 MB). El `setup.ps1` lo descarga automáticamente.
-
-**Velocidad:** ~6 min para 5,580 imágenes con GPU RTX 4070.
-
-**Por que Cityscapes:** entrenado específicamente en escenas urbanas (19 clases urbanas). Produce coeficientes directamente interpretables en regresión — "10pp más de vegetación → X% más sobredemanda" (Suel et al. 2019, Scientific Reports).
-
----
-
-### T12. Features perceptuales con CLIP
-
-**Script:** `scripts/02c_clip_features.py`
-**Input:** `data/images/gsv/{id_establecimiento}/*.jpg`
-**Outputs:**
-- `data/images/clip/gsv_clip_raw.parquet` — scores por imagen
-- `data/images/clip/gsv_clip_establecimiento.parquet` — scores por establecimiento
-
-**Que hace:**
-- Carga CLIP ViT-B/32 (Radford et al. 2021) — mapea imágenes y texto al mismo espacio de 512 dimensiones
-- Para cada imagen calcula: `score = coseno(imagen, frase_positiva) − coseno(imagen, frase_negativa)`
-- Las 4 dimensiones y sus frases son **fijas** para garantizar replicabilidad:
-
-| Dimensión | Frase positiva | Frase negativa |
+| Script | Descripción | Output |
 |---|---|---|
-| `mantenimiento` | "a school building with a clean and well-maintained facade" | "a school building with a deteriorated and neglected facade" |
-| `vegetacion_percibida` | "a school surrounded by trees and green areas" | "a school with no vegetation or green spaces around it" |
-| `accesibilidad` | "a school with a welcoming and open entrance" | "a school with a closed, walled-off and unwelcoming entrance" |
-| `seguridad_percibida` | "a school in a safe and calm street environment" | "a school in a dangerous and chaotic street environment" |
+| `07_boston_mechanism.py` | Boston Mechanism con prioridad por distancia | `matching_bm.parquet`, `matching_bm_summary.csv` |
+| `07_da_mechanism.py` | Deferred Acceptance (Gale-Shapley) con prioridad por distancia | `matching_da.parquet`, `matching_da_summary.csv` |
+| `07_sed_lex.py` | SED-lex (prioridad SISBEN + distancia) y SED-dist (control) | `matching_sed_lex.parquet`, `matching_sed_dist.parquet`, `matching_sed_comparison.csv` |
+| `compare_mechanisms.py` | Tabla y figura comparativa de los tres mecanismos | `comparativa_mecanismos.csv`, `comparativa_mecanismos.png` |
 
-**Scores medios (558 colegios):** mantenimiento −0.012 · vegetacion −0.046 · accesibilidad −0.028 · seguridad −0.006
+### Experimento sintético
 
-**Por que CLIP complementa Cityscapes:** Cityscapes mide *qué hay físicamente* en la imagen. CLIP mide *cómo se percibe* ese entorno — deterioro, apertura, seguridad — dimensiones subjetivas validadas en Naik et al. (2017) y Dubey et al. (2016) como predictores de comportamiento urbano.
-
-**Velocidad:** ~54 segundos para 5,580 imágenes con GPU RTX 4070.
-
----
-
-### T13. Imputación espacial de valores faltantes
-
-**Script:** `scripts/03b_imputacion_espacial.py`
-**Input:** `data/primary/colegios_features.geojson`
-**Output:** `data/primary/colegios_features_imputed.geojson`
-
-**Que hace:**
-- Detecta automáticamente columnas numéricas con NaN (25 columnas, 661 valores faltantes)
-- Para cada valor faltante: busca vecinos dentro de un radio de 2 km (haversine, BallTree)
-  y imputa con la media de los vecinos con valor válido
-- Fallback a mediana global si no hay vecinos en el radio (40 casos)
-- Resultado: 306 establecimientos sin NaN en ninguna variable numérica
-
-**Por que imputación espacial:** los colegios cercanos comparten entorno socioeconómico.
-La media de vecindario es mejor estimador que la media global, especialmente para variables
-de UPZ (pobreza, ingreso) que varían fuertemente por zona.
-
----
-
-### T14. Comparativa de estimadores y métodos visuales
-
-**Script:** `scripts/04_regresion.py`
-**Variable dependiente:** `log(sobre_demanda_j)` — log del ratio demanda/matrícula
-**Input:** `colegios_features_imputed.geojson` + outputs de T10, T11, T12
-**Outputs:** `reports/comparativa_estimadores.csv` · `reports/mejores_coefs.csv`
-
-**Controles (M0):** `puntaje_icfes_promedio` (media 2020/2022/2023) · `tasa_pobreza_monetaria` ·
-`ingreso_percapita_promedio` · `dist_sitp_m` · `pct_no_oficial` · `hurto_personas` · `homicidios` ·
-`n_oficiales_localidad` (capacidad pública en la misma localidad) · `estrato_2` ... `estrato_6` (base = estrato 1)
-
-**Estimadores comparados:** OLS · Ridge · LASSO · ElasticNet — todos con Pipeline(StandardScaler) para evitar data leakage en CV k=5.
-
-**Resultados — mejor combinación por RMSE_cv:**
-
-| Modelo | Estimador | p_in | Activas | R²_adj | RMSE_cv |
-|---|---|---|---|---|---|
-| **M1 — NMF** | **Lasso** | **21** | **9** | **0.073** | **0.0869** |
-| M1 — NMF | Lasso | 21 | 9 | 0.071 | 0.0869 |
-| M0–M4 | OLS/Ridge | — | — | 0.13–0.20 | 0.138–0.156 |
-
-OLS y Ridge tienen RMSE_cv ~0.14–0.16 — peores fuera de muestra por sobreajuste (N=301, p hasta 23). LASSO y ElasticNet generalizan mejor.
-
-**Features seleccionadas por M1-Lasso (9):**
-
-| Variable | Coef | Tipo |
+| Script | Descripción | Output |
 |---|---|---|
-| `estrato_4` | +0.016 | Control |
-| `topic_1` | +0.009 | Visual NMF |
-| `topic_2` | −0.006 | Visual NMF |
-| `estrato_3` | −0.003 | Control |
-| `hurto_personas` | +0.002 | Control |
-| `pct_no_oficial` | +0.002 | Control |
-| `puntaje_icfes_promedio` | −0.002 | Control |
-| `estrato_5` | −0.002 | Control |
-| `topic_6` | −0.001 | Visual NMF |
+| `08_datos_sinteticos.py` | Genera población sintética N=10,000 / M=100 con sesgo visual calibrado (`γ₀=1`) | `sinteticos_b_*.parquet`, `sinteticos_b_calibracion.json` |
+| `09a_matching_sinteticos.py` | Matching en 6 condiciones (BM/DA/SED × sesgo/verdad), seed=42 | `sinteticos_b_resultados.parquet`, `sinteticos_b_comparativa.csv`, `sinteticos_b_comparativa.png` |
+| `09b_robustez_gamma.py` | Análisis de robustez a γ₀ ∈ {0.25, 0.50, 0.75, 1.00, 1.25, 1.50} | `robustez_gamma.csv`, `robustez_gamma.png` |
 
-**Interpretación:** topic_1 (+) y topic_2 (−) son los tópicos visuales con mayor señal. El estrato_4 tiene el coeficiente más alto — colegios en zonas de estrato 4 tienen mayor sobredemanda relativa. Cityscapes y CLIP no sobreviven ningún estimador — la señal visual está capturada en tópicos latentes NMF.
+### Módulo compartido
 
-**Pendiente:** identificar qué representan visualmente topic_1, topic_2 y topic_6 (inspección de imágenes con peso alto en cada tópico).
-
----
-
-## Pipeline de simulación
-
-### S1. Familias con hijos en colegio oficial — EM2021
-
-**Script:** `scripts/00_fetch_em2021_variables.py` (función `fetch_personas_escolar`)
-**Input:** CSV completo EM2021 (1.25 GB, descargado en streaming)
-**Output:** `data/raw/em2021_familias_escolar.csv`
-
-Filtra personas de 5-17 años que estudian en institución oficial (NPCHP2=1, NPCHP12=1),
-agrega a nivel hogar (DIRECTORIO) y cruza con encuesta principal para traer UPZ, localidad
-y estrato real (`NVCBP11AA` — estrato para tarifa de servicios públicos, 1-6).
-
-**Resultado:** 21,643 hogares con hijos en colegio oficial.
-
----
-
-### S2. Ubicación de familias en manzana por estrato
-
-**Script:** `scripts/05_simular_distancias.py`
-**Inputs:** `em2021_familias_escolar.csv` · `upz/upz.shp` · `manzana_estratificacion.geojson` · `colegios_features.geojson`
-**Outputs:** `familias_ubicadas.parquet` · `familias_distancias.parquet`
-
-Para cada familia:
-1. Identifica su UPZ de residencia
-2. Selecciona aleatoriamente una manzana dentro de su UPZ que tenga el mismo estrato real (NVCBP11AA)
-   - Si no hay manzanas del estrato exacto: usa el estrato más cercano disponible
-3. Toma un punto aleatorio dentro de la manzana (rejection sampling en el bbox del polígono)
-4. Calcula distancias Haversine a los 303 colegios con embeddings NMF
-
-**Resultado:** 13,568 familias ubicadas (87.5% de match — el 12.5% restante son UPZs 8xx periféricas sin polígono individual).
-Matriz de distancias: shape (13,568 × 303), min=0.01 km, max=32.7 km.
-
----
-
-### S3. Modelo de utilidad y rankings de preferencia
-
-**Script:** `scripts/06_preferencias.py`
-**Inputs:** `models/ridge_m1.joblib` · `familias_expandidas.parquet` · `distancias_expandidas.parquet`
-**Outputs:** `data/primary/preferencias_familias.parquet` · `data/processed/utilidades_familias.parquet`
-
-**Modelo de utilidad (Random Utility Model):**
-
-```
-u_ij = β·X_j  −  α_s · ln(1 + d_ij)  +  ε_ij
-```
-
-| Componente | Descripción |
-|---|---|
-| `β·X_j` | Score de calidad predicho por Lasso M1 — homogéneo entre estratos |
-| `α_s · ln(1+d_ij)` | Penalización distancia heterogénea por estrato |
-| `ε_ij ~ Gumbel(0,1)` | Ruido logístico (seed=42) |
-
-**Penalización por distancia (Hastings et al. 2009):**
-
-Función power law calibrada con ratio α₁/α₆ = 3x:
-
-```
-α_s = 0.30 / s^0.613
-```
-
-| Estrato | α_s |
-|---|---|
-| 1 | 0.300 |
-| 2 | 0.196 |
-| 3 | 0.153 |
-| 4 | 0.128 |
-| 5 | 0.112 |
-| 6 | 0.100 |
-
-**Choice set:** cada familia elige solo entre colegios de su localidad.
-Excepción: La Candelaria (localidad 17) puede elegir también en localidades 3 (Santa Fe), 14 (Los Mártires) y 15 (Antonio Nariño).
-
-**Resultado:** Rankings top-20 por familia. Choice set promedio: 23.3 colegios.
-
----
-
-## Pipeline de matching
-
-Los scripts de matching comparten algoritmos a través del módulo `matching_utils.py` para
-evitar duplicación. Existen dos contextos de aplicación: datos reales y datos sintéticos.
-
-```
-scripts/
-├── matching_utils.py          ← módulo compartido: BM, DA, métricas
-├── 07_boston_mechanism.py     ← Boston Mechanism sobre datos reales
-├── 07_da_mechanism.py         ← Deferred Acceptance sobre datos reales
-├── 07_sed_lex.py              ← SED-lex y SED-dist sobre datos reales
-├── 08_datos_sinteticos.py     ← genera población sintética calibrada (§5.3)
-└── 09_matching_sinteticos.py  ← matching sobre datos sintéticos (4 condiciones)
-```
-
-### M0. Módulo compartido — `matching_utils.py`
-
-Contiene las implementaciones de Boston Mechanism y Deferred Acceptance como funciones
-puras que reciben una **función de prioridad** `priority_fn(student_idx, school_id) → float`
-donde menor valor = mayor prioridad. Esta abstracción permite usar exactamente el mismo
-código en el contexto real (prioridad = distancia Haversine) y en el sintético
-(prioridad = lotería aleatoria).
-
-**Funciones principales:**
-
-| Función | Descripción |
-|---|---|
-| `boston_mechanism(pref_lists, cap, priority_fn)` | BM: aceptación irrevocable por ronda |
-| `deferred_acceptance(pref_lists, cap, priority_fn)` | DA/GS: provisional, strategyproof |
-| `count_blocking_pairs(assignment, ...)` | Cuenta pares (i,j) mutuamente preferibles |
-| `mean_rank_obtained(assignment, pref_lists)` | Posición media del colegio asignado |
-| `compute_metrics(assignment, ..., quality_col, visual_col)` | Todas las métricas juntas |
-
----
-
-### M1. Matching sobre datos reales — `07_boston_mechanism.py` · `07_da_mechanism.py` · `07_sed_lex.py`
-
-**Inputs:** `preferencias_familias.parquet` · `familias_expandidas.parquet` · `distancias_expandidas.parquet` · `colegios_capacidad.parquet`
-
-**Diseño:**
-- Capacidad = `round(matricula_total / 13)`, mínimo 5 — cohort anual estimado
-- Prioridad = distancia Haversine (réplica del criterio SED Bogotá)
-- Choice set = localidad (heredado de `06_preferencias.py`)
-
-**Outputs:** `data/results/matching_bm.parquet` · `data/results/matching_da.parquet` · `data/results/matching_sed_lex.parquet` · `data/results/matching_sed_dist.parquet` · `reports/matching_bm_summary.csv` · `reports/matching_da_summary.csv` · `reports/matching_sed_comparison.csv`
-
-**Resultados:**
-
-| Mecanismo | Asignados | Eficiencia q | corr(estrato, q) | corr(estrato, SD) | Rank medio | Blocking pairs |
-|---|---|---|---|---|---|---|
-| Boston (BM) | 13,568 (100%) | 258.72 | +0.193 | +0.012 | 1.18 | **183** |
-| DA (Gale-Shapley) | 13,568 (100%) | 258.73 | +0.192 | +0.010 | 1.19 | **0** ✓ |
-
-**Interpretación:** DA confirma 0 blocking pairs (estable por construcción). La diferencia
-de eficiencia y equidad es mínima porque la capacidad total (45,119 cupos) supera
-ampliamente la demanda (13,568 familias) — la competencia existe dentro de localidades
-pero casi todos obtienen su primera o segunda preferencia.
-
----
-
-### M2. Datos sintéticos calibrados — `08_datos_sinteticos.py`
-
-Implementa la sección 5.3 del diseño metodológico: una población sintética donde las
-preferencias incorporan **sesgo visual explícito**, separado del componente de calidad.
-
-**Modelo de utilidad:**
-```
-CON sesgo: u_ij  = q_j_std + (α̂ + γ_s_i) · v_j + ε_ij
-SIN sesgo: u0_ij = q_j_std + ε_ij
-```
-
-**Construcción de v_j (índice visual):**
-```
-Paso 1: OLS  →  log(SD_j) = β₀ + β₁·q_j_std + e_j
-Paso 2: v_j_raw = e_j   (residuo = demanda no explicada por calidad)
-Paso 3: v_j = z-score(v_j_raw)     ⟹  corr(v_j, q_j) = 0.000 por construcción
-```
-
-**Parámetros calibrados:**
-
-| Parámetro | Valor | Fuente |
-|---|---|---|
-| `alpha_hat` (α̂) | 0.08793 (p≈0) | OLS `log(SD) ~ v_j` |
-| `gamma_s` | 0.039 → 0.236 (s=1→6) | `α̂ × (s / s̄)`, s̄=2.24 |
-| `sigma` (σ) | 1.0 | Calibrado para competencia real |
-| N estudiantes | 1,000 | Distribución real EM2021 |
-| M colegios | 50 | Muestra estratificada por cuartil q_j |
-
-**Outputs:** `data/primary/sinteticos_b_colegios.parquet` · `sinteticos_b_estudiantes.parquet` · `sinteticos_b_preferencias_bias.parquet` · `sinteticos_b_preferencias_true.parquet` · `reports/sinteticos_b_calibracion.json`
-
-**Validación:** `corr(estrato, v_j_top1)` pasa de 0.004 (sin sesgo) a 0.030 (con sesgo) — amplificación ×7 del sesgo visual en la primera preferencia por estrato.
-
----
-
-### M3. Matching sobre datos sintéticos — `09_matching_sinteticos.py`
-
-Compara **4 condiciones experimentales** para aislar el efecto del mecanismo vs. el del
-sesgo en las preferencias. La **misma lotería de prioridad** se usa en las 4 condiciones.
-
-**Outputs:** `data/results/sinteticos_b{bm,da}_{bias,true}.parquet` · `data/results/sinteticos_b_resultados.parquet` · `reports/sinteticos_b_comparativa.csv` · `reports/figures/matching/sinteticos_b_comparativa.png`
-
-**Resultados:**
-
-| Condición | Eficiencia q | \|corr(estrato,q)\| | corr(estrato,v) | Rank medio | Blocking pairs |
-|---|---|---|---|---|---|
-| BM + sesgo | −0.313 | 0.008 | −0.012 | 7.5 | **444** |
-| BM + verdad | −0.313 | 0.001 | −0.001 | 7.8 | 422 |
-| DA + sesgo | −0.313 | 0.040 | **+0.047** | 12.0 | **0** ✓ |
-| DA + verdad | −0.313 | 0.015 | +0.026 | 12.7 | **0** ✓ |
-
-**Hallazgo principal:** DA garantiza 0 blocking pairs pero **amplifica el sesgo visual**
-(corr 0.026 → 0.047) porque respeta las preferencias declaradas — incluyendo el sesgo.
-Esto motiva directamente RegretNet con `FairnessPenalty` en la función de pérdida.
-
----
-
-## Referencias
-
-### Mecanismos de matching y school choice
-- Abdulkadiroğlu, A. & Sönmez, T. (2003). School Choice: A Mechanism Design Approach. *American Economic Review*, 93(3), 729–747.
-- Gale, D. & Shapley, L. (1962). College Admissions and the Stability of Marriage. *American Mathematical Monthly*, 69(1), 9–15.
-
-### Preferencias y distancia en school choice
-- Hastings, J., Kane, T. & Staiger, D. (2009). Heterogeneous Preferences and the Efficacy of Public School Choice. *NBER Working Paper* 12145. [Fuente de α₀=0.30 y ratio α₁/α₆=3x]
-- Burgess, S., Greaves, E., Vignoles, A. & Wilson, D. (2015). What Parents Want: School Preferences and School Choice. *Economic Journal*, 125(587), 1262–1289. [Gradiente de distancia heterogéneo por estrato, especificación log-distancia]
-- Gallego, F. & Hernando, A. (2009). School Choice in Chile: Looking at the Demand Side. *Pontificia Universidad Católica de Chile*, Working Paper. [Contexto LatAm: restricción geográfica como principal determinante en familias de bajos ingresos]
-- Einav, L. & Levin, J. (2010). Empirical Industrial Organization: A Progress Report. *Journal of Economic Perspectives*, 24(2), 145–162. [Referencia para especificación log-log de parámetros heterogéneos]
-
-### Mecanismos aprendidos / RegretNet
-- Dütting, P., Feng, Z., Narasimhan, H., Parkes, D. & Ravindranath, S. (2019/2023). Optimal Auctions through Deep Learning. *ICML 2019 / Journal of the ACM*, 70(1).
-
-### Features visuales urbanas
-- Naik, N., Raskar, R. & Hidalgo, C. (2017). Computer Vision Uncovers Predictors of Physical Urban Change. *PNAS*, 114(29), 7571–7576.
-- Dubey, A., Naik, N., Parikh, D., Raskar, R. & Hidalgo, C. (2016). Deep Learning the City: Quantifying Urban Perception at a Global Scale. *ECCV 2016*.
-- Suel, E., Bhatt, S., Brauer, M., Flaxman, S. & Bhatt, S. (2019). Measuring Individual Wellbeing from Urban Street Images. *Scientific Reports*, 9, 15851.
-
-### Visión computacional y embeddings
-- Radford, A. et al. (2021). Learning Transferable Visual Models From Natural Language Supervision. *ICML 2021*.
-- Lee, D. & Seung, H. (2001). Algorithms for Non-negative Matrix Factorization. *NeurIPS 2000*.
-- Simonyan, K. & Zisserman, A. (2015). Very Deep Convolutional Networks for Large-Scale Image Recognition. *ICLR 2015* (VGG19).
-
-### Econometría
-- Tibshirani, R. (1996). Regression Shrinkage and Selection via the Lasso. *Journal of the Royal Statistical Society B*, 58(1), 267–288.
-- Zou, H. & Hastie, T. (2005). Regularization and Variable Selection via the Elastic Net. *Journal of the Royal Statistical Society B*, 67(2), 301–320.
-- Long, J. & Ervin, L. (2000). Using Heteroscedasticity Consistent Standard Errors in the Linear Regression Model. *The American Statistician*, 54(3), 217–224.
+`matching_utils.py` implementa `boston_mechanism`, `deferred_acceptance`, `count_blocking_pairs` y `compute_metrics` como funciones puras que reciben una `priority_fn` configurable; compartido por todos los scripts de matching.

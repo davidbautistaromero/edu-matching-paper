@@ -1,8 +1,8 @@
 {
-  "N_estudiantes": 1000,
-  "M_colegios": 50,
+  "N_estudiantes": 10000,
+  "M_colegios": 100,
   "ratio_d_o": 1.16,
-  "capacidad_total": 862,
+  "capacidad_total": 8621,
   "rho": 0.0,
   "sigma": 1.0,
   "seed": 42,
@@ -10,34 +10,27 @@
   "gamma_pow": 0.613147,
   "mu_q": 258.404588,
   "std_q": 14.006506,
-  "s_bar": 2.2353,
-  "strato_dist": {
-    "1": 0.13652,
-    "2": 0.54586,
-    "3": 0.27386,
-    "4": 0.03437,
-    "5": 0.00828,
-    "6": 0.00111
+  "sisben_dist": {
+    "0": 0.21913,
+    "1": 0.3793,
+    "2": 0.28542,
+    "3": 0.11615
   },
   "alpha_s": {
-    "1": 0.3,
-    "2": 0.196131,
-    "3": 0.152959,
-    "4": 0.128224,
-    "5": 0.111828,
-    "6": 0.1
+    "0": 0.3,
+    "1": 0.196131,
+    "2": 0.152959,
+    "3": 0.111828
   },
   "gamma_s": {
-    "1": 0.3,
-    "2": 0.15,
-    "3": 0.1,
-    "4": 0.075,
-    "5": 0.06,
-    "6": 0.05
+    "0": 1.0,
+    "1": 0.5,
+    "2": 0.333333,
+    "3": 0.2
   },
-  "corr_vj_qj": -0.03536,
-  "utilidad": "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps",
-  "corr_v_bias": -0.06613,
-  "corr_v_true": -0.003,
-  "delta": -0.06313
+  "corr_vj_qj": 0.0945,
+  "utilidad": "U_bias = q_j_std - alpha_s*log1p(d) + gamma_s*v_j + eps | gamma_s=1.0/proxy_estrato (γ₀=1: relación 1:1 v_j/q_j para cat A)",
+  "corr_v_bias": -0.26379,
+  "corr_v_true": -0.00267,
+  "delta": -0.26113
 }

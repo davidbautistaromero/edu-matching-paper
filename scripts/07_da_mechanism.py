@@ -194,6 +194,7 @@ log.info("Paso 7 — Guardando resultados...")
 da_df = pd.DataFrame({
     "DIRECTORIO"         : fam_df["DIRECTORIO"].values,
     "estrato_real"       : estrato_arr,
+    "sisben_cat"         : pd.to_numeric(fam_df["sisben_cat"], errors="coerce").fillna(3).astype(int).values if "sisben_cat" in fam_df.columns else np.full(len(fam_df), 3, dtype=int),
     "id_establecimiento" : da_assignment,
 }).merge(
     school_info[["a_j", "q_j", "sobre_demanda_j", "nombre_localidad"]].reset_index(),
