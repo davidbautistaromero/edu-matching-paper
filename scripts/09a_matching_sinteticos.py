@@ -238,7 +238,7 @@ w = 0.35
 
 METRICAS = [
     ("rank_medio",   "Rank medio obtenido",        "Eficiencia (Pareto)\nmenor = mejor",                ".2f"),
-    ("equidad_qj",   r"corr(ingreso, $q_j$)",      "Equidad — calidad académica\nmayor = más equitativo", ".3f"),
+    ("equidad_qj",   r"corr(ingreso, $q_j$)",      "Equidad — calidad académica", ".3f"),
     ("sesgo_visual", r"corr(ingreso, $v_j^{vis}$)","Sesgo visual\n(positivo = ricos en mejores instalaciones)", ".3f"),
 ]
 
