@@ -1,0 +1,183 @@
+# Demand Estimation — Mixed Logit
+*Jeff Gortmaker and Ariel Pakes*
+
+---
+
+## Resumen de la clase anterior
+
+$$\max_{j \in J_t \cup \{0\}} u_{ijt} = \delta_{jt} + \mu_{ijt} + \varepsilon_{ijt} \implies s_{jt} = \sum_{i \in I_t} w_{it} \cdot \frac{\exp(\delta_{jt} + \mu_{ijt})}{1 + \sum_{k \in J_t} \exp(\delta_{kt} + \mu_{ikt})}$$
+
+- En cada mercado $t \in T$, individuos de tipo $i \in I_t$ eligen $j \in J_t \cup \{0\}$.
+- Los shocks logit $\varepsilon_{ijt}$ generan cuotas de mercado logit mixto (sobre tipos individuales).
+- En el día 1 se fijó $\mu_{ijt} = 0$ para obtener una ecuación de estimación lineal conveniente:
+
+$$\log \frac{s_{jt}}{s_{0t}} = \delta_{jt} = \alpha p_{jt} + x'_{jt}\beta + \xi_{jt}$$
+
+---
+
+## Patrones de sustitución poco realistas
+
+La elasticidad cruzada en el logit puro es:
+
+$$\eta_{jkt} = \frac{\partial \log q_{jt}}{\partial \log p_{kt}} = -\alpha \cdot p_{kt} \cdot s_{kt}$$
+
+No depende de las características de $j$ → propiedad de **Independencia de Alternativas Irrelevantes (IIA)**.
+
+### El problema del autobús rojo/autobús azul
+
+- Dos opciones: comprar un auto o un autobús azul. Cada uno tiene 50% de cuota.
+- Se introduce un segundo autobús, pero rojo. El logit puro (IIA) predice cuotas de 33%.
+- En realidad, esperaríamos que el auto siga con 50% y cada autobús con 25%.
+
+---
+
+## Heterogeneidad en preferencias
+
+### Solución: coeficientes aleatorios
+
+$$u_{ijt} = x'_{jt}\beta_{it} + \xi_{jt} + \varepsilon_{ijt}$$
+
+Se reemplaza $\beta$ por coeficientes aleatorios $\beta_{it}$, distribuidos según los tipos de consumidores $i \in I_t$.
+
+La especificación más común es $\beta_{it} \sim \mathcal{N}(\beta + \Pi y_{it},\ \Sigma\Sigma')$:
+
+$$u_{ijt} = x'_{jt}(\beta + \Pi y_{it} + \Sigma \nu_{it}) + \xi_{jt} + \varepsilon_{ijt}$$
+
+Reescrito en términos de $\delta_{jt}$ y $\mu_{ijt}$:
+
+$$u_{ijt} = \underbrace{x'_{jt}\beta + \xi_{jt}}_{\delta_{jt}} + \underbrace{x'_{jt}(\Sigma\nu_{it} + \Pi y_{it})}_{\mu_{ijt}} + \varepsilon_{ijt}$$
+
+- $\Pi$ desplaza preferencias según demografía **observada** $y_{it} \sim$ censo.
+- $\Sigma$ desplaza preferencias según preferencias **no observadas** $\nu_{it} \sim \mathcal{N}(0, I)$.
+- $\Sigma$ es la raíz de Cholesky de la matriz de varianza (usualmente diagonal).
+
+### Implementación práctica
+
+- Se crea un nuevo dataset: filas de "product data" son $(j,t)$, filas de "agent data" son $(i,t)$.
+- Se dibujan $|I_t| = 100$ tipos por mercado con pesos iguales $w_{it} = 1/|I_t|$.
+- Permite analizar impactos distributivos (e.g., ¿afecta un impuesto más a individuos de alto o bajo ingreso?).
+
+---
+
+## Estimación del logit mixto (BLP)
+
+### De regresión lineal a GMM
+
+El estimador GMM minimiza:
+
+$$\hat{\beta} = \arg\min_{\beta}\ g(\beta) W g(\beta)' \quad \text{donde} \quad g(\beta) = \frac{1}{N} \sum_{t \in T} \sum_{j \in J_t} (\delta_{jt} - x'_{jt}\beta) \cdot z_{jt}$$
+
+### La contracción BLP
+
+Con heterogeneidad en preferencias, $\delta_{jt} = \log s_{jt}/s_{0t}$ ya no es válido. Dado un guess de $(\Sigma, \Pi)$, se resuelven numéricamente los $\delta_{jt}$ que satisfacen:
+
+$$s_{jt} = \sum_{i \in I_t} w_{it} \cdot \frac{\exp[\delta_{jt} + \mu_{ijt}(\Sigma,\Pi)]}{1 + \sum_{k \in J_t} \exp[\delta_{kt} + \mu_{ikt}(\Sigma,\Pi)]} \quad \forall j \in J_t$$
+
+### El estimador BLP
+
+$$\hat{\theta} = \arg\min_{\theta}\ g(\theta) W g(\theta)' \quad \text{donde} \quad g(\theta) = \frac{1}{N} \sum_{t \in T} \sum_{j \in J_t} (\delta_{jt}(\Sigma,\Pi) - x'_{jt}\beta) \cdot z_{jt}$$
+
+La estimación consta de dos bucles anidados:
+
+1. **Bucle externo:** se optimiza sobre $\theta = (\beta, \Sigma, \Pi)$.
+2. **Bucle interno:** se resuelve la contracción BLP para $\delta_{jt}(\Sigma, \Pi)$.
+
+Como $g(\theta)$ es lineal en $x_{jt}$, se puede "concentrar" $\beta$ y optimizar solo $(\Sigma, \Pi)$, obteniendo $\hat{\beta}$ mediante regresión IV de $\delta_{jt}(\Sigma,\Pi)$ sobre $x_{jt}$.
+
+---
+
+## Buenas prácticas numéricas
+
+### Optimización no lineal
+
+- **Restricciones de caja** $\theta \in [\underline{\theta}, \bar{\theta}]$ para evitar valores inestables de $\theta$.
+- **Verificar con 3–5 valores iniciales** distintos $\theta \sim U(\underline{\theta}, \bar{\theta})$ que convergen al mismo $\hat{\theta}$.
+- **Preferir algoritmos basados en gradiente** (e.g., trust-region como `trust-constr` de SciPy o Knitro). Evitar métodos sin derivadas como Nelder-Mead.
+- **Terminar con condiciones de primer orden estrictas**, e.g. $\|\text{gradiente}\|_\infty < 10^{-8}$.
+- **Configurar el optimizador:** los defaults pueden no funcionar para cada problema.
+
+### Integración numérica
+
+$$s_{jt} \approx \int \frac{\exp(\delta_{jt} + \mu_{ijt})}{1 + \sum_{k \in J_t} \exp(\delta_{kt} + \mu_{ikt})} \, dF(\mu_{it})$$
+
+- Cuando hay pocos tipos, se puede integrar exactamente.
+- En general: **integración Monte Carlo** con $|I_t| \approx 1{,}000$ draws por mercado.
+- Mejor aún: **secuencias quasi-Monte Carlo** (e.g., Halton scrambleadas).
+- Para pocos $\nu_{it} \sim \mathcal{N}(0,I)$: considerar **cuadratura Gauss-Hermite** (10–100× más eficiente).
+- Aumentar $|I_t|$ hasta que los estimados se estabilicen entre distintos draws/valores iniciales.
+
+### Qué suele salir mal
+
+- Pocos draws $|I_t|$ hacen el objetivo "ruidoso" (*choppy*).
+- Optimizadores mal configurados pueden detenerse demasiado pronto.
+- Distintos instrumentos generan distintos objetivos: instrumentos más débiles implican objetivos más planos y más difíciles de optimizar.
+
+---
+
+## Instrumentos de diferenciación
+
+### Cuántos instrumentos se necesitan
+
+- Por cada nuevo parámetro en $(\Sigma, \Pi)$, se necesita un instrumento adicional en $z_{jt}$.
+- Recomendación: comenzar con **un instrumento por parámetro** que "apunte" a ese parámetro.
+- Los modelos just-identified dan $Q(\hat{\theta}) \approx 0$ en el óptimo, independientemente de $W$.
+
+### Aproximación por regresión lineal (Salanié y Wolak, 2022)
+
+Aproximando el modelo BLP alrededor de $\sigma, \pi \approx 0$:
+
+$$\log \frac{s_{jt}}{s_{0t}} \approx \beta x_{jt} + \sigma^2 d^x_{jt} + \pi m^y_t x_{jt} + \pi^2 v^y_t d^x_{jt} + \xi_{jt}$$
+
+donde:
+
+$$d^x_{jt} = x_{jt}^2 - \sum_{k \in J_t} s_{kt} x_{kt} x_{jt}$$
+
+### Intuición para elegir instrumentos
+
+| Parámetro | Instrumento sugerido |
+|-----------|----------------------|
+| $\beta$ (logit puro) | IV de precio o $x_{jt}$ si es exógeno |
+| $\sigma$ (heterogeneidad no observada) | $\sum_{k \neq j}(x_{jt} - x_{kt})^2$ (Gandhi y Houde, 2020) |
+| $\pi$ (interacción con demografía) | $m^y_t \cdot x_{jt}$ (ingreso medio × característica) |
+
+Se requiere variación cross-market en el conjunto de opciones para que $d^x_{jt}$ no sea colineal con $x^2_{jt}$.
+
+### Instrumentos óptimos (Chamberlain, 1987)
+
+$$f^*(z_{jt}) = E\left[\frac{\partial \xi_{jt}}{\partial \theta'} \,\middle|\, z_{jt}\right]$$
+
+- Añadir demasiados instrumentos genera sesgo ("many weak IVs").
+- En PyBLP, los instrumentos óptimos se calculan en una línea de código.
+
+---
+
+## Ejercicio de programación 2
+
+1. Incorporar heterogeneidad en preferencias.
+2. Estimación del logit mixto.
+3. Evaluar mejoras en el contrafactual de reducción de precios.
+
+Reflexionar sobre las limitaciones del modelo: ¿qué dimensiones de heterogeneidad en preferencias faltan?
+
+**Ejercicios suplementarios (si hay tiempo):**
+- Alternativas de integración numérica.
+- Pesos e instrumentos óptimos.
+- Restricciones del lado de la oferta.
+
+---
+
+## Referencias
+
+- Angrist, Imbens y Krueger (1999). *Jackknife instrumental variables estimation.* Journal of Applied Econometrics.
+- Berry, Levinsohn y Pakes (1995). *Automobile prices in market equilibrium.* Econometrica.
+- Berry y Haile (2014, 2023). *Identification in differentiated products markets.*
+- Chamberlain (1987). *Asymptotic efficiency in estimation with conditional moment restrictions.* Journal of Econometrics.
+- Conlon y Gortmaker (2020). *Best practices for differentiated products demand estimation with PyBLP.* RAND Journal of Economics.
+- Gandhi y Houde (2020). *Measuring substitution patterns in differentiated-products industries.*
+- Han y Phillips (2006). *GMM with many moment conditions.* Econometrica.
+- Knittel y Metaxoglou (2014). *Estimation of random-coefficient demand models.* Review of Economics and Statistics.
+- McFadden (1989). *A method of simulated moments.* Econometrica.
+- Newey y Windmeijer (2009). *GMM with many weak moment conditions.* Econometrica.
+- Owen (2017). *A randomized Halton algorithm in R.*
+- Pakes y Pollard (1989). *Simulation and the asymptotics of optimization estimators.* Econometrica.
+- Salanié y Wolak (2022). *Fast, detail-free, and approximately correct: Estimating mixed demand systems.*

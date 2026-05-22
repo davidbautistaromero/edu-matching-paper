@@ -367,3 +367,141 @@ Grid: `γ₀ ∈ {0.25, 0.50, 0.75, 1.00, 1.25, 1.50}`, paso 0.25, mundo fijo se
 ### Estadísticas de pobreza y vulnerabilidad — DANE
 - DANE (2024a). Boletín técnico: Pobreza Monetaria Colombia 2024. Umbrales LP extrema ($227,220) y LP moderada ($460,198) per cápita mensual.
 - DANE (2024b). Comunicado de prensa: Clases Sociales Colombia 2024. Umbral de vulnerabilidad ($897,987) per cápita mensual.
+
+---
+
+## Extensiones pendientes — Semana 2026-05-22
+
+### Tarea 1. Interpretación de tópicos NMF
+
+Revisar `reports/figures/topic_{1..8}_top8.png` — las 8 imágenes con mayor peso en cada tópico. Asignar etiqueta semántica a cada tópico (e.g., "fachada bien mantenida", "entorno deteriorado", "vegetación densa", "vía sin pavimentar"). Documentar las etiquetas con justificación visual. Esto es prerequisito para la estimación de demanda — los tópicos entran como regresores individuales y sus coeficientes deben ser interpretables.
+
+**Decisión de dimensionalidad: K=6 como especificación principal.**
+- `gsv_nmf_K6.parquet` ya existe (408 × 7). No requiere regenerar embeddings.
+- Reduce parámetros en BLP: 12 (6 β_k + 6 π_k) vs 16 con K=8. Más cómodo con N=306 colegios.
+- Verificar que la señal visual se mantiene: correr `04a_regresion.py` con K=6 y confirmar que algún tópico es significativo.
+- K=8 como especificación de robustez.
+- También interpretar los tópicos de K=6 (generar `topic_{1..6}_top8.png` si no existen).
+
+### Tarea 2. Estimación estructural de demanda
+
+**Objetivo:** Reemplazar los parámetros calibrados (α₀=1, γ=0.384) con parámetros estimados de los datos reales de Bogotá.
+
+**2a. Berry inversion (logit puro)**
+Reformular la regresión actual (`04a_regresion.py`) como estimación estructural:
+- Definir market shares: `s_j = matrícula_j / M_t` donde `M_t` = población escolar del mercado (localidad)
+- Definir outside option: `s_0 = 1 - Σ s_j` (familias que van a privado o no asisten)
+- Invertir: `log(s_j / s_0) = δ_j = β_q·q_j + Σ_k β_k·topic_k_j + controles + ξ_j`
+- Los 6 tópicos NMF (K=6, especificación principal) entran como regresores individuales, NO como índice v_j agregado. K=8 como robustez.
+- Reportar: elasticidades de distancia, WTP por calidad vs señal visual
+
+**2b. Logit mixto (BLP/PyBLP)**
+Estimar heterogeneidad en preferencias por ingreso:
+```
+u_ij = δ_j + α_base·d_ij + π·(ingreso_i × d_ij) + Σ_k π_k·(ingreso_i × topic_k_j) + ε_ij
+```
+- `agent_data`: familias EM2021 con ingreso (`N_ingpc`) como demográfico observado
+- `product_data`: colegios × mercado (localidad) con tópicos NMF, q_j, controles
+- `π` captura cómo el ingreso modifica sensibilidad a distancia — reemplaza la calibración `α(y_i) = (ȳ/y_i)^0.384`
+- `π_k` captura qué tópicos visuales pesan más para familias de distintos ingresos — esto es el sesgo visual desagregado
+- Tres especificaciones de robustez: (1) K=6 tópicos individuales (principal), (2) K=8 tópicos individuales, (3) PCA → v_j escalar
+- Herramienta: PyBLP (Conlon y Gortmaker, 2020)
+- No hay endogeneidad de precio (educación oficial es gratuita); la distancia es exógena
+
+**Nota sobre endogeneidad:** No requerimos IVs para precio. El "precio" de acceso es la distancia, que es exógena condicional en la ubicación de la familia. Los instrumentos BLP clásicos (cost-shifters, Hausman) no aplican. Sin embargo, puede haber endogeneidad en ξ_j (calidad no observada): si colegios con buena gestión interna también se ven mejor físicamente, los β̂_k de los tópicos NMF estarían sesgados. **Estrategia:** empezar sin IV (reportar como asociación), luego como robustez instrumentar con IVs de diferenciación (Gandhi y Houde, 2020) — distancia en espacio de características entre colegios competidores. PyBLP los calcula con `pyblp.build_differentiation_instruments()`.
+
+**Referencia clave:** Curso de Jeff Gortmaker y Ariel Pakes (Mixtape Sessions). Documentación en `reports/paper/demand_estimation_*.md`.
+
+### Tarea 3. Monte Carlo con parámetros estimados
+
+**Objetivo:** Reemplazar los parámetros calibrados en `08_datos_sinteticos.py` con los α̂, β̂, π̂ de la estimación estructural y validar robustez con múltiples réplicas.
+
+**Diseño:**
+- Recalibrar DGP sintético con parámetros estimados en Tarea 2
+- 100 réplicas (seeds 1–100) × BM/DA/SED para cada configuración
+- Reportar media ± IC 95% de: delta_rank, delta_q(ingreso), delta_v(ingreso)
+- Robustez a γ₀ ∈ {0.25, 0.50, 0.75, 1.00, 1.25, 1.50} también con IC
+
+**Dos escenarios de evaluación:**
+1. **Correlación realista** (v_j, q_j correlacionados como en Bogotá) — valida que los resultados se mantienen en un mundo realista
+2. **Ortogonal** (v_j ⊥ q_j por construcción) — identificación limpia del sesgo visual puro
+
+**Métricas de equidad basadas en ingreso continuo** (`N_ingpc`), no en estrato ni grupo SISBEN. Justificación: SISBEN se deriva del ingreso; el ingreso continuo es estrictamente más informativo y captura variación within-group.
+
+**Dependencia:** Requiere parámetros estimados de Tarea 2.
+
+### Tarea 4. Mecanismo aprendido — Weighted Polytope Rule (WP-Rule)
+
+**Objetivo:** Diseñar un mecanismo de asignación que sea estable por construcción y optimice equidad visual, superando a BM/DA/SED.
+
+**Fundamento teórico (Narasimhan, Agarwal y Parkes, 2016; Roth, 1984):**
+- Todo emparejamiento estable es un vértice de un politopo convexo (Teorema de Roth)
+- Maximizar una función lineal sobre ese politopo siempre produce un vértice → matching estable garantizado
+- Los pesos de esa función lineal se pueden aprender con datos
+
+**Formulación:**
+Para cada par (familia i, colegio j), se define un peso:
+```
+λ_ij(W) = a_ij · rank(familia i prefiere colegio j) + b_ij · rank(colegio j prefiere familia i) + c_ij
+```
+El matching WP-Rule resuelve:
+```
+y* = argmax_{y ∈ Ω_estable} Σ_ij λ_ij · y_ij
+```
+donde `Ω_estable` se define por: (i) racionalidad individual, (ii) no blocking pairs.
+
+Casos especiales: `a` domina → DA student-optimal; `b` domina → DA school-optimal. Valores intermedios → tradeoff aprendido.
+
+**Entrenamiento (StructSVM sobre sintéticos correlacionados):**
+- Generar 1000 instancias de preferencias con DGP calibrado (parámetros estimados, v_j y q_j correlacionados como en Bogotá)
+- Para cada instancia, calcular matching "ideal" no estable (Hungarian/LP que maximiza welfare − penalización·|corr(ingreso, v_j)|)
+- Entrenar W = [a, b, c] para minimizar distancia de Hamming entre WP-Rule(W) y el matching ideal
+- El modelo aprende la estructura realista de correlaciones
+
+**Evaluación (sobre sintéticos ortogonales, 100 réplicas MC):**
+- Aplicar los pesos λ* aprendidos sobre escenario ortogonal (v_j ⊥ q_j)
+- Comparar BM/DA/SED/WP-learned
+- Aquí cualquier corr(ingreso, v_j) es sesgo puro — identificación limpia
+- Métrica: ¿WP reduce sesgo visual sin empeorar q_j asignado?
+
+**Aplicación (datos reales de Bogotá):**
+- Aplicar pesos λ* sobre las 97,968 familias expandidas
+- Tabla comparativa final: BM vs DA vs SED-lex vs WP-learned
+- Viabilidad operacional: el mecanismo es un LP, computable en segundos
+
+**Implementación:** LP con PuLP/scipy para el matching por instancia; StructSVM (o red neuronal) para aprender W.
+
+**Referencia:** Narasimhan, H., Agarwal, S. y Parkes, D. (2016). Automated Mechanism Design without Money via Machine Learning. Documentación en `reports/paper/maching_learning_matching.md`.
+
+### Tarea 5. Integración y paper
+
+- Comparativa final de 4 mecanismos (BM/DA/SED/WP) con IC
+- Narrativa de 3 actos: diagnóstico → cuantificación → solución
+- Contribución triple: (1) metodológica (demanda + CV), (2) empírica (sesgo robusto), (3) diseño (WP-Rule)
+- Actualizar slides y/o redactar working paper
+
+### Dependencias
+
+```
+Tarea 1 (tópicos) ──────────────────────────┐
+                                             ↓
+Tarea 2 (estimación de demanda) ────────────→ requiere tópicos interpretados
+                                             ↓
+Tarea 3 (Monte Carlo) ─────────────────────→ requiere parámetros estimados
+                                             ↓
+Tarea 4 (WP-Rule) ─────────────────────────→ requiere DGP calibrado de Tarea 3
+                                             ↓
+Tarea 5 (integración) ─────────────────────→ requiere todo lo anterior
+```
+
+Tarea 1 es independiente y puede arrancar de inmediato.
+
+### Tarea 6 (robustez). IV-GMM para estimación de demanda
+
+**Contexto:** La estimación base (Tarea 2) reporta β̂_k como asociación. Si ξ_j (calidad no observada) está correlacionada con los tópicos NMF (colegios bien gestionados también se ven mejor), los coeficientes estarían sesgados.
+
+**Instrumentos:** IVs de diferenciación (Gandhi y Houde, 2020) — para cada colegio j, calcular la distancia promedio en el espacio de características respecto a los colegios competidores del mismo mercado. PyBLP: `pyblp.build_differentiation_instruments()`.
+
+**Implementación:** Agregar los instrumentos a la especificación PyBLP y re-estimar. Comparar β̂_k con y sin IV — si los signos y magnitudes se mantienen, la estimación base es robusta.
+
+**Prioridad:** Baja — hacer solo si da tiempo después de las tareas 1-5. Los resultados sin IV ya son una mejora sustancial sobre la calibración.
