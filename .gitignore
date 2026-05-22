@@ -41,3 +41,5 @@ data/processed/utilidades_familias.parquet
 # Modelos entrenados (pesados, se reproducen con 04_regresion.py)
 models/*.joblib
 
+# Claude
+CLAUDE.md
