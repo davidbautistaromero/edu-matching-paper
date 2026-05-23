@@ -26,9 +26,10 @@ BATCH_SIZE = 32   # imágenes por lote (reducir si hay problemas de memoria)
 # Se detectan por la baja desviación estándar de sus píxeles en escala de grises.
 BLANK_STD_THRESHOLD = 15.0  # umbral empírico: imágenes reales tienen std >> 15
 
-CATALOG_PATH   = 'data/images/gsv/gsv_catalog.csv'
-GSV_DIR        = 'data/images/gsv'
-EMBEDDINGS_DIR = 'data/images/embeddings'
+CATALOG_PATH      = 'data/images/gsv/gsv_catalog.csv'
+EXCLUSION_PATH    = 'data/raw/excluded_schools.csv'
+GSV_DIR           = 'data/images/gsv'
+EMBEDDINGS_DIR    = 'data/images/embeddings'
 
 # =============================================================================
 # IMPORTACIONES
@@ -126,6 +127,15 @@ def load_catalog(mode: str) -> pd.DataFrame:
     # Filtrar solo imágenes descargadas
     catalog = catalog[catalog['descargada'].astype(str).str.strip() == 'True'].copy()
     log.info(f'  Imágenes descargadas: {len(catalog):,}')
+
+    # Excluir escuelas rurales que no pertenecen al mercado de elección escolar
+    excluded = pd.read_csv(EXCLUSION_PATH, dtype={'id_establecimiento': str})
+    excluded_ids = set(excluded['id_establecimiento'].astype(str))
+    catalog['id_establecimiento'] = catalog['id_establecimiento'].astype(str)
+    mask_excluded = catalog['id_establecimiento'].isin(excluded_ids)
+    n_excluded = mask_excluded.sum()
+    catalog = catalog[~mask_excluded].copy()
+    log.info(f'  Imágenes excluidas (escuelas rurales): {n_excluded:,}')
 
     # Construir ruta completa
     catalog['filepath'] = catalog['ruta_archivo'].apply(
