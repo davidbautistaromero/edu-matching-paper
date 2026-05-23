@@ -11,5 +11,21 @@ scikit-learn
 Pillow
 tqdm
 statsmodels
+numpy
+scipy
+pyarrow
+joblib
+python-snappy
+
+# ── Script 10: BLP utility estimation ────────────────────────────────
+# Los parquets gsv_nmf_K8.parquet y familias_expandidas.parquet fueron
+# escritos con PyArrow < 15 y no son legibles con PyArrow >= 15.
+# Se requiere un entorno conda separado con PyArrow 14 para extraerlos:
+#
+#   conda create -n arrow14 python=3.11 pyarrow=14 pandas -y
+#
+# El script 10_blp_utility_estimation.py crea el caché automáticamente
+# la primera vez que se ejecuta, siempre que exista ese entorno.
+
 # CLIP no está en PyPI — el setup.ps1 lo instala desde GitHub:
 # pip install git+https://github.com/openai/CLIP.git

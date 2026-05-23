@@ -1,0 +1,140 @@
+{
+  "version": "BLP_eleccion_discreta_v3",
+  "n_colegios": 406,
+  "n_mercados": 19,
+  "n_agents_per_market": 500,
+  "y_bar": 517878,
+  "outside_share_medio": 0.05,
+  "alpha0_hat": 1.032813,
+  "gamma_hat": 0.395441,
+  "sigma_d_hat": 0.097487,
+  "alpha0_hastings": 1.0,
+  "kappa_hastings": 0.383835,
+  "gmm_final": 0.0,
+  "gmm_converged": true,
+  "gmm_nit": 37,
+  "contraction_iters": 299,
+  "r2_ols": 0.6061,
+  "r2_2sls": -0.3195,
+  "beta_ols": {
+    "constante": 135.316734,
+    "v_j": -0.790169,
+    "q_j_norm": -1.856694,
+    "log_dist_sitp": -1.174059,
+    "log_hurto": 0.172067,
+    "log_homicidios": -20.932601,
+    "pct_no_oficial_c": -0.113015
+  },
+  "se_hc0_ols": {
+    "constante": 16.697369,
+    "v_j": 0.543451,
+    "q_j_norm": 0.835012,
+    "log_dist_sitp": 0.729479,
+    "log_hurto": 2.461643,
+    "log_homicidios": 1.876296,
+    "pct_no_oficial_c": 0.178109
+  },
+  "beta_2sls": {
+    "constante": 92.060333,
+    "v_j": 17.533453,
+    "q_j_norm": 1.400167,
+    "log_dist_sitp": 2.504866,
+    "log_hurto": 2.4177,
+    "log_homicidios": -20.683613,
+    "pct_no_oficial_c": -0.0735
+  },
+  "se_hc0_2sls": {
+    "constante": 27.719806,
+    "v_j": 1.574993,
+    "q_j_norm": 1.333006,
+    "log_dist_sitp": 1.447929,
+    "log_hurto": 3.813801,
+    "log_homicidios": 2.459602,
+    "pct_no_oficial_c": 0.267003
+  },
+  "se_cluster": {
+    "constante": 48.978981,
+    "v_j": 5.732393,
+    "q_j_norm": 1.590304,
+    "log_dist_sitp": 1.963717,
+    "log_hurto": 8.232237,
+    "log_homicidios": 6.268544,
+    "pct_no_oficial_c": 0.580966
+  },
+  "se_bootstrap": {
+    "constante": 101.002608,
+    "v_j": 32.599562,
+    "q_j_norm": 6.513701,
+    "log_dist_sitp": 7.150598,
+    "log_hurto": 8.293471,
+    "log_homicidios": 6.34051,
+    "pct_no_oficial_c": 0.583712
+  },
+  "ci95_lo": {
+    "constante": -92.150407,
+    "v_j": -47.550103,
+    "q_j_norm": -11.338125,
+    "log_dist_sitp": -11.670656,
+    "log_hurto": -13.851261,
+    "log_homicidios": -32.615451,
+    "pct_no_oficial_c": -1.107739
+  },
+  "ci95_hi": {
+    "constante": 295.883718,
+    "v_j": 79.456813,
+    "q_j_norm": 13.45539,
+    "log_dist_sitp": 15.603938,
+    "log_hurto": 17.556338,
+    "log_homicidios": -8.423379,
+    "pct_no_oficial_c": 0.969329
+  },
+  "kp_f": 5.668,
+  "wu_hausman": 153.645,
+  "wu_hausman_p": 0.0,
+  "beta_v_ols": -0.790169,
+  "beta_v_2sls": 17.533453,
+  "sesgo_iv_pct": 2319.0,
+  "hastings_vs_blp": [
+    {
+      "pct": 10,
+      "ingreso": 147222,
+      "income_norm": 0.284,
+      "alpha_hastings": 1.6206,
+      "alpha_blp": 1.6984
+    },
+    {
+      "pct": 25,
+      "ingreso": 246900,
+      "income_norm": 0.477,
+      "alpha_hastings": 1.3289,
+      "alpha_blp": 1.3843
+    },
+    {
+      "pct": 50,
+      "ingreso": 390000,
+      "income_norm": 0.753,
+      "alpha_hastings": 1.115,
+      "alpha_blp": 1.1554
+    },
+    {
+      "pct": 75,
+      "ingreso": 630083,
+      "income_norm": 1.217,
+      "alpha_hastings": 0.9275,
+      "alpha_blp": 0.9557
+    },
+    {
+      "pct": 90,
+      "ingreso": 1000000,
+      "income_norm": 1.931,
+      "alpha_hastings": 0.7768,
+      "alpha_blp": 0.7962
+    }
+  ],
+  "criticas_pendientes": [
+    "C1 demanda no desglosada por localidad origen",
+    "C2 sin preferencias individuales reales",
+    "C3 solo 19 clusters",
+    "C4 sorting residencial"
+  ]
+}
