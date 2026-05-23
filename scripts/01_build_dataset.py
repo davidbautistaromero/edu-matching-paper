@@ -497,9 +497,6 @@ def main():
     # Paso 9: competencia del sector privado por localidad
     df = join_competencia_privada(df)
 
-    # Placeholder para indice visual (se completa en 02_visual_index.py)
-    df["v_j"] = np.nan
-
     # Resumen
     print("\n=== Resumen del dataset ===")
     print(f"  Total establecimientos:   {len(df):,}")
@@ -507,7 +504,6 @@ def main():
     print(f"  Con sobre_demanda_j:      {df['sobre_demanda_j'].notna().sum():,}")
     print(f"  Con controles EM2021:     {df['tasa_pobreza_monetaria'].notna().sum():,}")
     print(f"  Con dist_transmilenio_m:  {df['dist_transmilenio_m'].notna().sum():,}")
-    print(f"  Con v_j:                  {df['v_j'].notna().sum():,}  (pendiente embeddings)")
     print(f"\n  Columnas totales: {len(df.columns)}")
 
     save_geojson(df, OUT)
