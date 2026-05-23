@@ -13,6 +13,7 @@ Fundamento metodológico:
   estructura espacial mejor que la mediana global, reduciendo el sesgo de
   atenuación en las regresiones de la sección empírica.
 """
+import os
 
 import logging
 from pathlib import Path
@@ -85,6 +86,17 @@ def main():
     log.info(f'Leyendo: {INPUT_PATH}')
     gdf = gpd.read_file(INPUT_PATH)
     log.info(f'  {len(gdf):,} establecimientos, {gdf.shape[1]} columnas')
+
+    # ── Filtrar colegios rurales excluidos ────────────────────────────────────
+    excl_path = os.path.join(os.path.dirname(INPUT_PATH), '..', 'raw', 'excluded_schools.csv')
+    if os.path.exists(excl_path):
+        excl_df = pd.read_csv(excl_path, dtype={'id_establecimiento': str})
+        excl_ids = set(excl_df['id_establecimiento'].str.strip())
+        gdf['id_establecimiento'] = gdf['id_establecimiento'].astype(str).str.strip()
+        mask_rural = gdf['id_establecimiento'].isin(excl_ids)
+        n_rural = int(mask_rural.sum())
+        gdf = gdf[~mask_rural].reset_index(drop=True)
+        log.info(f'  Excluidos {n_rural} colegios rurales, quedan {len(gdf):,}')
 
     # Trabajar sobre una vista plana (sin geometría) para detectar tipos y NaN.
     # Mantenemos gdf como contenedor principal para el GeoJSON de salida.
