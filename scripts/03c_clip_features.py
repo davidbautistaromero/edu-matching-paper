@@ -68,6 +68,9 @@ IMAGES_DIR = r'C:\paper-AI\data\images\gsv'
 # Carpeta donde se guardarán los outputs (se crea automáticamente si no existe)
 OUT_DIR = r'C:\paper-AI\data\images\clip'
 
+# CSV con IDs de escuelas rurales a excluir del análisis
+EXCLUSION_PATH = 'data/raw/excluded_schools.csv'
+
 # Modo de ejecución:
 #   'sample' → procesa solo los primeros 10 establecimientos (para probar)
 #   'full'   → procesa todos los establecimientos de la carpeta
@@ -352,6 +355,16 @@ def main():
     if catalog.empty:
         log.warning('No se encontraron imágenes. Verificar IMAGES_DIR.')
         return
+
+    # ── Excluir escuelas rurales ───────────────────────────────────────────
+    excluded = pd.read_csv(EXCLUSION_PATH, dtype={'id_establecimiento': str})
+    excluded_ids = set(excluded['id_establecimiento'].str.strip())
+    catalog['id_establecimiento'] = catalog['id_establecimiento'].astype(str).str.strip()
+    mask = catalog['id_establecimiento'].isin(excluded_ids)
+    n_excluded_imgs = mask.sum()
+    n_excluded_schools = catalog.loc[mask, 'id_establecimiento'].nunique()
+    catalog = catalog[~mask].copy()
+    log.info(f'Excluded {n_excluded_imgs} images from {n_excluded_schools} rural schools, {len(catalog)} images remaining')
 
     # ── Paso 2: Cargar el modelo CLIP ─────────────────────────────────────
     model, preprocess = load_clip_model()

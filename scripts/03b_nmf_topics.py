@@ -40,6 +40,7 @@ TOP_N_EST   = 3
 
 RAW_EMBEDDINGS_PATH = 'data/images/embeddings/gsv_vgg19_raw.parquet'
 CATALOG_PATH        = 'data/images/gsv/gsv_catalog.csv'
+EXCLUSION_PATH      = 'data/raw/excluded_schools.csv'
 EMBEDDINGS_DIR      = 'data/images/embeddings'
 
 # =============================================================================
@@ -71,6 +72,15 @@ Path(EMBEDDINGS_DIR).mkdir(parents=True, exist_ok=True)
 def load_embeddings() -> tuple[pd.DataFrame, np.ndarray]:
     log.info(f'Cargando embeddings crudos: {RAW_EMBEDDINGS_PATH}')
     df = pd.read_parquet(RAW_EMBEDDINGS_PATH)
+
+    excluded = pd.read_csv(EXCLUSION_PATH, dtype={'id_establecimiento': str})
+    excluded_ids = set(excluded['id_establecimiento'].str.strip())
+    df['id_establecimiento'] = df['id_establecimiento'].astype(str).str.strip()
+    mask = df['id_establecimiento'].isin(excluded_ids)
+    n_excluded_imgs = mask.sum()
+    n_excluded_schools = df.loc[mask, 'id_establecimiento'].nunique()
+    df = df[~mask].copy()
+    log.info(f'Excluded {n_excluded_imgs} images from {n_excluded_schools} rural schools, {len(df)} images remaining')
 
     feat_cols = [c for c in df.columns if c.startswith('f_')]
     X = df[feat_cols].values.astype(np.float64)

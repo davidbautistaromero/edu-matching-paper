@@ -1,425 +1,448 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-04_regresion.py
-===============
-Comparacion de 4 estimadores (OLS, Ridge, Lasso, ElasticNet) x 5 modelos
-(M0-M4) para predecir sobre-demanda escolar en Bogota.
-
-Ejecutar desde cualquier directorio:
-  python /ruta/a/scripts/04_regresion.py
+04a_regresion.py
+================
+Estimacion de demanda escolar via logit agregado de Berry (1994) y
+logit mixto BLP con interacciones de ingreso via PyBLP.
 """
 
-# =============================================================================
-# IMPORTACIONES
-# =============================================================================
-
-import datetime
-import json
-import logging
 from pathlib import Path
 
 import geopandas as gpd
-import joblib
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
-from sklearn.linear_model import ElasticNetCV, LassoCV, LinearRegression, RidgeCV
-from sklearn.model_selection import cross_val_score
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+import statsmodels.api as sm
+from scipy import stats
 
 # =============================================================================
-# CONFIGURACION
+# RUTAS
 # =============================================================================
 
-COLEGIOS_PATH = r'C:\paper-AI\data\primary\colegios_features_imputed.geojson'
-NMF_PATH      = r'C:\paper-AI\data\images\embeddings\gsv_nmf_K8.parquet'
-CS_PATH       = r'C:\paper-AI\data\images\segmentation\gsv_cs_establecimiento.parquet'
-CLIP_PATH     = r'C:\paper-AI\data\images\clip\gsv_clip_establecimiento.parquet'
+BASE        = Path(__file__).resolve().parent.parent
+COLEGIOS    = BASE / 'data' / 'primary' / 'colegios_features_imputed.geojson'
+NMF_PATH    = BASE / 'data' / 'images' / 'embeddings' / 'gsv_nmf_K6.parquet'
+OUT_TABLES  = BASE / 'reports' / 'tables'
 
-OUT_DIR        = r'C:\paper-AI\reports'
-OUT_TABLE_PATH = r'C:\paper-AI\reports\comparativa_estimadores.csv'
-OUT_COEFS_PATH = r'C:\paper-AI\reports\mejores_coefs.csv'
-MODELS_DIR     = r'C:\paper-AI\models'
+OUT_TABLES.mkdir(parents=True, exist_ok=True)
 
-DEPVAR_RAW = 'sobre_demanda_j'
-DEPVAR     = 'log_sobredemanda'
+OUTSIDE_SHARE = 0.05
+NMF_FEATURES  = [f'topic_{i}' for i in range(1, 7)]
 
-CONTROLES = [
-    'puntaje_icfes_promedio',
-    'dist_sitp_m',
-    'pct_no_oficial',
-    'hurto_personas',
-    'homicidios',
-    'n_oficiales_localidad',
-    'estrato_2',
-    'estrato_3',
-    'estrato_4',
-    'estrato_5',
-    'estrato_6',
-    'es_rural',
-    'es_tecnico',
-]
+# =============================================================================
+# PASO 1: CARGA Y FUSION
+# =============================================================================
 
-NMF_FEATURES  = [f'topic_{i}' for i in range(1, 9)]
-CS_FEATURES   = [
-    'infraestructura_vial', 'edificacion', 'cerramiento',
-    'vegetacion', 'vehiculos', 'mobiliario_urbano',
-]
-CLIP_FEATURES = [
-    'mantenimiento', 'vegetacion_percibida',
-    'accesibilidad', 'seguridad_percibida',
-]
+gdf = gpd.read_file(COLEGIOS)
+df  = pd.DataFrame(gdf.drop(columns='geometry', errors='ignore'))
+df['id_establecimiento'] = df['id_establecimiento'].astype(str).str.strip()
 
-K_FOLDS      = 5
-RANDOM_STATE = 42
-L1_RATIOS    = [0.1, 0.5, 0.7, 0.9, 0.95, 1.0]
+nmf = pd.read_parquet(NMF_PATH)
+nmf['id_establecimiento'] = nmf['id_establecimiento'].astype(str).str.strip()
 
-# Nombre del step dentro de cada pipeline (para extraer atributos post-fit)
-_STEP_KEY = {
-    'OLS':        'ols',
-    'Ridge':      'ridge',
-    'Lasso':      'lasso',
-    'ElasticNet': 'en',
-}
+df = df.merge(nmf[['id_establecimiento'] + NMF_FEATURES],
+              on='id_establecimiento', how='inner')
 
-Path(OUT_DIR).mkdir(parents=True, exist_ok=True)
+print(f'Establecimientos tras merge NMF: {len(df):,}')
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    datefmt='%H:%M:%S',
+# =============================================================================
+# PASO 2: CUOTAS DE MERCADO (INVERSION DE BERRY)
+# =============================================================================
+
+df['demanda_total'] = pd.to_numeric(df['demanda_total'], errors='coerce')
+df['codigo_localidad'] = df['codigo_localidad'].astype(str).str.strip()
+
+df = df[df['demanda_total'] > 0].copy()
+
+demanda_loc = df.groupby('codigo_localidad')['demanda_total'].transform('sum')
+M_t         = demanda_loc / (1 - OUTSIDE_SHARE)
+
+df['M_t']    = M_t
+df['s_j']    = df['demanda_total'] / M_t
+df['s_0']    = OUTSIDE_SHARE
+df['delta_j'] = np.log(df['s_j']) - np.log(df['s_0'])
+
+df = df[df['s_j'] > 0].copy()
+print(f'Escuelas con s_j > 0: {len(df):,}')
+print(f'Mercados (localidades): {df["codigo_localidad"].nunique()}')
+
+# =============================================================================
+# PASO 3: CONSTRUCCION DE VARIABLES
+# =============================================================================
+
+for col in ['q_j', 'dist_sitp_m', 'hurto_personas', 'homicidios',
+            'puntaje_2023', 'punt_global_2022', 'punt_global_2020']:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+df['log_dist_sitp']          = np.log1p(df['dist_sitp_m'])
+df['log_hurto']              = np.log1p(df['hurto_personas'])
+df['log_homicidios']         = np.log1p(df['homicidios'])
+df['es_rural']               = df['zona'].isin(['RURAL', 'EXPANSION']).astype(float)
+df['es_tecnico']             = df['caracter_media'].str.contains('cnico', case=False, na=False).astype(float)
+df.loc[df['caracter_media'].isin(['Sin informacion', 'Sin información']), 'es_tecnico'] = np.nan
+
+CONTINUAS = NMF_FEATURES + ['q_j', 'log_dist_sitp', 'log_hurto', 'log_homicidios']
+TODAS_X   = CONTINUAS + ['es_rural', 'es_tecnico']
+
+df = df.dropna(subset=['delta_j'] + TODAS_X).reset_index(drop=True)
+print(f'Muestra final tras dropna: {len(df):,}')
+
+# Estandarizar variables continuas
+for col in CONTINUAS:
+    mu, sigma    = df[col].mean(), df[col].std()
+    df[f'{col}_norm'] = (df[col] - mu) / sigma
+
+df['q_j_norm'] = df['q_j_norm']
+
+VARS_REG = [f'{c}_norm' for c in CONTINUAS] + ['es_rural', 'es_tecnico']
+
+X_raw = df[VARS_REG].copy()
+y     = df['delta_j']
+
+X = sm.add_constant(X_raw)
+localidad_arr = df['codigo_localidad'].values
+
+# =============================================================================
+# PASO 4: OLS CON SE ROBUSTOS
+# =============================================================================
+
+modelo_ols     = sm.OLS(y, X).fit()
+res_hc1        = modelo_ols.get_robustcov_results(cov_type='HC1')
+res_cluster    = modelo_ols.get_robustcov_results(
+    cov_type='cluster', groups=localidad_arr
 )
-log = logging.getLogger(__name__)
 
+print('\n' + '=' * 70)
+print('REGRESION LOGIT BERRY — OLS')
+print('=' * 70)
+print(f'N escuelas:   {len(df):,}')
+print(f'N mercados:   {df["codigo_localidad"].nunique()}')
+print(f'R²:           {modelo_ols.rsquared:.4f}')
+print(f'R² ajustado:  {modelo_ols.rsquared_adj:.4f}')
+print(f'F-statistic:  {modelo_ols.fvalue:.3f}  (p={modelo_ols.f_pvalue:.4g})')
+print()
 
-# =============================================================================
-# CARGA Y FUSION
-# =============================================================================
+# Tabla de coeficientes combinando ambos SE
+nombres = X.columns.tolist()
+coefs   = modelo_ols.params
+se_hc1  = res_hc1.bse
+se_clus = res_cluster.bse
+t_hc1   = res_hc1.tvalues
+p_hc1   = res_hc1.pvalues
+ci      = res_hc1.conf_int()
 
-def cargar_y_fusionar() -> pd.DataFrame:
-    """
-    Lee los cuatro archivos y hace inner join por id_establecimiento.
-    Informa cuantos establecimientos se pierden en cada paso.
-    """
-    log.info(f'Leyendo colegios: {COLEGIOS_PATH}')
-    gdf = gpd.read_file(COLEGIOS_PATH)
-    log.info(f'  Establecimientos base: {len(gdf):,}')
+tabla_coefs = pd.DataFrame({
+    'variable':    nombres,
+    'coef':        np.asarray(coefs),
+    'se_hc1':      np.asarray(se_hc1),
+    'se_cluster':  np.asarray(se_clus),
+    't_stat_hc1':  np.asarray(t_hc1),
+    'p_value_hc1': np.asarray(p_hc1),
+    'ci95_lo':     np.asarray(ci)[:, 0],
+    'ci95_hi':     np.asarray(ci)[:, 1],
+})
 
-    df = pd.DataFrame(gdf.drop(columns='geometry', errors='ignore'))
-    df['id_establecimiento'] = df['id_establecimiento'].astype(str).str.strip()
-    n_base = len(df)
+print(f"{'Variable':<30} {'Coef':>10} {'SE_HC1':>10} {'SE_Clust':>10} "
+      f"{'t(HC1)':>9} {'p(HC1)':>9}")
+print('-' * 82)
+for _, r in tabla_coefs.iterrows():
+    sig = '***' if r['p_value_hc1'] < 0.01 else ('**' if r['p_value_hc1'] < 0.05 else
+          ('*' if r['p_value_hc1'] < 0.1 else ''))
+    print(f"{r['variable']:<30} {r['coef']:>10.4f} {r['se_hc1']:>10.4f} "
+          f"{r['se_cluster']:>10.4f} {r['t_stat_hc1']:>9.3f} {r['p_value_hc1']:>9.4f} {sig}")
 
-    log.info(f'Leyendo NMF: {NMF_PATH}')
-    nmf = pd.read_parquet(NMF_PATH)
-    nmf['id_establecimiento'] = nmf['id_establecimiento'].astype(str).str.strip()
-    df = df.merge(nmf[['id_establecimiento'] + NMF_FEATURES],
-                  on='id_establecimiento', how='inner')
-    log.info(f'  Tras merge NMF: {len(df):,}  (perdidos: {n_base - len(df):,})')
-
-    log.info(f'Leyendo Cityscapes: {CS_PATH}')
-    cs = pd.read_parquet(CS_PATH)
-    cs['id_establecimiento'] = cs['id_establecimiento'].astype(str).str.strip()
-    n_antes = len(df)
-    df = df.merge(cs[['id_establecimiento'] + CS_FEATURES],
-                  on='id_establecimiento', how='inner')
-    log.info(f'  Tras merge Cityscapes: {len(df):,}  (perdidos: {n_antes - len(df):,})')
-
-    log.info(f'Leyendo CLIP: {CLIP_PATH}')
-    clip = pd.read_parquet(CLIP_PATH)
-    clip['id_establecimiento'] = clip['id_establecimiento'].astype(str).str.strip()
-    n_antes = len(df)
-    df = df.merge(clip[['id_establecimiento'] + CLIP_FEATURES],
-                  on='id_establecimiento', how='inner')
-    log.info(f'  Tras merge CLIP: {len(df):,}  (perdidos: {n_antes - len(df):,})')
-
-    log.info(f'  Perdida total: {n_base - len(df):,} ({(n_base - len(df)) / n_base:.1%})')
-    log.info(f'  Dataset de analisis: {len(df):,} establecimientos')
-    return df
-
+sig_topics = [f'topic_{i}_norm' for i in range(1, 7)
+              if tabla_coefs.loc[tabla_coefs['variable'] == f'topic_{i}_norm',
+                                 'p_value_hc1'].values[0] < 0.05]
+print(f'\nTopics significativos al 5%: {sig_topics if sig_topics else "ninguno"}')
 
 # =============================================================================
-# CONSTRUCCION DE PIPELINES
+# PASO 5: OUTPUTS
 # =============================================================================
 
-def construir_pipelines() -> dict:
-    """
-    Devuelve pipelines frescos (sin ajustar) para cada estimador.
-    StandardScaler se aplica dentro del pipeline para evitar data leakage en CV.
-    """
-    return {
-        'OLS': Pipeline([
-            ('scaler', StandardScaler()),
-            ('ols',    LinearRegression()),
-        ]),
-        'Ridge': Pipeline([
-            ('scaler', StandardScaler()),
-            ('ridge',  RidgeCV(cv=K_FOLDS)),
-        ]),
-        'Lasso': Pipeline([
-            ('scaler', StandardScaler()),
-            ('lasso',  LassoCV(cv=K_FOLDS, max_iter=10_000, random_state=RANDOM_STATE)),
-        ]),
-        'ElasticNet': Pipeline([
-            ('scaler', StandardScaler()),
-            ('en',     ElasticNetCV(cv=K_FOLDS, max_iter=10_000,
-                                    l1_ratio=L1_RATIOS, random_state=RANDOM_STATE)),
-        ]),
-    }
+# --- Tabla de coeficientes ---
+tabla_coefs.to_csv(OUT_TABLES / 'berry_logit_ols.csv', index=False, encoding='utf-8-sig')
+print(f'\nTabla guardada: {OUT_TABLES / "berry_logit_ols.csv"}')
 
+# --- Tabla de cuotas de mercado ---
+market_df = df[['id_establecimiento', 'codigo_localidad', 'demanda_total', 'M_t', 's_j', 'delta_j']].copy()
+market_df.to_csv(OUT_TABLES / 'berry_market_shares.csv', index=False, encoding='utf-8-sig')
+print(f'Tabla guardada: {OUT_TABLES / "berry_market_shares.csv"}')
 
 # =============================================================================
-# ESTIMACION DE UN (modelo, estimador)
+# PASO 6: BERRY LOGIT EXTENDIDO — INTERACCIONES UPZ-INGRESO
 # =============================================================================
 
-def estimar(nombre_est: str, pipeline: Pipeline,
-            X: pd.DataFrame, y: pd.Series) -> dict:
-    """
-    Calcula metricas para un pipeline sobre un conjunto de features.
+print('\n' + '=' * 62)
+print('BERRY LOGIT EXTENDIDO — INTERACCIONES UPZ-INGRESO')
+print('=' * 62)
 
-    RMSE_cv: CV externo de 5 pliegues (cross_val_score) sobre el pipeline
-    completo, garantizando comparabilidad entre estimadores.  Cuando el
-    estimador interno es LassoCV/RidgeCV/ElasticNetCV, cada pliegue corre
-    su propia seleccion de hiperparametros — CV anidado correcto.
+# --------------------------------------------------------------------------
+# 6.1  Ingreso ponderado por UPZ
+# --------------------------------------------------------------------------
+FAMILIAS_PATH = BASE / 'data' / 'processed' / 'familias_expandidas.parquet'
+try:
+    familias_raw = pd.read_parquet(FAMILIAS_PATH, engine='pyarrow')
+    print(f'Familias cargadas: {len(familias_raw):,}')
+except Exception as e:
+    print(f'Parquet fallido ({e}). Usando CSV slim...')
+    familias_raw = pd.read_csv('/tmp/blp_data/familias_expandidas_slim.csv')
+    print(f'Familias cargadas (CSV): {len(familias_raw):,}')
 
-    R2_adj: calculado en muestra completa (in-sample) tras ajustar el
-    pipeline sobre todos los datos.
-    """
-    p = X.shape[1]
-    n = len(y)
+for col in ['N_ingpc', 'FEX_C']:
+    if col in familias_raw.columns:
+        familias_raw[col] = pd.to_numeric(familias_raw[col], errors='coerce')
 
-    # CV externo para RMSE comparable entre estimadores
-    scores  = cross_val_score(pipeline, X, y, cv=K_FOLDS,
-                              scoring='neg_mean_squared_error')
-    rmse_cv = float(np.sqrt(-scores.mean()))
+familias_raw = familias_raw.dropna(subset=['N_ingpc', 'FEX_C'])
+familias_raw = familias_raw[familias_raw['N_ingpc'] > 0].copy()
 
-    # Ajuste en muestra completa para R2_adj y coeficientes definitivos
-    # (cross_val_score clona el pipeline internamente, no lo modifica)
-    pipeline.fit(X, y)
-    y_pred  = pipeline.predict(X)
-
-    ss_res = float(np.sum((y.values - y_pred) ** 2))
-    ss_tot = float(np.sum((y.values - y.mean()) ** 2))
-    r2     = 1.0 - ss_res / ss_tot
-    r2_adj = 1.0 - (1.0 - r2) * (n - 1) / (n - p - 1)
-
-    step     = _STEP_KEY[nombre_est]
-    est      = pipeline.named_steps[step]
-    coefs    = est.coef_
-
-    if nombre_est == 'OLS':
-        activas    = p
-        hiperparam = '-'
-    elif nombre_est == 'Ridge':
-        activas    = p
-        hiperparam = f'alpha={est.alpha_:.4g}'
-    elif nombre_est == 'Lasso':
-        activas    = int(np.sum(coefs != 0))
-        hiperparam = f'alpha={est.alpha_:.6g}'
-    else:  # ElasticNet
-        activas    = int(np.sum(coefs != 0))
-        hiperparam = f'alpha={est.alpha_:.6g} l1={est.l1_ratio_:.2f}'
-
-    spearman = float(spearmanr(y.values, y_pred).statistic)
-
-    return {
-        'coefs':      coefs,
-        'activas':    activas,
-        'r2_adj':     r2_adj,
-        'rmse_cv':    rmse_cv,
-        'spearman':   spearman,
-        'hiperparam': hiperparam,
-        'features':   X.columns.tolist(),
-        'p_in':       p,
-    }
-
-
-# =============================================================================
-# FUNCION PRINCIPAL
-# =============================================================================
-
-def main():
-    log.info('=' * 70)
-    log.info('REGRESION COMPARATIVA -- FEATURES VISUALES Y DEMANDA ESCOLAR')
-    log.info('=' * 70)
-
-    df = cargar_y_fusionar()
-
-    # sobre_demanda_j > 1 siempre; log directo sin log1p
-    df[DEPVAR] = np.log(df[DEPVAR_RAW])
-
-    # Promedio ICFES: suaviza variaciones anuales usando los tres anos disponibles
-    df['puntaje_icfes_promedio'] = (
-        df[['puntaje_2023', 'punt_global_2022', 'punt_global_2020']].mean(axis=1)
+# UPZ-level income (primary)
+upz_income_map = {}
+if 'COD_UPZ_GRUPO' in familias_raw.columns:
+    fam_upz = familias_raw.copy()
+    fam_upz['COD_UPZ_GRUPO'] = pd.to_numeric(fam_upz['COD_UPZ_GRUPO'], errors='coerce')
+    fam_upz = fam_upz.dropna(subset=['COD_UPZ_GRUPO'])
+    fam_upz['COD_UPZ_GRUPO'] = fam_upz['COD_UPZ_GRUPO'].astype(int)
+    fam_upz['_inc_w'] = fam_upz['N_ingpc'] * fam_upz['FEX_C']
+    y_upz = (
+        fam_upz.groupby('COD_UPZ_GRUPO')[['_inc_w', 'FEX_C']].sum()
+        .assign(y_upz=lambda d: d['_inc_w'] / d['FEX_C'])
+        [['y_upz']].reset_index()
     )
+    y_upz['y_upz_norm'] = y_upz['y_upz'] / y_upz['y_upz'].mean()
+    upz_income_map = dict(zip(y_upz['COD_UPZ_GRUPO'], y_upz['y_upz_norm']))
+    print(f'UPZs con ingreso: {len(y_upz):,}')
+else:
+    print('COD_UPZ_GRUPO no disponible — se usará fallback por localidad')
 
-    # Proporciones de estrato como dummies continuas; base = estrato 1
-    for k in [2, 3, 4, 5, 6]:
-        df[f'estrato_{k}'] = pd.to_numeric(df[f'pct_estrato_{k}'], errors='coerce')
+# Localidad-level income (fallback)
+familias_raw['COD_LOCALIDAD'] = pd.to_numeric(
+    familias_raw['COD_LOCALIDAD'], errors='coerce'
+)
+familias_raw = familias_raw.dropna(subset=['COD_LOCALIDAD'])
+familias_raw['COD_LOCALIDAD'] = familias_raw['COD_LOCALIDAD'].astype(int).astype(str)
+familias_raw['_inc_w'] = familias_raw['N_ingpc'] * familias_raw['FEX_C']
+y_loc = (
+    familias_raw.groupby('COD_LOCALIDAD')[['_inc_w', 'FEX_C']].sum()
+    .assign(y_loc=lambda d: d['_inc_w'] / d['FEX_C'])
+    [['y_loc']].reset_index()
+)
+y_loc['y_loc_norm'] = y_loc['y_loc'] / y_loc['y_loc'].mean()
+loc_income_map = dict(zip(y_loc['COD_LOCALIDAD'], y_loc['y_loc_norm']))
+print(f'Localidades con ingreso: {len(y_loc):,}')
 
-    # Dummies de zona y caracter (base: URBANA, Academico)
-    df['es_rural']   = df['zona'].isin(['RURAL', 'EXPANSION']).astype(float)
-    df['es_tecnico'] = df['caracter_media'].isin(['Tecnico', 'Academico - Tecnico']).astype(float)
-    # "Sin informacion" en caracter_media -> NaN para que caiga en dropna
-    df.loc[df['caracter_media'].isin(['Sin informacion', 'Sin información']), 'es_tecnico'] = np.nan
+# --------------------------------------------------------------------------
+# 6.2  Distancia haversine media familia → colegio por localidad
+# --------------------------------------------------------------------------
 
-    # Capacidad publica en la misma localidad excluyendo el establecimiento propio
-    df['matricula_total'] = pd.to_numeric(df['matricula_total'], errors='coerce')
-    cap_loc = df.groupby('nombre_localidad')['matricula_total'].transform('sum')
-    df['n_oficiales_localidad'] = (cap_loc - df['matricula_total']).clip(lower=0)
+df['lat'] = pd.to_numeric(df['lat'], errors='coerce')
+df['lon'] = pd.to_numeric(df['lon'], errors='coerce')
 
-    for col in CONTROLES:
-        df[col] = pd.to_numeric(df[col], errors='coerce')
+fam_coords_ok = {'lat', 'lon'}.issubset(familias_raw.columns)
+if fam_coords_ok:
+    familias_raw['lat'] = pd.to_numeric(familias_raw['lat'], errors='coerce')
+    familias_raw['lon'] = pd.to_numeric(familias_raw['lon'], errors='coerce')
+    fam_for_dist = familias_raw.dropna(subset=['lat', 'lon']).copy()
+else:
+    fam_for_dist = pd.DataFrame()
 
-    n_antes = len(df)
-    df = df.dropna(subset=[DEPVAR] + CONTROLES).reset_index(drop=True)
-    log.info(f'Filas eliminadas por NaN en controles/depvar: {n_antes - len(df)}')
-    log.info(f'Muestra de analisis: n={len(df):,}')
-    log.info(f'Depvar -- media={df[DEPVAR].mean():.3f}  '
-             f'std={df[DEPVAR].std():.3f}  '
-             f'min={df[DEPVAR].min():.3f}  '
-             f'max={df[DEPVAR].max():.3f}')
+N_SAMPLE  = 500
+dist_rows = []
 
-    y = df[DEPVAR]
+for loc in df['codigo_localidad'].astype(str).str.strip().unique():
+    esc_loc = df[
+        (df['codigo_localidad'].astype(str).str.strip() == loc) &
+        df['lat'].notna() & df['lon'].notna()
+    ][['id_establecimiento', 'lat', 'lon']]
+    if len(esc_loc) == 0:
+        continue
 
-    especificaciones = [
-        ('M0', 'Controles',  []),           # benchmark silencioso
-        ('M1', 'NMF',        NMF_FEATURES),
-        ('M2', 'Cityscapes', CS_FEATURES),
-        ('M3', 'CLIP',       CLIP_FEATURES),
-        ('M4', 'CS+CLIP',    CS_FEATURES + CLIP_FEATURES),
-    ]
+    if len(fam_for_dist) > 0:
+        fam_loc = fam_for_dist[fam_for_dist['COD_LOCALIDAD'] == loc]
+    else:
+        fam_loc = pd.DataFrame()
 
-    filas      = []
-    todos_res  = {}   # {(modelo_id, nombre_est): res}
-    todos_pipes = {}  # {(modelo_id, nombre_est): fitted pipeline}
+    if len(fam_loc) == 0:
+        for eid in esc_loc['id_establecimiento']:
+            dist_rows.append({'id_establecimiento': eid, 'd_bar': np.nan})
+        continue
 
-    for modelo_id, modelo_desc, features_vis in especificaciones:
-        all_features = CONTROLES + features_vis
-        X = df[all_features].copy()
+    fex = fam_loc['FEX_C'].values.astype(float) if 'FEX_C' in fam_loc.columns else np.ones(len(fam_loc))
+    fex = np.where(~np.isfinite(fex) | (fex <= 0), 1.0, fex)
+    fex = fex / fex.sum()
 
-        log.info('-' * 70)
-        log.info(f'Estimando {modelo_id} ({modelo_desc}) -- p={len(all_features)}')
+    rng    = np.random.default_rng(42)
+    n_draw = min(N_SAMPLE, len(fam_loc))
+    idx    = rng.choice(len(fam_loc), size=n_draw, replace=False, p=fex)
+    sample = fam_loc.iloc[idx]
+    flats  = np.radians(sample['lat'].values.astype(float))
+    flons  = np.radians(sample['lon'].values.astype(float))
 
-        for nombre_est, pipe in construir_pipelines().items():
-            res = estimar(nombre_est, pipe, X, y)
-            todos_res[(modelo_id, nombre_est)]   = res
-            todos_pipes[(modelo_id, nombre_est)] = pipe
+    R_KM = 6371.0
+    for _, esc in esc_loc.iterrows():
+        slat = np.radians(float(esc['lat']))
+        slon = np.radians(float(esc['lon']))
+        dphi = flats - slat
+        dlam = flons - slon
+        a    = np.sin(dphi / 2)**2 + np.cos(slat) * np.cos(flats) * np.sin(dlam / 2)**2
+        d_km = R_KM * 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
+        dist_rows.append({'id_establecimiento': esc['id_establecimiento'],
+                          'd_bar': float(np.mean(d_km))})
 
-            log.info(f'  [{nombre_est:<11}]  R2_adj={res["r2_adj"]:.4f}  '
-                     f'Spearman={res["spearman"]:+.4f}  '
-                     f'RMSE_cv={res["rmse_cv"]:.4f}  '
-                     f'activas={res["activas"]}/{len(all_features)}  '
-                     f'hp={res["hiperparam"]}')
+dist_df = pd.DataFrame(dist_rows)
+med_d = dist_df['d_bar'].median()
+dist_df['d_bar']         = dist_df['d_bar'].fillna(med_d)
+dist_df['log_dist_mean'] = np.log1p(dist_df['d_bar'])
 
-            filas.append({
-                'modelo':         f'{modelo_id} - {modelo_desc}',
-                'estimador':      nombre_est,
-                'p_in':           res['p_in'],
-                'activas':        res['activas'],
-                'R2_adj':         round(res['r2_adj'], 4),
-                'Spearman':       round(res['spearman'], 4),
-                'RMSE_cv':        round(res['rmse_cv'], 4),
-                'hiperparametro': res['hiperparam'],
-            })
+df = df.merge(dist_df[['id_establecimiento', 'log_dist_mean']],
+              on='id_establecimiento', how='left')
+df['log_dist_mean'] = df['log_dist_mean'].fillna(df['log_dist_mean'].median())
+print(f'log_dist_mean — media={df["log_dist_mean"].mean():.3f}, '
+      f'N válidos={df["log_dist_mean"].notna().sum():,}')
 
-    # -------------------------------------------------------------------------
-    # Tabla comparativa: agregar ΔR²_adj vs M0 y ordenar por Spearman desc
-    # -------------------------------------------------------------------------
-    tabla = pd.DataFrame(filas)
+# --------------------------------------------------------------------------
+# 6.3  Ingreso UPZ → cada colegio
+# --------------------------------------------------------------------------
+df['_upz_num'] = pd.to_numeric(df['codigo_upz'], errors='coerce')
 
-    # ΔR²_adj: ganancia incremental de features visuales vs M0 (mismo estimador)
-    r2_m0 = tabla[tabla['modelo'].str.startswith('M0')].set_index('estimador')['R2_adj']
-    tabla['delta_R2_adj'] = tabla.apply(
-        lambda r: round(r['R2_adj'] - r2_m0.get(r['estimador'], float('nan')), 4),
-        axis=1
-    )
+def _map_upz_income(x):
+    if pd.isna(x):
+        return np.nan
+    return upz_income_map.get(int(x), np.nan)
 
-    # Ordenar por Spearman descendente; M0 queda como referencia
-    tabla = tabla.sort_values('Spearman', ascending=False).reset_index(drop=True)
+df['y_upz_norm'] = df['_upz_num'].apply(_map_upz_income) if upz_income_map else np.nan
 
-    log.info('=' * 70)
-    log.info('TABLA COMPARATIVA (ordenada por Spearman descendente)')
-    log.info('=' * 70)
+# Fallback: localidad-level income
+loc_key = df['codigo_localidad'].astype(str).str.strip()
+mask_miss = df['y_upz_norm'].isna()
+df.loc[mask_miss, 'y_upz_norm'] = loc_key[mask_miss].map(loc_income_map)
+df['y_upz_norm'] = df['y_upz_norm'].fillna(1.0)  # global mean fallback
 
-    header = (f"{'Modelo':<28} {'Estimador':<12} {'activas':>8} "
-              f"{'R2_adj':>8} {'ΔR2_adj':>9} {'Spearman':>10} {'RMSE_cv':>9}  Hiperparametro")
-    log.info(header)
-    log.info('-' * (len(header) + 5))
-    for _, row in tabla.iterrows():
-        log.info(
-            f"{row['modelo']:<28} {row['estimador']:<12} {row['activas']:>8} "
-            f"{row['R2_adj']:>8.4f} {row['delta_R2_adj']:>+9.4f} "
-            f"{row['Spearman']:>10.4f} {row['RMSE_cv']:>9.4f}  "
-            f"{row['hiperparametro']}"
-        )
+n_upz_ok  = int((~mask_miss).sum())
+n_loc_fb  = int(mask_miss.sum() - (df['y_upz_norm'] == 1.0).sum())
+print(f'Escuelas con ingreso UPZ: {n_upz_ok:,}  (fallback localidad: {n_loc_fb:,})')
 
-    tabla.to_csv(OUT_TABLE_PATH, index=False, encoding='utf-8-sig')
-    log.info(f'Tabla comparativa guardada: {OUT_TABLE_PATH}')
+# --------------------------------------------------------------------------
+# 6.4  Términos de interacción
+# --------------------------------------------------------------------------
+TOPIC_NORM = [f'topic_{k}_norm' for k in range(1, 7)]
+for k in range(1, 7):
+    df[f'topic_{k}_norm_x_income'] = df[f'topic_{k}_norm'] * df['y_upz_norm']
+df['log_dist_mean_x_income'] = df['log_dist_mean'] * df['y_upz_norm']
 
-    # -------------------------------------------------------------------------
-    # Coeficientes del mejor modelo: mayor Spearman excluyendo M0
-    # -------------------------------------------------------------------------
-    tabla_sin_m0 = tabla[~tabla['modelo'].str.startswith('M0')]
-    mejor_fila      = tabla_sin_m0.iloc[0]
-    mejor_modelo_id = mejor_fila['modelo'].split(' - ')[0]
-    mejor_est       = mejor_fila['estimador']
-    mejor_res       = todos_res[(mejor_modelo_id, mejor_est)]
+# --------------------------------------------------------------------------
+# 6.5  Regresión extendida (OLS, HC1)
+# --------------------------------------------------------------------------
+INTR_VARS = [f'topic_{k}_norm_x_income' for k in range(1, 7)] + ['log_dist_mean_x_income']
+EXT_VARS  = (
+    TOPIC_NORM + INTR_VARS +
+    ['log_dist_mean', 'q_j_norm', 'log_dist_sitp_norm',
+     'log_homicidios_norm', 'es_tecnico']
+)
 
-    coefs_df = pd.DataFrame({
-        'variable': mejor_res['features'],
-        'coef':     mejor_res['coefs'],
-        'activa':   mejor_res['coefs'] != 0,
-    }).sort_values('coef', key=abs, ascending=False)
+df_ext = df.dropna(subset=['delta_j'] + EXT_VARS).reset_index(drop=True)
+X_ext  = sm.add_constant(df_ext[EXT_VARS].copy())
+y_ext  = df_ext['delta_j']
 
-    coefs_df.to_csv(OUT_COEFS_PATH, index=False, encoding='utf-8-sig')
-    log.info(f'Coeficientes del mejor modelo guardados: {OUT_COEFS_PATH}')
+modelo_ext  = sm.OLS(y_ext, X_ext).fit()
+res_ext_hc1 = modelo_ext.get_robustcov_results(cov_type='HC1')
 
-    activas_list = coefs_df[coefs_df['activa']]['variable'].tolist()
+_cols    = X_ext.columns.tolist()
+coef_ext = dict(zip(_cols, res_ext_hc1.params))
+se_ext   = dict(zip(_cols, res_ext_hc1.bse))
+pval_ext = dict(zip(_cols, res_ext_hc1.pvalues))
 
-    log.info('=' * 70)
-    log.info('MEJOR COMBINACION (Spearman maximo, excl. M0)')
-    log.info(f'  Modelo:      {mejor_fila["modelo"]}')
-    log.info(f'  Estimador:   {mejor_est}')
-    log.info(f'  Spearman:    {mejor_fila["Spearman"]:.4f}')
-    log.info(f'  ΔR2_adj:     {mejor_fila["delta_R2_adj"]:+.4f}  (vs M0)')
-    log.info(f'  R2_adj:      {mejor_fila["R2_adj"]:.4f}')
-    log.info(f'  RMSE_cv:     {mejor_fila["RMSE_cv"]:.4f}')
-    log.info(f'  Hiperpar.:   {mejor_fila["hiperparametro"]}')
-    log.info(f'  Features activas ({len(activas_list)}): {", ".join(activas_list)}')
-    log.info(f'  Outputs en:  {OUT_DIR}')
-    log.info('=' * 70)
+# --------------------------------------------------------------------------
+# 6.6  Tabla comparativa y estadísticos
+# --------------------------------------------------------------------------
 
-    # -------------------------------------------------------------------------
-    # Guardar todos los modelos
-    # -------------------------------------------------------------------------
-    models_dir = Path(MODELS_DIR)
-    models_dir.mkdir(parents=True, exist_ok=True)
+def _base_beta(var):
+    row = tabla_coefs[tabla_coefs['variable'] == var]
+    return float(row['coef'].values[0]) if len(row) > 0 else np.nan
 
-    for (modelo_id, nombre_est), pipe in todos_pipes.items():
-        slug = f'{nombre_est.lower()}_{modelo_id.lower()}'
-        joblib.dump(pipe, models_dir / f'{slug}.joblib')
-        res  = todos_res[(modelo_id, nombre_est)]
-        meta = {
-            'model':        f'{nombre_est} {modelo_id}',
-            'features':     res['features'],
-            'target':       'log_sobredemanda',
-            'n_obs':        len(df),
-            'rmse_cv':      round(float(res['rmse_cv']), 6),
-            'r2_adj':       round(float(res['r2_adj']), 6),
-            'spearman':     round(float(res['spearman']), 6),
-            'fit_date':     datetime.date.today().isoformat(),
-        }
-        with open(models_dir / f'{slug}_meta.json', 'w', encoding='utf-8') as f:
-            json.dump(meta, f, indent=2, ensure_ascii=False)
+print('\n' + '=' * 68)
+print('Berry Logit: Base vs Extended (UPZ-Income Interactions)')
+print('=' * 68)
+print(f"{'Variable':<32} {'Base b':>8} {'Extd b':>9} {'g(income)':>11} {'p-val(g)':>10}")
+print('-' * 68)
 
-    log.info(f'  {len(todos_pipes)} modelos guardados en: {MODELS_DIR}')
+for k in range(1, 7):
+    v_main = f'topic_{k}_norm'
+    v_int  = f'topic_{k}_norm_x_income'
+    base_b = _base_beta(v_main)
+    ext_b  = coef_ext.get(v_main, np.nan)
+    gamma  = coef_ext.get(v_int,  np.nan)
+    pv     = pval_ext.get(v_int,  np.nan)
+    sig    = '***' if pv < 0.01 else ('**' if pv < 0.05 else ('*' if pv < 0.1 else ''))
+    print(f"  topic_{k:<27} {base_b:>8.3f} {ext_b:>9.3f} {gamma:>11.3f} {pv:>10.4f} {sig}")
 
+ext_bd  = coef_ext.get('log_dist_mean', np.nan)
+gamma_d = coef_ext.get('log_dist_mean_x_income', np.nan)
+pv_d    = pval_ext.get('log_dist_mean_x_income', np.nan)
+sig_d   = '***' if pv_d < 0.01 else ('**' if pv_d < 0.05 else ('*' if pv_d < 0.1 else ''))
+print(f"  {'log_dist_mean':<30} {'—':>8} {ext_bd:>9.3f} {gamma_d:>11.3f} {pv_d:>10.4f} {sig_d}")
 
-# =============================================================================
-# PUNTO DE ENTRADA
-# =============================================================================
+print('-' * 68)
+print('  Controls (q_j_norm, log_dist_sitp_norm, log_homicidios_norm, es_tecnico): incluidos')
+print('=' * 68)
+print('\nInterpretacion:')
+print('  g_k > 0 => UPZs con mayor ingreso valoran topic_k MAS')
+print('  g_k < 0 => UPZs con menor ingreso valoran topic_k MAS (senal visual importa mas para pobres)')
+print('  g_d > 0 => mayor ingreso menos sensible a distancia (consistente con Hastings)')
 
-if __name__ == '__main__':
-    main()
+# R² comparison
+print(f'\nR² base (PASO 4):    {modelo_ols.rsquared:.4f}')
+print(f'R² extendido:         {modelo_ext.rsquared:.4f}')
+
+# F-test for joint significance of interaction terms
+intr_idx = [_cols.index(v) for v in INTR_VARS]
+R_mat    = np.zeros((len(INTR_VARS), len(_cols)))
+for i, ci in enumerate(intr_idx):
+    R_mat[i, ci] = 1.0
+
+f_test   = res_ext_hc1.wald_test(R_mat, use_f=True, scalar=True)
+f_stat   = float(f_test.statistic)
+f_pval   = float(f_test.pvalue)
+print(f'\nF-test conjunto interacciones: F={f_stat:.3f},  p={f_pval:.4g}'
+      f'  (df={len(INTR_VARS)},{int(res_ext_hc1.df_resid)})')
+
+n_upz_ext = int(df_ext['_upz_num'].dropna().nunique()) if '_upz_num' in df_ext.columns else 'N/A'
+print(f'\nN observaciones:           {len(df_ext):,}')
+print(f'N mercados (localidades):  {df_ext["codigo_localidad"].nunique()}')
+print(f'N UPZs en muestra:         {n_upz_ext}')
+
+# --------------------------------------------------------------------------
+# 6.7  Guardar outputs
+# --------------------------------------------------------------------------
+ci_ext = res_ext_hc1.conf_int()
+ext_coef_table = pd.DataFrame({
+    'variable':  _cols,
+    'coef':      list(coef_ext.values()),
+    'se_hc1':    list(se_ext.values()),
+    't_stat':    np.asarray(res_ext_hc1.tvalues),
+    'p_value':   list(pval_ext.values()),
+    'ci95_lo':   np.asarray(ci_ext)[:, 0],
+    'ci95_hi':   np.asarray(ci_ext)[:, 1],
+})
+ext_coef_table.to_csv(OUT_TABLES / 'berry_extended_results.csv', index=False, encoding='utf-8-sig')
+print(f'\nTabla guardada: {OUT_TABLES / "berry_extended_results.csv"}')
+
+inc_rows = []
+for v in INTR_VARS:
+    g   = float(coef_ext.get(v, np.nan))
+    s   = float(se_ext.get(v,   np.nan))
+    p   = float(pval_ext.get(v, np.nan))
+    t   = g / s if (np.isfinite(s) and s != 0) else np.nan
+    if np.isfinite(g):
+        interp = ('UPZs ricas lo valoran MÁS'   if g >  0.05 else
+                  'UPZs pobres lo valoran MÁS'   if g < -0.05 else
+                  'efecto ingreso neutro')
+    else:
+        interp = 'n/a'
+    inc_rows.append({'variable': v, 'gamma': g, 'se_hc1': s,
+                     't_stat': t, 'p_value': p, 'interpretation': interp})
+
+pd.DataFrame(inc_rows).to_csv(
+    OUT_TABLES / 'berry_income_interactions.csv', index=False, encoding='utf-8-sig'
+)
+print(f'Tabla guardada: {OUT_TABLES / "berry_income_interactions.csv"}')
