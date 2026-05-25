@@ -122,9 +122,9 @@ PARES = {
         "a school surrounded by trees and green areas",
         "a school with no vegetation or green spaces around it",
     ),
-    'accesibilidad': (
-        "a school with a welcoming and open entrance",
-        "a school with a closed, walled-off and unwelcoming entrance",
+    'modernidad': (
+        "a modern and recently built school building",
+        "an old and outdated school building",
     ),
     'seguridad_percibida': (
         "a school in a safe and calm street environment",

@@ -166,11 +166,40 @@ def main():
         n_espaciales = 0
         n_fallback   = 0
 
+        # Pre-computar medianas por UPZ y por localidad para fallback jerárquico
+        upz_col = 'codigo_upz' if 'codigo_upz' in df_attrs.columns else None
+        loc_col = 'nombre_localidad' if 'nombre_localidad' in df_attrs.columns else None
+
+        mediana_upz = {}
+        mediana_loc = {}
+        if upz_col:
+            for upz, group in df_attrs.groupby(upz_col):
+                med = group[col].median()
+                if not np.isnan(med):
+                    mediana_upz[upz] = med
+        if loc_col:
+            for loc, group in df_attrs.groupby(loc_col):
+                med = group[col].median()
+                if not np.isnan(med):
+                    mediana_loc[loc] = med
+
+        n_upz_fb = 0
+        n_loc_fb = 0
+
         for i in missing_idx:
-            # Escuelas sin coordenadas: fallback directo, sin consultar el árbol
+            # Escuelas sin coordenadas: fallback jerárquico directo
             if not mask_valid_coords[i]:
-                valores[i] = mediana_global
-                n_fallback += 1
+                fb = None
+                if upz_col and df_attrs[upz_col].iloc[i] in mediana_upz:
+                    fb = mediana_upz[df_attrs[upz_col].iloc[i]]
+                    n_upz_fb += 1
+                elif loc_col and df_attrs[loc_col].iloc[i] in mediana_loc:
+                    fb = mediana_loc[df_attrs[loc_col].iloc[i]]
+                    n_loc_fb += 1
+                else:
+                    fb = mediana_global
+                    n_fallback += 1
+                valores[i] = fb
                 continue
 
             # query_radius devuelve índices relativos al sub-árbol (valid_indices)
@@ -193,15 +222,23 @@ def main():
                 valores[i] = float(np.mean(valores[valid_neighbors]))
                 n_espaciales += 1
             else:
-                # Fallback: sin vecinos con dato en el radio (zona periférica
-                # o columna con alta densidad de NaN concentrada geográficamente)
-                valores[i] = mediana_global
-                n_fallback += 1
+                # Fallback jerárquico: UPZ → localidad → mediana global
+                fb = None
+                if upz_col and df_attrs[upz_col].iloc[i] in mediana_upz:
+                    fb = mediana_upz[df_attrs[upz_col].iloc[i]]
+                    n_upz_fb += 1
+                elif loc_col and df_attrs[loc_col].iloc[i] in mediana_loc:
+                    fb = mediana_loc[df_attrs[loc_col].iloc[i]]
+                    n_loc_fb += 1
+                else:
+                    fb = mediana_global
+                    n_fallback += 1
+                valores[i] = fb
 
         # Escribir los valores imputados de vuelta al GeoDataFrame
         gdf[col] = valores
-        reporte.append((col, n_espaciales, n_fallback))
-        log.info(f'  {col}: {n_espaciales} espaciales + {n_fallback} fallback')
+        reporte.append((col, n_espaciales, n_upz_fb, n_loc_fb, n_fallback))
+        log.info(f'  {col}: {n_espaciales} espacial + {n_upz_fb} UPZ + {n_loc_fb} localidad + {n_fallback} global')
 
     # ── Paso 5: Verificar que no queden NaN en columnas numéricas ─────────────
     df_post = pd.DataFrame(gdf.drop(columns='geometry', errors='ignore'))
@@ -225,14 +262,16 @@ def main():
     # ── Paso 7: Reporte resumen ────────────────────────────────────────────────
     log.info('=' * 65)
     log.info('RESUMEN DE IMPUTACIÓN')
-    log.info(f"  {'Columna':<38} {'Espacial':>9} {'Fallback':>9}")
-    log.info('  ' + '-' * 58)
-    for col, n_esp, n_fb in reporte:
-        log.info(f'  {col:<38} {n_esp:>9,} {n_fb:>9,}')
-    log.info('  ' + '-' * 58)
+    log.info(f"  {'Columna':<32} {'Espacial':>9} {'UPZ':>9} {'Localidad':>9} {'Global':>9}")
+    log.info('  ' + '-' * 72)
+    for col, n_esp, n_upz, n_loc, n_fb in reporte:
+        log.info(f'  {col:<32} {n_esp:>9,} {n_upz:>9,} {n_loc:>9,} {n_fb:>9,}')
+    log.info('  ' + '-' * 72)
     total_esp = sum(r[1] for r in reporte)
-    total_fb  = sum(r[2] for r in reporte)
-    log.info(f"  {'TOTAL':<38} {total_esp:>9,} {total_fb:>9,}")
+    total_upz = sum(r[2] for r in reporte)
+    total_loc = sum(r[3] for r in reporte)
+    total_fb  = sum(r[4] for r in reporte)
+    log.info(f"  {'TOTAL':<32} {total_esp:>9,} {total_upz:>9,} {total_loc:>9,} {total_fb:>9,}")
     log.info('=' * 65)
 
 

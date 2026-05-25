@@ -62,9 +62,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -128,9 +127,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -193,10 +191,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -260,9 +257,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -326,9 +322,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -392,9 +387,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -458,9 +452,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -524,9 +517,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -589,10 +581,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -656,9 +647,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -722,9 +712,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -788,9 +777,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -854,9 +842,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -920,9 +907,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -986,9 +972,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -1052,9 +1037,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -1117,10 +1101,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -1184,9 +1167,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -1250,9 +1232,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -1316,9 +1297,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -1381,10 +1361,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -1448,9 +1427,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -1514,9 +1492,8 @@
         "violencia_intrafam": 1265.0,
         "delitos_sexuales": 415.0,
         "pct_no_oficial": 94.92,
-        "n_sedes_total": 59.0,
-        "n_sedes_no_oficial": 56.0,
-        "v_j": null
+        "n_sedes_total": 59,
+        "n_sedes_no_oficial": 56
       }
     },
     {
@@ -1580,9 +1557,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -1646,9 +1622,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -1712,9 +1687,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -1777,10 +1751,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -1843,10 +1816,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -1909,10 +1881,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -1976,9 +1947,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -2042,9 +2012,8 @@
         "violencia_intrafam": 849.0,
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
-        "n_sedes_total": 42.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "n_sedes_total": 42,
+        "n_sedes_no_oficial": 29
       }
     },
     {
@@ -2108,9 +2077,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -2174,9 +2142,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -2240,9 +2207,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -2306,9 +2272,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -2372,9 +2337,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -2438,9 +2402,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -2503,10 +2466,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -2570,9 +2532,8 @@
         "violencia_intrafam": 849.0,
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
-        "n_sedes_total": 42.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "n_sedes_total": 42,
+        "n_sedes_no_oficial": 29
       }
     },
     {
@@ -2635,10 +2596,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -2701,10 +2661,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -2767,10 +2726,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -2833,10 +2791,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -2899,10 +2856,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -2965,10 +2921,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -3032,9 +2987,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -3098,9 +3052,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -3164,9 +3117,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -3230,9 +3182,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -3295,10 +3246,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -3362,9 +3312,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -3428,9 +3377,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -3494,9 +3442,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -3560,9 +3507,8 @@
         "violencia_intrafam": 849.0,
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
-        "n_sedes_total": 42.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "n_sedes_total": 42,
+        "n_sedes_no_oficial": 29
       }
     },
     {
@@ -3625,10 +3571,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -3691,10 +3636,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -3758,9 +3702,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -3823,10 +3766,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -3890,9 +3832,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -3956,9 +3897,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -4022,9 +3962,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -4088,9 +4027,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -4154,9 +4092,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -4220,9 +4157,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -4286,9 +4222,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -4352,9 +4287,8 @@
         "violencia_intrafam": 493.0,
         "delitos_sexuales": 267.0,
         "pct_no_oficial": 78.95,
-        "n_sedes_total": 19.0,
-        "n_sedes_no_oficial": 15.0,
-        "v_j": null
+        "n_sedes_total": 19,
+        "n_sedes_no_oficial": 15
       }
     },
     {
@@ -4418,9 +4352,8 @@
         "violencia_intrafam": 493.0,
         "delitos_sexuales": 267.0,
         "pct_no_oficial": 78.95,
-        "n_sedes_total": 19.0,
-        "n_sedes_no_oficial": 15.0,
-        "v_j": null
+        "n_sedes_total": 19,
+        "n_sedes_no_oficial": 15
       }
     },
     {
@@ -4484,9 +4417,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -4549,10 +4481,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -4615,10 +4546,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -4681,10 +4611,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -4748,9 +4677,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -4813,10 +4741,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -4880,9 +4807,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -4945,10 +4871,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -5011,10 +4936,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -5077,10 +5001,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -5143,10 +5066,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -5210,9 +5132,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -5276,9 +5197,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -5341,10 +5261,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -5407,10 +5326,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -5473,10 +5391,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -5539,10 +5456,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -5606,9 +5522,8 @@
         "violencia_intrafam": 849.0,
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
-        "n_sedes_total": 42.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "n_sedes_total": 42,
+        "n_sedes_no_oficial": 29
       }
     },
     {
@@ -5671,10 +5586,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -5738,9 +5652,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -5804,9 +5717,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -5870,9 +5782,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -5936,9 +5847,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -6002,9 +5912,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -6067,10 +5976,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -6134,9 +6042,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -6199,10 +6106,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -6266,9 +6172,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -6332,9 +6237,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -6398,9 +6302,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -6463,10 +6366,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -6529,10 +6431,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -6596,9 +6497,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -6662,9 +6562,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -6727,10 +6626,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -6793,10 +6691,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -6859,10 +6756,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -6925,10 +6821,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -6992,9 +6887,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -7058,9 +6952,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -7124,9 +7017,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -7190,9 +7082,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -7256,9 +7147,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -7322,9 +7212,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -7388,9 +7277,8 @@
         "violencia_intrafam": 1300.0,
         "delitos_sexuales": 406.0,
         "pct_no_oficial": 73.08,
-        "n_sedes_total": 26.0,
-        "n_sedes_no_oficial": 19.0,
-        "v_j": null
+        "n_sedes_total": 26,
+        "n_sedes_no_oficial": 19
       }
     },
     {
@@ -7454,9 +7342,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -7520,9 +7407,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -7585,10 +7471,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -7651,10 +7536,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -7717,10 +7601,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -7783,10 +7666,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -7849,10 +7731,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -7915,10 +7796,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -7981,10 +7861,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -8047,10 +7926,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -8113,10 +7991,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -8179,10 +8056,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -8246,9 +8122,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -8311,10 +8186,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -8378,9 +8252,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -8443,10 +8316,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -8510,9 +8382,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -8575,10 +8446,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -8641,10 +8511,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -8708,9 +8577,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -8773,10 +8641,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -8840,9 +8707,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -8906,9 +8772,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -8971,10 +8836,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -9038,9 +8902,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -9104,9 +8967,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -9170,9 +9032,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -9236,9 +9097,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -9301,10 +9161,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -9368,9 +9227,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -9433,10 +9291,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -9499,10 +9356,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -9565,10 +9421,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -9632,9 +9487,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -9698,9 +9552,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -9764,9 +9617,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -9829,10 +9681,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -9895,10 +9746,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -9962,9 +9812,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -10028,9 +9877,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -10093,10 +9941,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -10159,10 +10006,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -10225,10 +10071,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -10291,10 +10136,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -10357,10 +10201,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -10423,10 +10266,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -10490,9 +10332,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -10555,10 +10396,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -10621,10 +10461,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -10688,9 +10527,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -10753,10 +10591,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -10819,10 +10656,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -10886,9 +10722,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -10951,10 +10786,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -11017,10 +10851,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -11084,9 +10917,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -11150,9 +10982,8 @@
         "violencia_intrafam": 1300.0,
         "delitos_sexuales": 406.0,
         "pct_no_oficial": 73.08,
-        "n_sedes_total": 26.0,
-        "n_sedes_no_oficial": 19.0,
-        "v_j": null
+        "n_sedes_total": 26,
+        "n_sedes_no_oficial": 19
       }
     },
     {
@@ -11215,10 +11046,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -11282,9 +11112,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -11348,9 +11177,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -11413,10 +11241,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -11480,9 +11307,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -11545,10 +11371,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -11611,10 +11436,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -11678,9 +11502,8 @@
         "violencia_intrafam": 1300.0,
         "delitos_sexuales": 406.0,
         "pct_no_oficial": 73.08,
-        "n_sedes_total": 26.0,
-        "n_sedes_no_oficial": 19.0,
-        "v_j": null
+        "n_sedes_total": 26,
+        "n_sedes_no_oficial": 19
       }
     },
     {
@@ -11743,10 +11566,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -11810,9 +11632,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -11875,10 +11696,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -11941,10 +11761,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -12007,10 +11826,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -12074,9 +11892,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -12139,10 +11956,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -12206,9 +12022,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -12271,10 +12086,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -12337,10 +12151,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -12404,9 +12217,8 @@
         "violencia_intrafam": 1250.0,
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
-        "n_sedes_total": 36.0,
-        "n_sedes_no_oficial": 21.0,
-        "v_j": null
+        "n_sedes_total": 36,
+        "n_sedes_no_oficial": 21
       }
     },
     {
@@ -12470,9 +12282,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -12535,10 +12346,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -12602,9 +12412,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -12667,10 +12476,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -12733,10 +12541,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -12799,10 +12606,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -12865,10 +12671,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -12931,10 +12736,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -12998,9 +12802,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -13063,10 +12866,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -13129,10 +12931,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -13196,9 +12997,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -13262,9 +13062,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -13327,10 +13126,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -13394,9 +13192,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -13459,10 +13256,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -13525,10 +13321,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -13591,10 +13386,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -13657,10 +13451,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -13723,10 +13516,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -13789,10 +13581,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -13855,10 +13646,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -13922,9 +13712,8 @@
         "violencia_intrafam": 2327.0,
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
-        "n_sedes_total": 100.0,
-        "n_sedes_no_oficial": 68.0,
-        "v_j": null
+        "n_sedes_total": 100,
+        "n_sedes_no_oficial": 68
       }
     },
     {
@@ -13987,10 +13776,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -14053,10 +13841,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -14119,10 +13906,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -14185,10 +13971,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -14251,10 +14036,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -14317,10 +14101,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -14383,10 +14166,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -14449,10 +14231,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -14515,10 +14296,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -14582,9 +14362,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -14647,10 +14426,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -14713,10 +14491,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -14779,10 +14556,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -14845,10 +14621,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -14911,10 +14686,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -14978,9 +14752,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -15043,10 +14816,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -15109,10 +14881,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -15176,9 +14947,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -15241,10 +15011,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -15307,10 +15076,9 @@
         "hurto_entidades": 312.0,
         "violencia_intrafam": 1641.0,
         "delitos_sexuales": 328.0,
-        "pct_no_oficial": 66.13,
-        "n_sedes_total": 62.0,
-        "n_sedes_no_oficial": 41.0,
-        "v_j": null
+        "pct_no_oficial": 64.29,
+        "n_sedes_total": 70,
+        "n_sedes_no_oficial": 45
       }
     },
     {
@@ -15374,9 +15142,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -15439,10 +15206,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -15505,10 +15271,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -15571,10 +15336,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -15638,9 +15402,8 @@
         "violencia_intrafam": 849.0,
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
-        "n_sedes_total": 42.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "n_sedes_total": 42,
+        "n_sedes_no_oficial": 29
       }
     },
     {
@@ -15704,9 +15467,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -15769,10 +15531,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -15836,9 +15597,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -15901,10 +15661,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -15967,10 +15726,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -16033,10 +15791,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -16099,10 +15856,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -16165,10 +15921,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -16231,10 +15986,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -16297,10 +16051,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -16363,10 +16116,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -16430,9 +16182,8 @@
         "violencia_intrafam": 1265.0,
         "delitos_sexuales": 415.0,
         "pct_no_oficial": 94.92,
-        "n_sedes_total": 59.0,
-        "n_sedes_no_oficial": 56.0,
-        "v_j": null
+        "n_sedes_total": 59,
+        "n_sedes_no_oficial": 56
       }
     },
     {
@@ -16496,9 +16247,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -16561,10 +16311,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -16627,10 +16376,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -16693,10 +16441,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -16759,10 +16506,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -16825,10 +16571,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -16891,10 +16636,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -16957,10 +16701,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -17023,10 +16766,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -17090,9 +16832,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -17156,9 +16897,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -17222,9 +16962,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -17288,9 +17027,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -17354,9 +17092,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -17420,9 +17157,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -17485,10 +17221,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -17551,10 +17286,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -17617,10 +17351,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -17683,10 +17416,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -17749,10 +17481,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -17816,9 +17547,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -17882,9 +17612,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -17948,9 +17677,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -18014,9 +17742,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -18080,9 +17807,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -18145,10 +17871,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -18211,10 +17936,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -18277,10 +18001,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -18343,10 +18066,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -18410,9 +18132,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -18476,9 +18197,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -18541,10 +18261,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -18608,9 +18327,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -18674,9 +18392,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -18739,10 +18456,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -18805,10 +18521,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -18872,9 +18587,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -18938,9 +18652,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -19004,9 +18717,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -19070,9 +18782,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -19136,9 +18847,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -19201,10 +18911,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -19267,10 +18976,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -19333,10 +19041,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -19399,10 +19106,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -19466,9 +19172,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -19532,9 +19237,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -19598,9 +19302,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -19664,9 +19367,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -19729,10 +19431,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -19795,10 +19496,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -19861,10 +19561,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -19927,10 +19626,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -19993,10 +19691,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -20060,9 +19757,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -20125,10 +19821,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -20191,10 +19886,9 @@
         "hurto_entidades": 942.0,
         "violencia_intrafam": 3177.0,
         "delitos_sexuales": 716.0,
-        "pct_no_oficial": 55.81,
-        "n_sedes_total": 86.0,
-        "n_sedes_no_oficial": 48.0,
-        "v_j": null
+        "pct_no_oficial": 57.85,
+        "n_sedes_total": 121,
+        "n_sedes_no_oficial": 70
       }
     },
     {
@@ -20257,10 +19951,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -20324,9 +20017,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -20389,10 +20081,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -20456,9 +20147,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -20522,9 +20212,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -20588,9 +20277,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -20654,9 +20342,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -20720,9 +20407,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -20785,10 +20471,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -20852,9 +20537,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -20918,9 +20602,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -20984,9 +20667,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -21049,10 +20731,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -21116,9 +20797,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -21182,9 +20862,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -21247,10 +20926,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -21313,10 +20991,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -21380,9 +21057,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -21446,9 +21122,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -21512,9 +21187,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -21577,10 +21251,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -21643,10 +21316,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -21709,10 +21381,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -21776,9 +21447,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -21841,10 +21511,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -21908,9 +21577,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -21974,9 +21642,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -22039,10 +21706,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -22105,10 +21771,9 @@
         "hurto_entidades": 810.0,
         "violencia_intrafam": 4309.0,
         "delitos_sexuales": 811.0,
-        "pct_no_oficial": 55.77,
-        "n_sedes_total": 52.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "pct_no_oficial": 49.61,
+        "n_sedes_total": 129,
+        "n_sedes_no_oficial": 64
       }
     },
     {
@@ -22172,9 +21837,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -22238,9 +21902,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -22304,9 +21967,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -22370,9 +22032,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -22436,9 +22097,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -22502,9 +22162,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -22567,10 +22226,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -22634,9 +22292,8 @@
         "violencia_intrafam": 8341.0,
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
-        "n_sedes_total": 262.0,
-        "n_sedes_no_oficial": 186.0,
-        "v_j": null
+        "n_sedes_total": 262,
+        "n_sedes_no_oficial": 186
       }
     },
     {
@@ -22699,10 +22356,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -22765,10 +22421,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -22832,9 +22487,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -22897,10 +22551,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -22964,9 +22617,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -23030,9 +22682,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -23096,9 +22747,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -23162,9 +22812,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -23228,9 +22877,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -23294,9 +22942,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -23360,9 +23007,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -23426,9 +23072,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -23492,9 +23137,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -23558,9 +23202,8 @@
         "violencia_intrafam": 6497.0,
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
-        "n_sedes_total": 257.0,
-        "n_sedes_no_oficial": 188.0,
-        "v_j": null
+        "n_sedes_total": 257,
+        "n_sedes_no_oficial": 188
       }
     },
     {
@@ -23624,9 +23267,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -23690,9 +23332,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -23756,9 +23397,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -23822,9 +23462,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -23888,9 +23527,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -23954,9 +23592,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -24020,9 +23657,8 @@
         "violencia_intrafam": 3285.0,
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
-        "n_sedes_total": 98.0,
-        "n_sedes_no_oficial": 76.0,
-        "v_j": null
+        "n_sedes_total": 98,
+        "n_sedes_no_oficial": 76
       }
     },
     {
@@ -24085,10 +23721,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24151,10 +23786,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24217,10 +23851,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24283,10 +23916,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24349,10 +23981,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24415,10 +24046,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24481,10 +24111,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24547,10 +24176,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24613,10 +24241,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24679,10 +24306,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24745,10 +24371,9 @@
         "hurto_entidades": 1324.0,
         "violencia_intrafam": 8047.0,
         "delitos_sexuales": 1387.0,
-        "pct_no_oficial": 77.95,
-        "n_sedes_total": 322.0,
-        "n_sedes_no_oficial": 251.0,
-        "v_j": null
+        "pct_no_oficial": 80.22,
+        "n_sedes_total": 364,
+        "n_sedes_no_oficial": 292
       }
     },
     {
@@ -24811,10 +24436,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -24877,10 +24501,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -24943,10 +24566,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -25009,10 +24631,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -25075,10 +24696,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -25141,10 +24761,9 @@
         "hurto_entidades": 408.0,
         "violencia_intrafam": 3095.0,
         "delitos_sexuales": 602.0,
-        "pct_no_oficial": 79.23,
-        "n_sedes_total": 130.0,
-        "n_sedes_no_oficial": 103.0,
-        "v_j": null
+        "pct_no_oficial": 78.79,
+        "n_sedes_total": 132,
+        "n_sedes_no_oficial": 104
       }
     },
     {
@@ -25207,10 +24826,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25273,10 +24891,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25339,10 +24956,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25405,10 +25021,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25471,10 +25086,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25538,9 +25152,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -25603,10 +25216,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25670,9 +25282,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -25736,9 +25347,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -25802,9 +25412,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -25868,9 +25477,8 @@
         "violencia_intrafam": 7523.0,
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
-        "n_sedes_total": 149.0,
-        "n_sedes_no_oficial": 83.0,
-        "v_j": null
+        "n_sedes_total": 149,
+        "n_sedes_no_oficial": 83
       }
     },
     {
@@ -25933,10 +25541,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -25999,10 +25606,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26065,10 +25671,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26131,10 +25736,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26197,10 +25801,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26263,10 +25866,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26329,10 +25931,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26395,10 +25996,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26461,10 +26061,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26527,10 +26126,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26593,10 +26191,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26659,10 +26256,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26725,10 +26321,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26791,10 +26386,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -26857,10 +26451,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -26923,10 +26516,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -26989,10 +26581,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -27055,10 +26646,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -27121,10 +26711,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -27187,10 +26776,9 @@
         "hurto_entidades": 623.0,
         "violencia_intrafam": 3963.0,
         "delitos_sexuales": 923.0,
-        "pct_no_oficial": null,
-        "n_sedes_total": null,
-        "n_sedes_no_oficial": null,
-        "v_j": null
+        "pct_no_oficial": 33.03,
+        "n_sedes_total": 109,
+        "n_sedes_no_oficial": 36
       }
     },
     {
@@ -27254,9 +26842,8 @@
         "violencia_intrafam": 1602.0,
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
-        "n_sedes_total": 29.0,
-        "n_sedes_no_oficial": 13.0,
-        "v_j": null
+        "n_sedes_total": 29,
+        "n_sedes_no_oficial": 13
       }
     },
     {
@@ -27319,10 +26906,9 @@
         "hurto_entidades": 1620.0,
         "violencia_intrafam": 8567.0,
         "delitos_sexuales": 1433.0,
-        "pct_no_oficial": 59.21,
-        "n_sedes_total": 76.0,
-        "n_sedes_no_oficial": 45.0,
-        "v_j": null
+        "pct_no_oficial": 44.59,
+        "n_sedes_total": 148,
+        "n_sedes_no_oficial": 66
       }
     },
     {
@@ -27386,9 +26972,8 @@
         "violencia_intrafam": 1281.0,
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
-        "n_sedes_total": 63.0,
-        "n_sedes_no_oficial": 39.0,
-        "v_j": null
+        "n_sedes_total": 63,
+        "n_sedes_no_oficial": 39
       }
     },
     {
@@ -27452,9 +27037,8 @@
         "violencia_intrafam": 849.0,
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
-        "n_sedes_total": 42.0,
-        "n_sedes_no_oficial": 29.0,
-        "v_j": null
+        "n_sedes_total": 42,
+        "n_sedes_no_oficial": 29
       }
     }
   ]

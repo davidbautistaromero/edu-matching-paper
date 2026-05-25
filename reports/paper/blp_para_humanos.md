@@ -348,3 +348,237 @@ Todo el paper se ancla en la estimación. Sin ella, los parámetros son arbitrar
 2. **Conlon y Gortmaker (2020)** — "Best Practices..." — la guía moderna con PyBLP
 3. **Berry (1994)** — el paper original de la inversión — corto y elegante
 4. **Notas de Gortmaker** — `demand_estimation_*.md` en este repo — las clases del Mixtape
+
+---
+
+## Capítulo 10: Lo que implementamos, por qué falló, y cómo arreglarlo
+
+*Esta sección documenta la implementación real del BLP para el paper de matching escolar: qué hicimos, qué resultados obtuvimos, por qué los parámetros de distancia no tienen sentido económico, y qué soluciones son factibles.*
+
+---
+
+### 10.1 Lo que implementamos
+
+#### La especificación
+
+```
+u_ij = δ_j + π₁·y_i·seguridad_j + π₂·y_i·vegetacion_j + λ₀·d_ij + λ₁·y_i·d_ij + ε_ij
+```
+
+Cuatro parámetros no lineales:
+- π₁: ¿familias ricas valoran más la seguridad visual percibida?
+- π₂: ¿familias ricas valoran más la vegetación percibida?
+- λ₀: ¿cuánto pesa la distancia para todos?
+- λ₁: ¿los ricos sienten menos la distancia?
+
+Las variables visuales (`seguridad_percibida`, `vegetacion_percibida`) vienen de CLIP — un modelo de visión computacional que compara imágenes de Street View contra frases como "a school in a safe and calm street environment" vs "a school in a dangerous and chaotic street environment". Son las dos únicas variables visuales que sobrevivieron la regresión de Berry OLS con controles (Capítulo 3 del pipeline).
+
+Sin σ (no incluimos heterogeneidad aleatoria en gustos) porque d_ij ya es individual — cada familia tiene su propia distancia a cada colegio, lo que genera heterogeneidad directamente.
+
+#### Los datos
+
+- 369 colegios públicos en 19 localidades de Bogotá
+- 5,700 familias muestreadas de la EM2021 (300 por localidad, ponderadas por FEX_C)
+- Distancias Haversine familia→colegio (precalculadas, ~2.4 km promedio)
+- Ingreso per cápita normalizado: y_i = N_ingpc / media(N_ingpc)
+- Market shares de demanda administrativa SED 2024
+- Outside share fija: s₀ = 0.05 en todas las localidades
+
+#### El algoritmo
+
+Exactamente lo descrito en los Capítulos 5 y 6: loop externo (L-BFGS-B) busca θ = (π₁, π₂, λ₀, λ₁), loop interno (contraction mapping) recupera δ_j, OLS de segunda etapa recupera β y ξ_j.
+
+Además, implementamos dos **micro momentos** por colegio (BLP 2004, Petrin 2002):
+
+1. **Momento de ingreso** (m_j): ingreso medio de familias ponderado por proximidad al colegio j
+   - Observado: m_j^obs = Σ_i(y_i / d_ij) / Σ_i(1/d_ij)
+   - Predicho: m_j^pred = Σ_i(y_i · s_ij) / Σ_i(s_ij)
+   - Apunta a π₁, π₂
+
+2. **Momento de distancia** (d_j): distancia media ponderada por FEX al colegio j
+   - Observado: d_j^obs = Σ_i(d_ij · w_i) / Σ_i(w_i)
+   - Predicho: d_j^pred = Σ_i(d_ij · s_ij) / Σ_i(s_ij)
+   - Apunta a λ₁
+
+El GMM combina momentos agregados (ξ'Z(Z'Z)⁻¹Z'ξ) con la suma de cuadrados de los micro momentos.
+
+#### Los resultados
+
+El modelo convergió en 21 iteraciones (130 evaluaciones). Los parámetros estimados:
+
+| Parámetro | Estimación | Esperado | Sentido económico |
+|---|---|---|---|
+| π₁ (ingreso × seguridad) | −0.031 | Ambiguo | Ricos valoran menos la seguridad visual |
+| π₂ (ingreso × vegetación) | −0.010 | Ambiguo | ~Neutro |
+| λ₀ (distancia base) | **+0.120** | **Negativo** | ❌ "Todos prefieren colegios lejanos" |
+| λ₁ (ingreso × distancia) | −0.202 | Positivo (Hastings) | ❌ Ricos penalizan más la distancia |
+
+Los β lineales sí tienen sentido:
+
+| Variable | β | Sentido |
+|---|---|---|
+| log_homicidios | −0.613 | ✅ Más violencia → menos demanda |
+| es_técnico | +0.332 | ✅ Colegios técnicos atraen |
+| seguridad_percibida | +0.061 | ✅ Calles seguras atraen |
+| pct_no_oficial | +0.142 | ✅ Más competencia privada → los oficiales que sobreviven son mejores |
+| q_j (calidad Saber 11) | −0.191 | ⚠️ Signo raro (ver discusión) |
+
+---
+
+### 10.2 Por qué falló: la intuición
+
+Imagina que miras los datos desde arriba. Ves dos mundos:
+
+**Ciudad Bolívar (sur, pobre):**
+- 39 colegios oficiales, familias con ingreso bajo
+- Casi nadie va a privado → share oficial ALTA
+- La localidad es grande → distancias promedio altas (~3 km)
+- Entorno visual deteriorado
+
+**Chapinero (norte, rico):**
+- 8 colegios oficiales, familias con ingreso alto
+- La mayoría va a privado → share oficial BAJA
+- La localidad es compacta → distancias promedio bajas (~1.5 km)
+- Entorno visual bueno
+
+El modelo ve: {share alta + distancia alta + ingreso bajo} en el sur y {share baja + distancia baja + ingreso alto} en el norte.
+
+¿Qué concluye? "Las familias pobres van a colegios lejanos con más frecuencia que las ricas → la distancia no les molesta tanto → λ₀ > 0."
+
+Pero eso es **falso**. La familia pobre no eligió ir lejos — simplemente no tiene alternativa privada. La share alta no revela preferencia por la distancia, revela **ausencia de outside option**.
+
+Es como si vieras que los presos comen la comida de la cárcel todos los días y concluyeras que les encanta. No — es que no hay restaurante.
+
+---
+
+### 10.3 Por qué falló: la matemática
+
+El problema se formaliza así. La share observada del colegio j en el mercado t es:
+
+$$S_j^{obs} = \frac{\text{demanda}_j}{M_t}$$
+
+donde $M_t$ es el tamaño del mercado (población escolar de la localidad). La outside share es:
+
+$$s_{0t} = 1 - \sum_{j \in J_t} S_j^{obs}$$
+
+La inversión de Berry da:
+
+$$\delta_j = \ln(S_j^{obs}) - \ln(s_{0t})$$
+
+**Problema 1: s₀ fija.** Usamos s₀ = 0.05 para todas las localidades. Pero en realidad:
+
+- Chapinero: ~80% va a privado → s₀ ≈ 0.80 → ln(s₀) ≈ −0.22
+- Ciudad Bolívar: ~5% va a privado → s₀ ≈ 0.05 → ln(s₀) ≈ −3.00
+
+Con s₀ = 0.05 fija, el δ_j de un colegio en Chapinero sale artificialmente bajo (porque la share observada es baja pero la restamos contra un s₀ igual al de Ciudad Bolívar). Para compensar, ξ_j tiene que ser negativo en el norte y positivo en el sur.
+
+**Problema 2: correlación ξ con ingreso.** Esa ξ_j sistemáticamente negativa en el norte correlaciona con las características del vecindario (rico, buenas visuales, distancias cortas). Los instrumentos Z = X no pueden romper esta correlación porque X incluye las señales visuales que también varían con el ingreso del barrio.
+
+**Problema 3: λ₀ absorbe la confusión.** El optimizador encuentra que λ₀ > 0 reduce el error del modelo porque:
+
+$$\underbrace{\text{share alta}}_{\text{sur}} \leftarrow \underbrace{\lambda_0 > 0}_{\text{"distancia atrae"}} \cdot \underbrace{d_{ij} \text{ grande}}_{\text{localidad grande}}$$
+
+Es más barato para el GMM poner λ₀ positivo que ajustar 369 δ_j individualmente.
+
+**Formalmente:** el supuesto de identificación $E[\xi_j \cdot Z_j] = 0$ se viola porque:
+
+$$\text{Cov}(\xi_j, \text{ingreso}_{UPZ(j)}) \neq 0$$
+
+El sorting residencial genera una correlación entre la calidad no observada del colegio y las características observables del vecindario. Sin un instrumento que rompa esta correlación, los parámetros de distancia absorben el sesgo.
+
+---
+
+### 10.4 Las soluciones: Capítulo H de la Encuesta Multipropósito
+
+La EM2021 tiene un capítulo que no descargamos: **Capítulo H — Educación** (136 variables). Contiene información a nivel de persona sobre asistencia escolar, tipo de establecimiento (público/privado), medio de transporte, tiempo de desplazamiento y gasto en educación.
+
+Con este capítulo podemos construir tres mejoras:
+
+#### Solución A: Outside share variable por estrato y localidad
+
+**Intuición.** El problema central es que tratamos todas las localidades como si tuvieran la misma proporción de familias que van a privado. Chapinero y Ciudad Bolívar no son comparables. Si sabemos cuántas familias de cada estrato en cada localidad eligen sector privado, podemos calcular:
+
+$$s_{0,st} = \frac{\text{familias estrato } s \text{ en localidad } t \text{ que van a privado o no asisten}}{\text{total familias estrato } s \text{ en localidad } t}$$
+
+**Matemática.** Con $s_{0t}$ variable, la inversión de Berry cambia:
+
+$$\delta_j = \ln(S_j^{obs}) - \ln(s_{0t})$$
+
+Si $s_{0t}$ es grande en Chapinero (mucho privado), $\ln(s_{0t})$ es menos negativo → $\delta_j$ sube → ya no necesita un $\xi_j$ negativo para compensar la share baja. Se rompe la correlación espuria entre $\xi_j$ y las características del vecindario.
+
+**Qué necesitamos del Cap H:** Para cada persona de 5-17 años, saber si asiste a establecimiento público o privado, cruzado con el estrato y la localidad del hogar.
+
+**Impacto esperado:** Alto. Este es probablemente el cambio más importante. Arregla directamente el Problema 1 y atenúa el Problema 2.
+
+#### Solución B: Micro momento de modo de transporte
+
+**Intuición.** El modelo actual no distingue entre "una familia que camina 2 km" y "una familia que toma bus 2 km". Pero el costo real es completamente distinto — caminar 2 km con un niño de 5 años es mucho peor que ir en bus. Y el modo de transporte correlaciona fuertemente con el ingreso: familias pobres caminan, familias ricas usan ruta escolar o carro.
+
+**Matemática.** Construimos un micro momento:
+
+$$\text{mm}_1 = P(\text{camina al colegio} \mid \text{estrato} \leq 2, \text{sector oficial})$$
+
+vs
+
+$$\text{mm}_2 = P(\text{camina al colegio} \mid \text{estrato} \geq 4, \text{sector oficial})$$
+
+Si mm₁ >> mm₂, hay restricción de movilidad diferencial por ingreso. El momento análogo del modelo es:
+
+$$\hat{\text{mm}}_1(\theta) = \frac{\sum_{i: y_i < \bar{y}} \sum_j s_{ij} \cdot \mathbf{1}[d_{ij} < 1\text{km}]}{\sum_{i: y_i < \bar{y}} \sum_j s_{ij}}$$
+
+Esto apunta directamente a λ₁: la diferencia entre mm₁ y mm₂ identifica cómo el ingreso modifica la sensibilidad a la distancia — pero a través de una **restricción observable** (caminar vs no), no de una correlación espuria con el barrio.
+
+**Qué necesitamos del Cap H:** Variable de medio de transporte al establecimiento educativo, cruzada con estrato y sector (público/privado).
+
+**Impacto esperado:** Medio-alto. Identifica λ₁ de forma más limpia que el micro momento actual basado en Haversine.
+
+#### Solución C: Instrumento de gasto en transporte escolar
+
+**Intuición.** Si una familia reporta que gasta $50,000/mes en transporte escolar y otra gasta $0, eso revela directamente cuánto les cuesta la distancia. El gasto en transporte es un **precio sombra** de la distancia.
+
+**Matemática.** Podemos construir el gasto promedio en transporte escolar por UPZ:
+
+$$\overline{\text{gasto\_transporte}}_{UPZ} = \frac{\sum_{i \in UPZ} \text{gasto}_i \cdot \text{FEX}_i}{\sum_{i \in UPZ} \text{FEX}_i}$$
+
+Este promedio es un instrumento válido para la distancia:
+- **Relevante:** correlaciona con d_ij porque UPZs con colegios lejanos tienen mayor gasto en transporte. ✅
+- **Exógeno:** cuánto gasta una familia promedio de la UPZ en transporte no afecta la calidad no observada ξ_j de un colegio específico. ✅ (El argumento de exclusión es que el gasto en transporte refleja la geografía de la UPZ, no la calidad del colegio.)
+
+Con este instrumento, la condición de momentos:
+
+$$E[\xi_j \cdot \overline{\text{gasto\_transporte}}_{UPZ(j)}] = 0$$
+
+permite identificar λ₀ sin depender de la correlación directa entre distancia e ingreso.
+
+**Qué necesitamos del Cap H:** Gasto del hogar en transporte escolar, cruzado con UPZ.
+
+**Impacto esperado:** Medio. Es el instrumento más limpio para λ₀, pero requiere que haya suficiente variación en gasto de transporte dentro de cada localidad.
+
+---
+
+### 10.5 Plan de acción
+
+| Paso | Qué hacer | Prioridad | Impacto |
+|---|---|---|---|
+| **1** | Descargar Capítulo H de la EM2021 del DANE | Alta | Habilita todo lo demás |
+| **2** | Calcular s₀ por estrato × localidad | **Crítica** | Arregla el problema principal |
+| **3** | Re-estimar BLP con s₀ variable | Alta | Verificar si λ₀ se corrige |
+| **4** | Construir micro momento de transporte | Media | Mejora identificación de λ₁ |
+| **5** | Construir instrumento de gasto | Media | Mejora identificación de λ₀ |
+| **6** | Re-estimar BLP completo | Alta | Resultados finales |
+
+El paso 2 es el más importante. Si con s₀ variable λ₀ sale negativo y λ₁ sale positivo, probablemente no necesitemos los pasos 4 y 5 — el problema era la outside share, no la falta de instrumentos.
+
+---
+
+### 10.6 ¿Qué pasa si nada funciona?
+
+Si después de corregir la outside share y agregar micro momentos, los parámetros de distancia siguen sin sentido:
+
+1. **Fijar λ₀ de la literatura** (Hastings et al. 2009: λ₀ ≈ −1.0) y estimar solo π₁, π₂, λ₁. Menos elegante pero honesto — muchos papers de IO fijan parámetros de fuentes externas cuando la identificación es débil.
+
+2. **Reportar el resultado como evidencia de sorting.** Un λ₀ > 0 *es un resultado* — dice que con datos agregados y sin elecciones individuales, la distancia no se puede separar del sorting residencial. Eso motiva la extensión con datos del SIMAT.
+
+3. **Separar la contribución del paper:** Berry OLS (Capítulo 3) sí funciona y produce resultados interpretables. Los π del BLP son un plus, pero el paper no depende de ellos para contar la historia principal: las señales visuales predicen demanda escolar.
+
+La peor opción es forzar los números hasta que "salgan bien". Mejor reportar con honestidad y dejar la extensión como trabajo futuro con microdatos del SIMAT.
