@@ -35,6 +35,30 @@ OUTPUT_PATH = r'C:\paper-AI\data\primary\colegios_features_imputed.geojson'
 
 EARTH_RADIUS_KM = 6371.0
 
+# DANE → [ICFES codes] — matches manuales verificados con fuzzy matching
+DANE_TO_ICFES = {
+    '111001011975': [53926],           # GRAN COLOMBIA → CENT EDUC DIST GRAN COLOMBIANO
+    '111001016772': [70037],           # SAN FRANCISCO DE ASIS → COLEGIO ANEXO SAN FRANCISCO DE ASIS
+    '111001027405': [665208],          # JAIRO ANIBAL NIÑO → CENT EDUC DIST JAIRO ANIBAL NIÑO
+    '111001104035': [85589],           # BOLIVIA → LIC PSICOPEDAG BOLIVIA
+    '111001801047': [815597],          # GLORIA VALENCIA DE CASTAÑO
+    '111001801055': [817593],          # ABEL RODRIGUEZ CESPEDES
+    '111001801071': [818534],          # LUCILA RUBIO DE LAVERDE
+    '111001801241': [820936],          # FELIZA BURSZTYN
+    '111001801250': [820399],          # JAIME NIÑO DIEZ
+    '111001801268': [820332],          # TERESA MARTINEZ DE VARELA
+    '111001801314': [820886],          # AGUDELO RESTREPO
+    '111001801349': [821835],          # ELISA MUJICA VELASQUEZ
+    '311001105944': [106625],          # UNAD BACHILLERATO
+    # Ambiguos — múltiples jornadas, se promedia:
+    '111001104345': [109645, 102749],  # DIEGO MONTAÑA CUELLAR (2 jornadas)
+    '111001107786': [218099, 218107],  # NICOLAS BUENAVENTURA (2 jornadas)
+    '111001801098': [815035, 815043],  # CIUDADELA EL RECREO SONIA OSORIO (2 jornadas)
+    '111001801101': [818450, 818468],  # LAURA HERRERA DE VARELA (2 jornadas)
+    '111001013242': [129205],          # AULAS COLOMBIANAS SAN LUIS → EL CONSUELO
+    '111001092983': [665679],          # VISTA BELLA → CAFAM BELLAVISTA
+}
+
 # Columnas que no deben imputarse: identificadores, coordenadas y categóricas.
 # Todo lo demás se detecta automáticamente como numérico.
 EXCLUIR = {
@@ -42,6 +66,7 @@ EXCLUIR = {
     'lon', 'lat', 'geometry',
     'nombre_establecimiento', 'nombre_localidad', 'nombre_upz',
     'zona', 'caracter_media',
+    'n_hogares_muestra',  # metadata muestral EM2021, no es feature
 }
 
 # =============================================================================
@@ -97,6 +122,59 @@ def main():
         n_rural = int(mask_rural.sum())
         gdf = gdf[~mask_rural].reset_index(drop=True)
         log.info(f'  Excluidos {n_rural} colegios rurales, quedan {len(gdf):,}')
+
+    # ── Paso 1b: Rellenar q_j y puntuaciones históricas desde GIP Saber 11 ───
+    gip_path = os.path.join(os.path.dirname(INPUT_PATH), '..', 'raw', 'icfes_historicos_bogota.csv')
+    if os.path.exists(gip_path):
+        gip_df = pd.read_csv(gip_path, dtype={'codigo_icfes': int})
+        anio_col = gip_df.columns[3]  # año tiene problemas de encoding; usar por posición
+
+        def _get_gip_score(icfes_codes, target_year):
+            sub = gip_df[gip_df['codigo_icfes'].isin(icfes_codes)]
+            if sub.empty:
+                return None
+            sub_yr = sub[sub[anio_col] == target_year]
+            return float(sub_yr['global'].mean()) if not sub_yr.empty else None
+
+        def _best_gip_score(icfes_codes):
+            sub = gip_df[gip_df['codigo_icfes'].isin(icfes_codes)]
+            if sub.empty:
+                return None
+            for yr in [2023, 2022, 2024]:
+                s = _get_gip_score(icfes_codes, yr)
+                if s is not None:
+                    return s
+            most_recent = int(sub[anio_col].max())
+            return _get_gip_score(icfes_codes, most_recent)
+
+        n_qj = n_2020 = n_2022 = 0
+        for idx, row in gdf.iterrows():
+            dane = str(row['id_establecimiento'])
+            if dane not in DANE_TO_ICFES:
+                continue
+            codes = DANE_TO_ICFES[dane]
+
+            if pd.isna(row['q_j']):
+                score = _best_gip_score(codes)
+                if score is not None:
+                    gdf.at[idx, 'q_j'] = score
+                    n_qj += 1
+
+            if 'punt_global_2020' in gdf.columns and pd.isna(row['punt_global_2020']):
+                score = _get_gip_score(codes, 2020)
+                if score is not None:
+                    gdf.at[idx, 'punt_global_2020'] = score
+                    n_2020 += 1
+
+            if 'punt_global_2022' in gdf.columns and pd.isna(row['punt_global_2022']):
+                score = _get_gip_score(codes, 2022)
+                if score is not None:
+                    gdf.at[idx, 'punt_global_2022'] = score
+                    n_2022 += 1
+
+        log.info(f'  GIP Saber 11 → q_j: {n_qj}, punt_global_2020: {n_2020}, punt_global_2022: {n_2022}')
+    else:
+        log.warning(f'  GIP Saber 11 no encontrado: {gip_path}')
 
     # Trabajar sobre una vista plana (sin geometría) para detectar tipos y NaN.
     # Mantenemos gdf como contenedor principal para el GeoJSON de salida.

@@ -318,6 +318,55 @@ def join_em2021(df: pd.DataFrame, path: Path) -> pd.DataFrame:
     return result
 
 
+# ── Paso 6b: s₀ por localidad (participacion del sector no oficial) ──────────
+
+def join_s0_localidad(df: pd.DataFrame, path: Path) -> pd.DataFrame:
+    print("Paso 6b - Calculando s0 por localidad desde EM2021...")
+    em = pd.read_csv(path, dtype=str)
+
+    em["FEX_C"]  = pd.to_numeric(em["FEX_C"],  errors="coerce")
+    em["NPCEP4"] = pd.to_numeric(em["NPCEP4"], errors="coerce")
+    em["COD_LOCALIDAD"] = em["COD_LOCALIDAD"].astype(str).str.strip()
+
+    edad_escolar = em[em["NPCEP4"].between(5, 17)].copy()
+
+    n_escolar = (
+        edad_escolar
+        .groupby("COD_LOCALIDAD")["FEX_C"]
+        .sum()
+        .rename("N_escolar")
+    )
+    n_oficial = (
+        edad_escolar[
+            (edad_escolar["NPCHP2"].str.strip() == "1") &
+            (edad_escolar["NPCHP12"].str.strip() == "1")
+        ]
+        .groupby("COD_LOCALIDAD")["FEX_C"]
+        .sum()
+        .rename("N_oficial")
+    )
+
+    s0_df = pd.concat([n_escolar, n_oficial], axis=1).reset_index()
+    s0_df["s0_localidad"] = 1 - (s0_df["N_oficial"] / s0_df["N_escolar"])
+
+    print(f"  s0 por localidad — min: {s0_df['s0_localidad'].min():.4f}  "
+          f"mediana: {s0_df['s0_localidad'].median():.4f}  "
+          f"max: {s0_df['s0_localidad'].max():.4f}")
+
+    # Normalizar a int para evitar mismatch "01" vs "1"
+    s0_df["_loc_key"] = pd.to_numeric(s0_df["COD_LOCALIDAD"], errors="coerce").astype("Int64")
+    df["_loc_key"] = pd.to_numeric(df["codigo_localidad"], errors="coerce").astype("Int64")
+    result = df.merge(
+        s0_df[["_loc_key", "s0_localidad"]],
+        on="_loc_key",
+        how="left",
+    ).drop(columns=["_loc_key"])
+
+    matched = result["s0_localidad"].notna().sum()
+    print(f"  {matched} / {len(result)} colegios con s0_localidad")
+    return result
+
+
 # ── Paso 7: Controles geograficos ────────────────────────────────────────────
 
 def join_geo_controls(df: pd.DataFrame) -> pd.DataFrame:
@@ -482,6 +531,9 @@ def main():
 
     # Paso 6: controles socioeconomicos
     df = join_em2021(df, PROC / "em2021_por_upz.csv")
+
+    # Paso 6b: s0 por localidad
+    df = join_s0_localidad(df, RAW / "em2021_encuesta_principal.csv")
 
     # Paso 7: distancias geograficas
     df = join_geo_controls(df)

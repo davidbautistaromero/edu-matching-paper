@@ -30,8 +30,6 @@ OUT_PRIMARY = BASE / 'data' / 'primary'
 OUT_TABLES.mkdir(parents=True, exist_ok=True)
 OUT_PRIMARY.mkdir(parents=True, exist_ok=True)
 
-OUTSIDE_SHARE = 0.05
-
 CLIP_VARS = ['mantenimiento', 'vegetacion_percibida', 'modernidad', 'seguridad_percibida']
 CS_VARS   = ['infraestructura_vial', 'cerramiento']  # excluye edificacion (colineal con modernidad), vegetacion (colineal con vegetacion_percibida), vehiculos, mobiliario_urbano, referencia
 CTRL_CONT = ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficial']
@@ -68,13 +66,22 @@ print(f"Establecimientos tras merge: {len(df):,}")
 
 df['demanda_total']   = pd.to_numeric(df['demanda_total'], errors='coerce')
 df['codigo_localidad'] = df['codigo_localidad'].astype(str).str.strip()
+df['s0_localidad']    = pd.to_numeric(df['s0_localidad'], errors='coerce')
 df = df[df['demanda_total'] > 0].copy()
 
-demanda_loc = df.groupby('codigo_localidad')['demanda_total'].transform('sum')
-M_t         = demanda_loc / (1 - OUTSIDE_SHARE)
+s0_por_loc = (
+    df[['codigo_localidad', 's0_localidad']]
+    .drop_duplicates()
+    .sort_values('codigo_localidad')
+)
+print("s0 por localidad:")
+print(s0_por_loc.to_string(index=False))
 
-df['s_j']    = df['demanda_total'] / M_t
-df['delta_j'] = np.log(df['s_j']) - np.log(OUTSIDE_SHARE)
+demanda_loc = df.groupby('codigo_localidad')['demanda_total'].transform('sum')
+M_t         = demanda_loc / (1 - df['s0_localidad'])
+
+df['s_j']     = df['demanda_total'] / M_t
+df['delta_j'] = np.log(df['s_j']) - np.log(df['s0_localidad'])
 df = df[df['s_j'] > 0].copy()
 
 print(f"Escuelas con s_j > 0: {len(df):,}")
@@ -90,7 +97,6 @@ for col in ['q_j', 'dist_sitp_m', 'homicidios', 'pct_no_oficial'] + CLIP_VARS + 
 df['log_homicidios'] = np.log1p(df['homicidios'])
 df['log_dist_sitp']  = np.log1p(df['dist_sitp_m'])
 df['es_tecnico']     = df['caracter_media'].str.contains('cnico', case=False, na=False).astype(float)
-df.loc[df['caracter_media'].isin(['Sin informacion', 'Sin información']), 'es_tecnico'] = np.nan
 
 CONTINUAS = CLIP_VARS + CS_VARS + CTRL_CONT
 todas_vars = CONTINUAS + CTRL_BIN

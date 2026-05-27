@@ -84,7 +84,6 @@ for col in ['q_j', 'dist_sitp_m', 'homicidios', 'pct_no_oficial'] + CLIP_VARS:
 df['log_homicidios'] = np.log1p(df['homicidios'])
 df['log_dist_sitp']  = np.log1p(df['dist_sitp_m'])
 df['es_tecnico']     = df['caracter_media'].str.contains('cnico', case=False, na=False).astype(float)
-df.loc[df['caracter_media'].isin(['Sin informacion', 'Sin información']), 'es_tecnico'] = np.nan
 
 df = df.dropna(subset=CLIP_VARS + CTRL_CONT + CTRL_BIN).reset_index(drop=True)
 print(f"  Colegios tras dropna: {len(df):,}")
@@ -97,6 +96,37 @@ for col in CLIP_VARS + ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficia
 
 CLIP_Z = [f'{c}_z' for c in CLIP_VARS]
 CTRL_Z = [f'{c}_z' for c in ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficial']] + CTRL_BIN
+
+# BLP instruments for q_j
+df['_loc_key_iv'] = df['codigo_localidad'].apply(
+    lambda x: str(int(float(x))).zfill(2) if pd.notna(x) and str(x).strip() != '' else None
+)
+_rival_q = []
+_n_comp = []
+for idx, row in df.iterrows():
+    loc = row['_loc_key_iv']
+    others = df[(df['_loc_key_iv'] == loc) & (df.index != idx)]
+    _rival_q.append(others['q_j_z'].mean() if len(others) > 0 else 0.0)
+    _n_comp.append(len(others))
+df['mean_q_rivals'] = _rival_q
+df['n_competitors'] = _n_comp
+for col in ['mean_q_rivals', 'n_competitors']:
+    mu, sd = df[col].mean(), df[col].std()
+    df[f'{col}_z'] = (df[col] - mu) / sd if sd > 0 else 0.0
+
+# First-stage: q_j_z ~ mean_q_rivals_z + n_competitors_z + other exogenous
+import statsmodels.api as sm
+_fs_X = sm.add_constant(df[['mean_q_rivals_z', 'n_competitors_z',
+                             'log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
+                            + CLIP_Z])
+_fs_y = df['q_j_z']
+_fs_mod = sm.OLS(_fs_y, _fs_X).fit()
+_fs_F = _fs_mod.fvalue
+print(f"\n  FIRST STAGE: q_j_z ~ instruments + controls")
+print(f"    F-statistic: {_fs_F:.2f}  (>10 = strong)")
+print(f"    R2: {_fs_mod.rsquared:.4f}")
+print(f"    mean_q_rivals_z coef: {_fs_mod.params['mean_q_rivals_z']:+.4f} (p={_fs_mod.pvalues['mean_q_rivals_z']:.4f})")
+print(f"    n_competitors_z coef: {_fs_mod.params['n_competitors_z']:+.4f} (p={_fs_mod.pvalues['n_competitors_z']:.4f})")
 
 print("\nEstadisticos variables estandarizadas (colegios):")
 for v in CLIP_Z + CTRL_Z[:-1]:
@@ -432,11 +462,11 @@ print(f"  d_obs (distancia ponderada FEX) — mean={d_obs_arr.mean():.4f}  std={
       f"  [{d_obs_arr.min():.4f}, {d_obs_arr.max():.4f}]")
 
 # =============================================================================
-# PASO 7: CONSTRUCCION DE X_mat, Z_mat Y school_ids
+# PASO 7: CONSTRUCCION DE X_mat, Z_mat, Z_iv Y school_ids
 # =============================================================================
 
 print("\n" + "=" * 60)
-print("CONSTRUYENDO X_mat y Z_mat")
+print("CONSTRUYENDO X_mat, Z_mat, Z_iv")
 print("=" * 60)
 
 # Orden de escuelas: todas las que aparecen en market_data, mercado por mercado (sorted)
@@ -455,16 +485,26 @@ _X_cols = ['seguridad_percibida_z', 'vegetacion_percibida_z',
            'q_j_z', 'log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
 
 X_mat = np.column_stack([np.ones(len(df_ord))] + [df_ord[c].values for c in _X_cols])
-Z_mat = X_mat.copy()   # Z = X (instrumentos iguales a regresores)
+
+# Z_baseline: Z = X (no instruments)
+Z_baseline = X_mat.copy()
+
+# Z_iv: replace q_j_z with mean_q_rivals_z + n_competitors_z
+_Z_iv_cols = ['seguridad_percibida_z', 'vegetacion_percibida_z',
+              'mean_q_rivals_z', 'n_competitors_z',
+              'log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
+Z_iv = np.column_stack([np.ones(len(df_ord))] + [df_ord[c].values for c in _Z_iv_cols])
 
 # s_obs_all alineado con school_ids
 s_obs_all = df.set_index('id_establecimiento').loc[school_ids, 's_j'].values
 
 print(f"  X_mat shape: {X_mat.shape}  (J x 8: const + 7 vars)")
-print(f"  Z_mat shape: {Z_mat.shape}  (Z = X)")
+print(f"  Z_baseline shape: {Z_baseline.shape}  (Z = X)")
+print(f"  Z_iv shape: {Z_iv.shape}  (Z with BLP instruments)")
 
 assert not np.isnan(X_mat).any(), "NaN en X_mat"
-assert not np.isnan(Z_mat).any(), "NaN en Z_mat"
+assert not np.isnan(Z_baseline).any(), "NaN en Z_baseline"
+assert not np.isnan(Z_iv).any(), "NaN en Z_iv"
 
 # Mapeo escuela -> (mercado, posicion_en_J_ids) para extraer delta eficientemente
 _school_to_pos = {}
@@ -480,218 +520,171 @@ _call_count = [0]
 
 
 def gmm_objective(theta, market_data, m_obs_dict, d_obs_dict, X_mat, Z_mat, s_obs_all, school_ids):
-    """
-    Objetivo GMM-BLP combinando momento agregado (Berry 1994) y micro-momentos.
-
-    1. Contraction mapping -> delta_j
-    2. OLS: delta = X @ beta + xi
-    3. Momento agregado: xi' Z (Z'Z)^{-1} Z' xi
-    4. Micro-momentos: sum((m_pred-m_obs)^2) + sum((d_pred-d_obs)^2)
-    """
     _call_count[0] += 1
-
-    # --- Contraction mapping: delta por mercado ---
+    pi1, pi2, lam0, lam1 = theta
     delta_dict, n_it = contraction_mapping(theta, market_data)
-
-    # --- Apilar delta en el orden de school_ids ---
     delta_vec = np.array([
         delta_dict[_school_to_pos[jid][0]][_school_to_pos[jid][1]]
         for jid in school_ids
     ])
-
-    # --- OLS: delta = X @ beta + xi ---
     XtX_inv = np.linalg.inv(X_mat.T @ X_mat)
     beta    = XtX_inv @ (X_mat.T @ delta_vec)
     xi      = delta_vec - X_mat @ beta
-
-    # --- Momento agregado (forma cuadratica GMM con W = (Z'Z)^{-1}) ---
     ZtZ_inv    = np.linalg.inv(Z_mat.T @ Z_mat)
     agg_moment = xi @ Z_mat @ ZtZ_inv @ Z_mat.T @ xi
-
-    # --- Micro-momentos (reusar delta_dict del CM) ---
     m_pred, d_pred = compute_micro_moments_pred(theta, market_data, delta_dict=delta_dict)
-
     common_ids   = [jid for jid in school_ids if jid in m_pred and jid in m_obs_dict]
     m_diff       = np.array([m_pred[j] - m_obs_dict[j] for j in common_ids])
     d_diff       = np.array([d_pred[j] - d_obs_dict[j] for j in common_ids])
     micro_moment = (m_diff ** 2).sum() + (d_diff ** 2).sum()
-
     total = agg_moment + micro_moment
-
     if _call_count[0] <= 5:
         print(f"  [eval {_call_count[0]:>3}] theta=({theta[0]:+.4f}, {theta[1]:+.4f}, "
               f"{theta[2]:+.4f}, {theta[3]:+.4f})  "
               f"agg={agg_moment:.6f}  micro={micro_moment:.6f}  total={total:.6f}"
               f"  (CM iters={n_it})")
-
     return total
 
 
 # =============================================================================
-# PASO 9: OPTIMIZACION L-BFGS-B
+# PASO 9: FUNCION DE ESTIMACION REUTILIZABLE
 # =============================================================================
 
-print("\n" + "=" * 60)
-print("OPTIMIZACION GMM — L-BFGS-B")
-print("=" * 60)
+def run_blp_estimation(Z_mat, label, market_data, m_obs_dict, d_obs_dict,
+                       X_mat, s_obs_all, school_ids):
+    """Run full BLP-GMM estimation with given Z_mat. Returns results dict."""
+    global _call_count
+    _call_count[0] = 0
 
-_call_count[0] = 0   # resetear antes de la optimizacion
+    print("\n" + "=" * 60)
+    print(f"ESTIMACION: {label}")
+    print("=" * 60)
 
-_bounds = [(-3.0, 3.0), (-3.0, 3.0), (-5.0, 5.0), (-3.0, 3.0)]  # pi1, pi2, lam0, lam1
-_x0     = np.array([0.0, 0.0, -0.5, 0.0])
+    _bounds = [(-3.0, 3.0), (-3.0, 3.0), (-5.0, 5.0), (-3.0, 3.0)]
+    _x0     = np.array([0.0, 0.0, -0.5, 0.0])
+    print(f"  x0     = {_x0.tolist()}")
+    print(f"  Z shape: {Z_mat.shape}")
 
-print(f"  x0     = {_x0.tolist()}")
-print(f"  bounds = {_bounds}")
-print(f"\n  Primeras 5 evaluaciones de la funcion objetivo:")
+    result = optimize.minimize(
+        gmm_objective, _x0,
+        args=(market_data, m_obs_dict, d_obs_dict, X_mat, Z_mat, s_obs_all, school_ids),
+        method='L-BFGS-B', bounds=_bounds,
+        options={'maxiter': 500, 'ftol': 1e-10, 'gtol': 1e-6, 'disp': False},
+    )
 
-_result = optimize.minimize(
-    gmm_objective,
-    _x0,
-    args=(market_data, m_obs_dict, d_obs_dict, X_mat, Z_mat, s_obs_all, school_ids),
-    method='L-BFGS-B',
-    bounds=_bounds,
-    options={'maxiter': 500, 'ftol': 1e-10, 'gtol': 1e-6, 'disp': False},
-)
+    theta_hat = tuple(result.x)
+    pi1, pi2, lam0, lam1 = result.x
 
-print("\n" + "=" * 60)
-print("RESULTADO OPTIMIZACION GMM-BLP")
-print("=" * 60)
-print(f"  Convergencia: {_result.success}  ({_result.message})")
-print(f"  Iteraciones:  {_result.nit}")
-print(f"  Evaluaciones: {_result.nfev}")
-print(f"  Objetivo min: {_result.fun:.6f}")
-print(f"\n  theta_hat:")
-_theta_names = [
-    'pi1  (y_i * seg_z)',
-    'pi2  (y_i * veg_z)',
-    'lam0 (log_d)',
-    'lam1 (y_i * log_d)',
-]
-for _name, _val in zip(_theta_names, _result.x):
-    print(f"    {_name:<30}: {_val:+.6f}")
-print("=" * 60)
+    print(f"\n  Convergencia: {result.success}")
+    print(f"  Evaluaciones: {result.nfev}  |  Objetivo: {result.fun:.6f}")
+    print(f"  theta: pi1={pi1:+.4f}  pi2={pi2:+.4f}  lam0={lam0:+.4f}  lam1={lam1:+.4f}")
 
-# =============================================================================
-# PASO 10: EXTRAER PARAMETROS Y TABLA RESUMEN
-# =============================================================================
+    # Contraction final + OLS
+    delta_dict, n_it = contraction_mapping(theta_hat, market_data)
+    delta_vec = np.array([
+        delta_dict[_school_to_pos[jid][0]][_school_to_pos[jid][1]]
+        for jid in school_ids
+    ])
+    XtX_inv = np.linalg.inv(X_mat.T @ X_mat)
+    beta    = XtX_inv @ (X_mat.T @ delta_vec)
+    xi      = delta_vec - X_mat @ beta
 
-pi1, pi2, lam0, lam1 = _result.x
+    _beta_names = ['constante'] + _X_cols
+    print(f"\n  {'Variable':<40} {'beta':>12}")
+    print(f"  {'-'*40} {'-'*12}")
+    for bname, bval in zip(_beta_names, beta):
+        print(f"  {bname:<40} {bval:>+12.6f}")
 
-print("\n" + "=" * 60)
-print("PARAMETROS NO-LINEALES ESTIMADOS")
-print("=" * 60)
-print(f"  {'Parámetro':<35} {'Estimación':>12}")
-print(f"  {'-'*35} {'-'*12}")
-print(f"  {'pi1  (ingreso × seguridad_z)':<35} {pi1:>+12.6f}")
-print(f"  {'pi2  (ingreso × vegetacion_z)':<35} {pi2:>+12.6f}")
-print(f"  {'lam0 (log_distancia)':<35} {lam0:>+12.6f}")
-print(f"  {'lam1 (ingreso × log_distancia)':<35} {lam1:>+12.6f}")
-print("=" * 60)
+    # Micro-momentos
+    m_pred, d_pred = compute_micro_moments_pred(theta_hat, market_data)
+    common = [j for j in school_ids if j in m_pred and j in m_obs_dict]
+    m_err = np.array([m_pred[j] - m_obs_dict[j] for j in common])
+    d_err = np.array([d_pred[j] - d_obs_dict[j] for j in common])
+    print(f"\n  Micro-momentos: RMSE_m={np.sqrt((m_err**2).mean()):.4f}  RMSE_d={np.sqrt((d_err**2).mean()):.4f}")
+    print("=" * 60)
 
-# =============================================================================
-# PASO 11: CONTRACTION FINAL + OLS -> BETA LINEAL
-# =============================================================================
+    return {
+        'label': label,
+        'result': result,
+        'theta': result.x,
+        'beta': beta,
+        'beta_names': _beta_names,
+        'delta': delta_vec,
+        'xi': xi,
+        'rmse_m': np.sqrt((m_err**2).mean()),
+        'rmse_d': np.sqrt((d_err**2).mean()),
+    }
 
-print("\nEjecutando contraction mapping final con theta_hat...")
-
-_theta_hat = tuple(_result.x)
-_delta_final, _n_it_final = contraction_mapping(_theta_hat, market_data)
-print(f"  Convergido en {_n_it_final} iteraciones")
-
-# Apilar delta en orden de school_ids
-_delta_vec_final = np.array([
-    _delta_final[_school_to_pos[jid][0]][_school_to_pos[jid][1]]
-    for jid in school_ids
-])
-
-# OLS: delta = X @ beta + xi
-_XtX_inv_final = np.linalg.inv(X_mat.T @ X_mat)
-_beta_final    = _XtX_inv_final @ (X_mat.T @ _delta_vec_final)
-_xi_final      = _delta_vec_final - X_mat @ _beta_final
-
-_beta_names = ['constante'] + _X_cols
-
-print("\n" + "=" * 60)
-print("PARAMETROS LINEALES (beta) — OLS sobre delta_j final")
-print("=" * 60)
-print(f"  {'Variable':<40} {'beta':>12}")
-print(f"  {'-'*40} {'-'*12}")
-for _bname, _bval in zip(_beta_names, _beta_final):
-    print(f"  {_bname:<40} {_bval:>+12.6f}")
-print("=" * 60)
 
 # =============================================================================
-# PASO 12: MICRO-MOMENTOS FINALES — COMPARACION PRED vs OBS
+# PASO 10: DOS ESTIMACIONES — BASELINE vs IV-BLP
 # =============================================================================
 
-print("\nCalculando micro-momentos finales...")
+res_base = run_blp_estimation(
+    Z_baseline, "BASELINE (Z=X)", market_data, m_obs_dict, d_obs_dict,
+    X_mat, s_obs_all, school_ids)
 
-_m_pred_final, _d_pred_final = compute_micro_moments_pred(_theta_hat, market_data)
-
-_common = [j for j in school_ids if j in _m_pred_final and j in m_obs_dict]
-_m_err  = np.array([_m_pred_final[j] - m_obs_dict[j]  for j in _common])
-_d_err  = np.array([_d_pred_final[j] - d_obs_dict[j]  for j in _common])
-
-print("\n" + "=" * 60)
-print("MICRO-MOMENTOS: PRED vs OBS")
-print("=" * 60)
-print(f"  Escuelas evaluadas: {len(_common):,}")
-print(f"\n  Ingreso ponderado (m_j):")
-print(f"    Error medio (pred - obs):  {_m_err.mean():+.6f}")
-print(f"    MAE:                       {np.abs(_m_err).mean():.6f}")
-print(f"    RMSE:                      {np.sqrt((_m_err**2).mean()):.6f}")
-print(f"\n  Distancia ponderada (d_j):")
-print(f"    Error medio (pred - obs):  {_d_err.mean():+.6f}")
-print(f"    MAE:                       {np.abs(_d_err).mean():.6f}")
-print(f"    RMSE:                      {np.sqrt((_d_err**2).mean()):.6f}")
-print("=" * 60)
+res_iv = run_blp_estimation(
+    Z_iv, "IV-BLP (BLP instruments)", market_data, m_obs_dict, d_obs_dict,
+    X_mat, s_obs_all, school_ids)
 
 # =============================================================================
-# PASO 13: GUARDAR RESULTADOS
+# PASO 11: TABLA COMPARATIVA
+# =============================================================================
+
+print("\n" + "=" * 70)
+print("COMPARACION: BASELINE vs IV-BLP")
+print("=" * 70)
+
+_theta_labels = ['pi1  (y_i x seg_z)', 'pi2  (y_i x veg_z)',
+                 'lam0 (log_d)', 'lam1 (y_i x log_d)']
+
+print(f"  {'':40s} {'Baseline':>12} {'IV-BLP':>12}")
+print(f"  {'-'*40} {'-'*12} {'-'*12}")
+print(f"  {'--- Non-linear (theta) ---':40s}")
+for i, lab in enumerate(_theta_labels):
+    print(f"  {lab:40s} {res_base['theta'][i]:>+12.6f} {res_iv['theta'][i]:>+12.6f}")
+
+print(f"\n  {'--- Linear (beta) ---':40s}")
+for i, bname in enumerate(res_base['beta_names']):
+    print(f"  {bname:40s} {res_base['beta'][i]:>+12.6f} {res_iv['beta'][i]:>+12.6f}")
+
+print(f"\n  {'--- Diagnostics ---':40s}")
+print(f"  {'GMM objective':40s} {res_base['result'].fun:>12.4f} {res_iv['result'].fun:>12.4f}")
+print(f"  {'Convergence':40s} {str(res_base['result'].success):>12s} {str(res_iv['result'].success):>12s}")
+print(f"  {'RMSE micro-m (income)':40s} {res_base['rmse_m']:>12.4f} {res_iv['rmse_m']:>12.4f}")
+print(f"  {'RMSE micro-d (distance)':40s} {res_base['rmse_d']:>12.4f} {res_iv['rmse_d']:>12.4f}")
+print(f"  {'First-stage F (q_j)':40s} {'---':>12s} {_fs_F:>12.2f}")
+print("=" * 70)
+
+# =============================================================================
+# PASO 12: GUARDAR RESULTADOS (IV-BLP como preferido)
 # =============================================================================
 
 print("\nGuardando resultados...")
 
-# --- blp_results.csv ---
 _rows = []
-for _pname, _pval in zip(['pi1', 'pi2', 'lam0', 'lam1'], [pi1, pi2, lam0, lam1]):
-    _rows.append({'parametro': _pname, 'estimacion': _pval, 'tipo': 'no_lineal'})
-for _bname, _bval in zip(_beta_names, _beta_final):
-    _rows.append({'parametro': f'beta_{_bname}', 'estimacion': _bval, 'tipo': 'lineal'})
+for spec, res in [('baseline', res_base), ('iv_blp', res_iv)]:
+    for pname, pval in zip(['pi1', 'pi2', 'lam0', 'lam1'], res['theta']):
+        _rows.append({'spec': spec, 'parametro': pname, 'estimacion': pval, 'tipo': 'no_lineal'})
+    for bname, bval in zip(res['beta_names'], res['beta']):
+        _rows.append({'spec': spec, 'parametro': f'beta_{bname}', 'estimacion': bval, 'tipo': 'lineal'})
 
 _df_results = pd.DataFrame(_rows)
 _results_path = OUT_TABLES / 'blp_results.csv'
 _df_results.to_csv(_results_path, index=False)
 print(f"  Guardado: {_results_path}")
 
-# --- blp_delta_j.parquet ---
+# Use IV-BLP as preferred specification for downstream
 _df_delta = pd.DataFrame({
     'id_establecimiento': school_ids,
-    'delta_j_blp':        _delta_vec_final,
-    'xi_j':               _xi_final,
+    'delta_j_blp':        res_iv['delta'],
+    'xi_j':               res_iv['xi'],
 })
 _delta_path = OUT_PRIMARY / 'blp_delta_j.parquet'
 _df_delta.to_parquet(_delta_path, index=False)
-print(f"  Guardado: {_delta_path}")
+print(f"  Guardado: {_delta_path}  (IV-BLP preferred)")
 
-# =============================================================================
-# RESUMEN FINAL
-# =============================================================================
-
-print("\n" + "=" * 60)
-print("RESUMEN FINAL BLP")
-print("=" * 60)
-print(f"  Convergencia GMM:          {_result.success}")
-print(f"  Objetivo GMM final:        {_result.fun:.6f}")
-print(f"  Evaluaciones función obj:  {_result.nfev}")
-print(f"  theta_hat: pi1={pi1:+.4f}  pi2={pi2:+.4f}  lam0={lam0:+.4f}  lam1={lam1:+.4f}")
-print(f"  delta_j — mean={_delta_vec_final.mean():.4f}  std={_delta_vec_final.std():.4f}"
-      f"  [{_delta_vec_final.min():.4f}, {_delta_vec_final.max():.4f}]")
-print(f"  xi_j    — mean={_xi_final.mean():.4f}  std={_xi_final.std():.4f}"
-      f"  [{_xi_final.min():.4f}, {_xi_final.max():.4f}]")
-print(f"  Error medio m_j:           {_m_err.mean():+.6f}")
-print(f"  Error medio d_j:           {_d_err.mean():+.6f}")
-print(f"  Archivos guardados:")
-print(f"    {_results_path}")
-print(f"    {_delta_path}")
-print("=" * 60)
+print("\n" + "=" * 70)
+print("DONE")
+print("=" * 70)

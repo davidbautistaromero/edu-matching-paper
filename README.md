@@ -81,8 +81,10 @@ python scripts/03b_nmf_topics.py                # modelo principal (K=8)
 python scripts/03c_clip_features.py
 python scripts/03d_imputacion_espacial.py
 
-# Fase 4-5 — Regresión, atractivo e índice visual
+# Fase 4 — Regresión, atractivo, BLP estructural
 python scripts/04a_regresion.py
+python scripts/04a_berry_ols.py              # Berry inversion + logit OLS (point estimates)
+python scripts/04b_blp.py                    # BLP-GMM: baseline (Z=X) + IV-BLP (BLP instruments)
 python scripts/04b_build_capacidad.py
 python scripts/04c_decompose_aj.py
 python scripts/05c_visual_index_validation.py
@@ -128,8 +130,18 @@ families + a_j   →  05-06         →  utilidades_familias.parquet
 **Variables clave:**
 - `a_j` — atractivo del colegio (variable dependiente en regresión, construida como log(sobredemanda))
 - `v_j` — sub-índice visual (componente NMF + CLIP de `a_j`)
+- `δ_j` — mean utility BLP (contraction mapping); guardado en `data/primary/blp_delta_j.parquet`
+- `ξ_j` — unobserved quality (residuo BLP); `δ_j - X·β`
 - `FEX_C` — factor de expansión EM2021; siempre ponderar agregaciones con esta columna
 - `id_establecimiento` — identificador primario de colegio en todos los datasets
 - `γ (gamma)` — parámetro de sesgo visual en experimento sintético; rango {0.25, 0.5, 0.75, 1.0, 1.25, 1.5}
+
+**Modelo estructural BLP:**
+- `04a_berry_ols.py` — Berry (1994) inversion: `δ_j = log(s_j) - log(s_0)`, luego OLS de δ_j sobre X
+- `04b_blp.py` — BLP con micro-momentos (ingreso × distancia), contraction mapping, GMM
+  - Baseline: Z = X (sin instrumentos)
+  - IV-BLP: instrumenta `q_j` con `mean_q_rivals_z` + `n_competitors_z` (BLP instruments)
+  - First-stage F = 10.23; resultados robustos — β de señales visuales estables entre specs
+  - Resultado clave: seguridad percibida (+0.154) importa; calidad académica q_j (-0.183) no atrae demanda
 
 Resultados, tablas y figuras se guardan en `reports/`. Las decisiones metodológicas están documentadas en `reports/paper/notas_metodologicas.md`.
