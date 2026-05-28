@@ -489,6 +489,38 @@ def join_competencia_privada(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def join_formacion_docentes(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Une el % de docentes con posgrado por localidad desde
+    data/raw/formacion_docentes_localidad.csv
+    (generado por scripts/00_fetch_formacion_docentes.py).
+    Instrumento para q_j en BLP.
+    """
+    print("Paso 10 - Uniendo formación docente por localidad...")
+    path = RAW / "formacion_docentes_localidad.csv"
+    if not path.exists():
+        print(f"  AVISO: {path.name} no encontrado -- corre 00_fetch_formacion_docentes.py primero")
+        return df
+
+    doc = pd.read_csv(path, encoding="utf-8")
+    doc["codigo_localidad"] = doc["codigo_localidad"].astype(str).str.zfill(2)
+
+    df["_loc_key"] = df["codigo_localidad"].astype(str).str.zfill(2)
+    df = df.merge(
+        doc[["codigo_localidad", "pct_docentes_postgrado", "total_docentes"]].rename(
+            columns={"codigo_localidad": "_loc_key"}
+        ),
+        on="_loc_key", how="left"
+    ).drop(columns=["_loc_key"])
+
+    matched = df["pct_docentes_postgrado"].notna().sum()
+    print(f"  {matched} / {len(df)} colegios con dato de formación docente")
+    print(f"  pct_docentes_postgrado: min={df['pct_docentes_postgrado'].min():.3f}  "
+          f"max={df['pct_docentes_postgrado'].max():.3f}  "
+          f"mean={df['pct_docentes_postgrado'].mean():.3f}")
+    return df
+
+
 # ── Paso 10: Output GeoJSON ───────────────────────────────────────────────────
 
 def save_geojson(df: pd.DataFrame, path: Path) -> None:
@@ -548,6 +580,9 @@ def main():
 
     # Paso 9: competencia del sector privado por localidad
     df = join_competencia_privada(df)
+
+    # Paso 10: formación docente por localidad (instrumento para q_j)
+    df = join_formacion_docentes(df)
 
     # Resumen
     print("\n=== Resumen del dataset ===")

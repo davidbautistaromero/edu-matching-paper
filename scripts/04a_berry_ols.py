@@ -34,6 +34,7 @@ CLIP_VARS = ['mantenimiento', 'vegetacion_percibida', 'modernidad', 'seguridad_p
 CS_VARS   = ['infraestructura_vial', 'cerramiento']  # excluye edificacion (colineal con modernidad), vegetacion (colineal con vegetacion_percibida), vehiculos, mobiliario_urbano, referencia
 CTRL_CONT = ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficial']
 CTRL_BIN  = ['es_tecnico']
+ENDOGENOUS = ['q_j']  # instrumentada en 2SLS
 
 # =============================================================================
 # PASO 1: CARGA Y FUSION
@@ -115,6 +116,58 @@ CTRL_Z = [f'{c}_z' for c in CTRL_CONT] + CTRL_BIN
 
 localidad_arr = df['codigo_localidad'].values
 y = df['delta_j']
+
+# --- Instrumentos para q_j ---
+# IV1: calidad de rivales ponderada por 1/distancia (por localidad)
+# Colegios más cercanos tienen más peso en el instrumento
+from sklearn.metrics import pairwise_distances
+
+_coords = np.deg2rad(df[['lat', 'lon']].values.astype(float))
+# Matriz de distancias haversine (en km)
+_dist_km = pairwise_distances(_coords, metric='haversine') * 6371.0
+np.fill_diagonal(_dist_km, np.inf)  # excluir el propio
+
+_locs = df['codigo_localidad'].values
+_q_vals = df['q_j_z'].values
+
+_rival_q_w, _n_comp = [], []
+for i in range(len(df)):
+    # Solo rivales en la misma localidad
+    mask = (_locs == _locs[i])
+    mask[i] = False  # excluir self
+    others_idx = np.where(mask)[0]
+
+    if len(others_idx) > 0:
+        d = _dist_km[i, others_idx]
+        w = 1.0 / np.maximum(d, 0.1)  # clip mínimo 100m para evitar inf
+        w = w / w.sum()  # normalizar
+        _rival_q_w.append(np.dot(w, _q_vals[others_idx]))
+    else:
+        _rival_q_w.append(0.0)
+    _n_comp.append(len(others_idx))
+
+df['mean_q_rivals'] = _rival_q_w
+df['n_competitors'] = _n_comp
+print(f"  Rivales (localidad, ponderado 1/d): media vecinos={np.mean(_n_comp):.1f}  "
+      f"min={np.min(_n_comp)}  max={np.max(_n_comp)}")
+for col in ['mean_q_rivals', 'n_competitors']:
+    mu, sd = df[col].mean(), df[col].std()
+    df[f'{col}_z'] = (df[col] - mu) / sd if sd > 0 else 0.0
+
+# IV2: pct_docentes_postgrado (supply-side: formación docente por localidad)
+df['pct_docentes_postgrado'] = pd.to_numeric(df.get('pct_docentes_postgrado'), errors='coerce')
+if df['pct_docentes_postgrado'].notna().sum() > 0:
+    mu, sd = df['pct_docentes_postgrado'].mean(), df['pct_docentes_postgrado'].std()
+    df['pct_docentes_postgrado_z'] = (df['pct_docentes_postgrado'] - mu) / sd if sd > 0 else 0.0
+    print(f"  pct_docentes_postgrado_z: mean={df['pct_docentes_postgrado_z'].mean():.4f}  "
+          f"std={df['pct_docentes_postgrado_z'].std():.4f}  "
+          f"[{df['pct_docentes_postgrado_z'].min():.2f}, {df['pct_docentes_postgrado_z'].max():.2f}]")
+else:
+    df['pct_docentes_postgrado_z'] = 0.0
+    print("  AVISO: pct_docentes_postgrado no disponible")
+
+IV_VARS = ['mean_q_rivals_z']
+print(f"\n  Instrumentos: {IV_VARS}")
 
 # =============================================================================
 # PASO 4: CUATRO ESPECIFICACIONES OLS
@@ -216,7 +269,79 @@ print('Nota: *** p<0.01, ** p<0.05, * p<0.1. SE HC1 robustos.')
 tabla.to_csv(OUT_TABLES / 'berry_ols_specs.csv', index=False, encoding='utf-8-sig')
 print(f'\nTabla guardada: {OUT_TABLES / "berry_ols_specs.csv"}')
 
+# =============================================================================
+# PASO 5b: 2SLS — M3 con q_j instrumentada
+# =============================================================================
 
+from linearmodels.iv import IV2SLS
+
+print('\n' + '=' * 90)
+print('2SLS — M3 CON q_j INSTRUMENTADA')
+print('=' * 90)
+
+# Variables exógenas en M3 (todo menos q_j_z)
+_exog_vars = [v for v in (CLIP_Z + CS_Z + CTRL_Z) if v != 'q_j_z']
+
+# First stage: q_j_z ~ instrumentos + exógenas
+_fs_X = sm.add_constant(df[IV_VARS + _exog_vars])
+_fs_y = df['q_j_z']
+_fs_mod = sm.OLS(_fs_y, _fs_X).fit()
+print(f"\n  FIRST STAGE: q_j_z ~ instruments + controls")
+print(f"    F-statistic: {_fs_mod.fvalue:.2f}  (>10 = strong)")
+print(f"    R2: {_fs_mod.rsquared:.4f}")
+for iv in IV_VARS:
+    print(f"    {iv}: coef={_fs_mod.params[iv]:+.4f} (p={_fs_mod.pvalues[iv]:.4f})")
+
+# 2SLS
+_dep = df[['delta_j']].copy()
+_dep.columns = ['y']
+_endog = df[['q_j_z']]
+_exog  = sm.add_constant(df[_exog_vars])
+_instr = df[IV_VARS]
+
+iv_model = IV2SLS(_dep['y'], _exog, _endog, _instr).fit(cov_type='robust')
+
+print(f"\n  2SLS Results (M3-IV):")
+print(f"  {'Variable':<35} {'Coef':>10} {'SE':>10} {'p-val':>8}")
+print(f"  {'-'*35} {'-'*10} {'-'*10} {'-'*8}")
+for vname in iv_model.params.index:
+    c = iv_model.params[vname]
+    s = iv_model.std_errors[vname]
+    p = iv_model.pvalues[vname]
+    sig = '***' if p < 0.01 else ('**' if p < 0.05 else ('*' if p < 0.1 else ''))
+    print(f"  {vname:<35} {c:>+10.4f} {s:>10.4f} {p:>8.4f} {sig}")
+
+# Comparación OLS vs 2SLS para q_j_z
+_m3_hc1 = resultados['M3']['hc1']
+_m3_names = list(_m3_hc1.model.exog_names)
+_ols_q = _m3_hc1.params[_m3_names.index('q_j_z')] if 'q_j_z' in _m3_names else np.nan
+_iv_q  = iv_model.params.get('q_j_z', np.nan)
+print(f"\n  q_j_z:  OLS = {_ols_q:+.4f}  ->  2SLS = {_iv_q:+.4f}")
+if not np.isnan(_ols_q) and not np.isnan(_iv_q):
+    print(f"  Cambio: {_iv_q - _ols_q:+.4f}")
+    if np.sign(_ols_q) != np.sign(_iv_q):
+        print("  *** CAMBIO DE SIGNO — endogeneidad corregida ***")
+
+# Hansen J test (sobreidentificación)
+if hasattr(iv_model, 'wooldridge_overid'):
+    j_test = iv_model.wooldridge_overid
+    print(f"\n  Hansen J (sobreidentificación): stat={j_test.stat:.4f}  p={j_test.pval:.4f}")
+    if j_test.pval > 0.05:
+        print("  -> No rechaza H0: instrumentos validos")
+    else:
+        print("  -> Rechaza H0: al menos un instrumento invalido (!)")
+
+print('=' * 90)
+
+# Guardar tabla 2SLS
+iv_table = pd.DataFrame({
+    'variable': iv_model.params.index,
+    'coef_2sls': iv_model.params.values,
+    'se_2sls': iv_model.std_errors.values,
+    'pval_2sls': iv_model.pvalues.values,
+})
+iv_table.to_csv(OUT_TABLES / 'berry_2sls_m3.csv', index=False, encoding='utf-8-sig')
+print(f'Tabla 2SLS guardada: {OUT_TABLES / "berry_2sls_m3.csv"}')
 
 # Guardar delta_j
 delta_out = df[['id_establecimiento', 'codigo_localidad', 'delta_j', 's_j', 'demanda_total']].copy()

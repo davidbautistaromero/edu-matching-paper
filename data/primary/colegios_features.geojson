@@ -64,7 +64,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -130,7 +132,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -196,7 +200,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -262,7 +268,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -328,7 +336,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -394,7 +404,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -460,7 +472,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -526,7 +540,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -592,7 +608,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -658,7 +676,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -724,7 +744,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -790,7 +812,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -856,7 +880,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -922,7 +948,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -988,7 +1016,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -1054,7 +1084,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -1120,7 +1152,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -1186,7 +1220,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -1252,7 +1288,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -1318,7 +1356,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -1384,7 +1424,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -1450,7 +1492,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -1516,7 +1560,9 @@
         "delitos_sexuales": 415.0,
         "pct_no_oficial": 94.92,
         "n_sedes_total": 59,
-        "n_sedes_no_oficial": 56
+        "n_sedes_no_oficial": 56,
+        "pct_docentes_postgrado": 0.92,
+        "total_docentes": 150
       }
     },
     {
@@ -1582,7 +1628,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -1648,7 +1696,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -1714,7 +1764,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -1780,7 +1832,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -1846,7 +1900,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -1912,7 +1968,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -1978,7 +2036,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -2044,7 +2104,9 @@
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
         "n_sedes_total": 42,
-        "n_sedes_no_oficial": 29
+        "n_sedes_no_oficial": 29,
+        "pct_docentes_postgrado": 0.8519,
+        "total_docentes": 439
       }
     },
     {
@@ -2110,7 +2172,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -2176,7 +2240,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -2242,7 +2308,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -2308,7 +2376,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -2374,7 +2444,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -2440,7 +2512,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -2506,7 +2580,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -2572,7 +2648,9 @@
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
         "n_sedes_total": 42,
-        "n_sedes_no_oficial": 29
+        "n_sedes_no_oficial": 29,
+        "pct_docentes_postgrado": 0.8519,
+        "total_docentes": 439
       }
     },
     {
@@ -2638,7 +2716,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -2704,7 +2784,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -2770,7 +2852,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -2836,7 +2920,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -2902,7 +2988,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -2968,7 +3056,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -3034,7 +3124,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -3100,7 +3192,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -3166,7 +3260,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -3232,7 +3328,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -3298,7 +3396,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -3364,7 +3464,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -3430,7 +3532,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -3496,7 +3600,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -3562,7 +3668,9 @@
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
         "n_sedes_total": 42,
-        "n_sedes_no_oficial": 29
+        "n_sedes_no_oficial": 29,
+        "pct_docentes_postgrado": 0.8519,
+        "total_docentes": 439
       }
     },
     {
@@ -3628,7 +3736,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -3694,7 +3804,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -3760,7 +3872,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -3826,7 +3940,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -3892,7 +4008,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -3958,7 +4076,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -4024,7 +4144,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -4090,7 +4212,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -4156,7 +4280,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -4222,7 +4348,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -4288,7 +4416,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -4354,7 +4484,9 @@
         "delitos_sexuales": 267.0,
         "pct_no_oficial": 78.95,
         "n_sedes_total": 19,
-        "n_sedes_no_oficial": 15
+        "n_sedes_no_oficial": 15,
+        "pct_docentes_postgrado": 0.813,
+        "total_docentes": 123
       }
     },
     {
@@ -4420,7 +4552,9 @@
         "delitos_sexuales": 267.0,
         "pct_no_oficial": 78.95,
         "n_sedes_total": 19,
-        "n_sedes_no_oficial": 15
+        "n_sedes_no_oficial": 15,
+        "pct_docentes_postgrado": 0.813,
+        "total_docentes": 123
       }
     },
     {
@@ -4486,7 +4620,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -4552,7 +4688,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -4618,7 +4756,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -4684,7 +4824,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -4750,7 +4892,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -4816,7 +4960,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -4882,7 +5028,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -4948,7 +5096,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -5014,7 +5164,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -5080,7 +5232,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -5146,7 +5300,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -5212,7 +5368,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -5278,7 +5436,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -5344,7 +5504,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -5410,7 +5572,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -5476,7 +5640,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -5542,7 +5708,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -5608,7 +5776,9 @@
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
         "n_sedes_total": 42,
-        "n_sedes_no_oficial": 29
+        "n_sedes_no_oficial": 29,
+        "pct_docentes_postgrado": 0.8519,
+        "total_docentes": 439
       }
     },
     {
@@ -5674,7 +5844,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -5740,7 +5912,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -5806,7 +5980,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -5872,7 +6048,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -5938,7 +6116,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -6004,7 +6184,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -6070,7 +6252,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -6136,7 +6320,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -6202,7 +6388,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -6268,7 +6456,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -6334,7 +6524,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -6400,7 +6592,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -6466,7 +6660,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -6532,7 +6728,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -6598,7 +6796,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -6664,7 +6864,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -6730,7 +6932,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -6796,7 +7000,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -6862,7 +7068,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -6928,7 +7136,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -6994,7 +7204,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -7060,7 +7272,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -7126,7 +7340,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -7192,7 +7408,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -7258,7 +7476,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -7324,7 +7544,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -7390,7 +7612,9 @@
         "delitos_sexuales": 406.0,
         "pct_no_oficial": 73.08,
         "n_sedes_total": 26,
-        "n_sedes_no_oficial": 19
+        "n_sedes_no_oficial": 19,
+        "pct_docentes_postgrado": 0.8268,
+        "total_docentes": 179
       }
     },
     {
@@ -7456,7 +7680,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -7522,7 +7748,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -7588,7 +7816,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -7654,7 +7884,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -7720,7 +7952,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -7786,7 +8020,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -7852,7 +8088,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -7918,7 +8156,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -7984,7 +8224,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -8050,7 +8292,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -8116,7 +8360,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -8182,7 +8428,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -8248,7 +8496,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -8314,7 +8564,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -8380,7 +8632,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -8446,7 +8700,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -8512,7 +8768,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -8578,7 +8836,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -8644,7 +8904,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -8710,7 +8972,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -8776,7 +9040,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -8842,7 +9108,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -8908,7 +9176,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -8974,7 +9244,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -9040,7 +9312,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -9106,7 +9380,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -9172,7 +9448,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -9238,7 +9516,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -9304,7 +9584,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -9370,7 +9652,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -9436,7 +9720,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -9502,7 +9788,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -9568,7 +9856,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -9634,7 +9924,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -9700,7 +9992,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -9766,7 +10060,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -9832,7 +10128,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -9898,7 +10196,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -9964,7 +10264,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -10030,7 +10332,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -10096,7 +10400,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -10162,7 +10468,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -10228,7 +10536,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -10294,7 +10604,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -10360,7 +10672,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -10426,7 +10740,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -10492,7 +10808,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -10558,7 +10876,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -10624,7 +10944,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -10690,7 +11012,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -10756,7 +11080,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -10822,7 +11148,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -10888,7 +11216,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -10954,7 +11284,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -11020,7 +11352,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -11086,7 +11420,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -11152,7 +11488,9 @@
         "delitos_sexuales": 406.0,
         "pct_no_oficial": 73.08,
         "n_sedes_total": 26,
-        "n_sedes_no_oficial": 19
+        "n_sedes_no_oficial": 19,
+        "pct_docentes_postgrado": 0.8268,
+        "total_docentes": 179
       }
     },
     {
@@ -11218,7 +11556,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -11284,7 +11624,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -11350,7 +11692,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -11416,7 +11760,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -11482,7 +11828,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -11548,7 +11896,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -11614,7 +11964,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -11680,7 +12032,9 @@
         "delitos_sexuales": 406.0,
         "pct_no_oficial": 73.08,
         "n_sedes_total": 26,
-        "n_sedes_no_oficial": 19
+        "n_sedes_no_oficial": 19,
+        "pct_docentes_postgrado": 0.8268,
+        "total_docentes": 179
       }
     },
     {
@@ -11746,7 +12100,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -11812,7 +12168,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -11878,7 +12236,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -11944,7 +12304,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -12010,7 +12372,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -12076,7 +12440,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -12142,7 +12508,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -12208,7 +12576,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -12274,7 +12644,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -12340,7 +12712,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -12406,7 +12780,9 @@
         "delitos_sexuales": 516.0,
         "pct_no_oficial": 58.33,
         "n_sedes_total": 36,
-        "n_sedes_no_oficial": 21
+        "n_sedes_no_oficial": 21,
+        "pct_docentes_postgrado": 0.8361,
+        "total_docentes": 476
       }
     },
     {
@@ -12472,7 +12848,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -12538,7 +12916,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -12604,7 +12984,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -12670,7 +13052,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -12736,7 +13120,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -12802,7 +13188,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -12868,7 +13256,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -12934,7 +13324,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -13000,7 +13392,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -13066,7 +13460,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -13132,7 +13528,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -13198,7 +13596,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -13264,7 +13664,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -13330,7 +13732,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -13396,7 +13800,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -13462,7 +13868,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -13528,7 +13936,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -13594,7 +14004,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -13660,7 +14072,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -13726,7 +14140,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -13792,7 +14208,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -13858,7 +14276,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -13924,7 +14344,9 @@
         "delitos_sexuales": 548.0,
         "pct_no_oficial": 68.0,
         "n_sedes_total": 100,
-        "n_sedes_no_oficial": 68
+        "n_sedes_no_oficial": 68,
+        "pct_docentes_postgrado": 0.8582,
+        "total_docentes": 966
       }
     },
     {
@@ -13990,7 +14412,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -14056,7 +14480,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -14122,7 +14548,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -14188,7 +14616,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -14254,7 +14684,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -14320,7 +14752,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -14386,7 +14820,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -14452,7 +14888,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -14518,7 +14956,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -14584,7 +15024,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -14650,7 +15092,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -14716,7 +15160,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -14782,7 +15228,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -14848,7 +15296,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -14914,7 +15364,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -14980,7 +15432,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -15046,7 +15500,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -15112,7 +15568,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -15178,7 +15636,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -15244,7 +15704,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -15310,7 +15772,9 @@
         "delitos_sexuales": 328.0,
         "pct_no_oficial": 64.29,
         "n_sedes_total": 70,
-        "n_sedes_no_oficial": 45
+        "n_sedes_no_oficial": 45,
+        "pct_docentes_postgrado": 0.8285,
+        "total_docentes": 1341
       }
     },
     {
@@ -15376,7 +15840,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -15442,7 +15908,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -15508,7 +15976,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -15574,7 +16044,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -15640,7 +16112,9 @@
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
         "n_sedes_total": 42,
-        "n_sedes_no_oficial": 29
+        "n_sedes_no_oficial": 29,
+        "pct_docentes_postgrado": 0.8519,
+        "total_docentes": 439
       }
     },
     {
@@ -15706,7 +16180,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -15772,7 +16248,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -15838,7 +16316,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -15904,7 +16384,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -15970,7 +16452,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -16036,7 +16520,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -16102,7 +16588,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -16168,7 +16656,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -16234,7 +16724,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -16300,7 +16792,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -16366,7 +16860,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -16432,7 +16928,9 @@
         "delitos_sexuales": 415.0,
         "pct_no_oficial": 94.92,
         "n_sedes_total": 59,
-        "n_sedes_no_oficial": 56
+        "n_sedes_no_oficial": 56,
+        "pct_docentes_postgrado": 0.92,
+        "total_docentes": 150
       }
     },
     {
@@ -16498,7 +16996,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -16564,7 +17064,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -16630,7 +17132,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -16696,7 +17200,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -16762,7 +17268,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -16828,7 +17336,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -16894,7 +17404,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -16960,7 +17472,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -17026,7 +17540,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -17092,7 +17608,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -17158,7 +17676,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -17224,7 +17744,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -17290,7 +17812,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -17356,7 +17880,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -17422,7 +17948,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -17488,7 +18016,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -17554,7 +18084,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -17620,7 +18152,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -17686,7 +18220,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -17752,7 +18288,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -17818,7 +18356,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -17884,7 +18424,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -17950,7 +18492,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -18016,7 +18560,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -18082,7 +18628,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -18148,7 +18696,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -18214,7 +18764,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -18280,7 +18832,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -18346,7 +18900,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -18412,7 +18968,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -18478,7 +19036,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -18544,7 +19104,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -18610,7 +19172,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -18676,7 +19240,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -18742,7 +19308,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -18808,7 +19376,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -18874,7 +19444,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -18940,7 +19512,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -19006,7 +19580,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -19072,7 +19648,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -19138,7 +19716,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -19204,7 +19784,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -19270,7 +19852,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -19336,7 +19920,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -19402,7 +19988,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -19468,7 +20056,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -19534,7 +20124,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -19600,7 +20192,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -19666,7 +20260,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -19732,7 +20328,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -19798,7 +20396,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -19864,7 +20464,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -19930,7 +20532,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -19996,7 +20600,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -20062,7 +20668,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -20128,7 +20736,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -20194,7 +20804,9 @@
         "delitos_sexuales": 716.0,
         "pct_no_oficial": 57.85,
         "n_sedes_total": 121,
-        "n_sedes_no_oficial": 70
+        "n_sedes_no_oficial": 70,
+        "pct_docentes_postgrado": 0.8109,
+        "total_docentes": 2338
       }
     },
     {
@@ -20260,7 +20872,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -20326,7 +20940,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -20392,7 +21008,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -20458,7 +21076,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -20524,7 +21144,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -20590,7 +21212,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -20656,7 +21280,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -20722,7 +21348,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -20788,7 +21416,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -20854,7 +21484,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -20920,7 +21552,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -20986,7 +21620,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -21052,7 +21688,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -21118,7 +21756,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -21184,7 +21824,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -21250,7 +21892,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -21316,7 +21960,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -21382,7 +22028,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -21448,7 +22096,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -21514,7 +22164,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -21580,7 +22232,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -21646,7 +22300,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -21712,7 +22368,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -21778,7 +22436,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -21844,7 +22504,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -21910,7 +22572,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -21976,7 +22640,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -22042,7 +22708,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -22108,7 +22776,9 @@
         "delitos_sexuales": 811.0,
         "pct_no_oficial": 49.61,
         "n_sedes_total": 129,
-        "n_sedes_no_oficial": 64
+        "n_sedes_no_oficial": 64,
+        "pct_docentes_postgrado": 0.7869,
+        "total_docentes": 2046
       }
     },
     {
@@ -22174,7 +22844,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -22240,7 +22912,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -22306,7 +22980,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -22372,7 +23048,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -22438,7 +23116,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -22504,7 +23184,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -22570,7 +23252,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -22636,7 +23320,9 @@
         "delitos_sexuales": 1353.0,
         "pct_no_oficial": 70.99,
         "n_sedes_total": 262,
-        "n_sedes_no_oficial": 186
+        "n_sedes_no_oficial": 186,
+        "pct_docentes_postgrado": 0.8477,
+        "total_docentes": 4229
       }
     },
     {
@@ -22702,7 +23388,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -22768,7 +23456,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -22834,7 +23524,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -22900,7 +23592,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -22966,7 +23660,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -23032,7 +23728,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -23098,7 +23796,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -23164,7 +23864,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -23230,7 +23932,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -23296,7 +24000,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -23362,7 +24068,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -23428,7 +24136,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -23494,7 +24204,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -23560,7 +24272,9 @@
         "delitos_sexuales": 1001.0,
         "pct_no_oficial": 73.15,
         "n_sedes_total": 257,
-        "n_sedes_no_oficial": 188
+        "n_sedes_no_oficial": 188,
+        "pct_docentes_postgrado": 0.8729,
+        "total_docentes": 2643
       }
     },
     {
@@ -23626,7 +24340,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -23692,7 +24408,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -23758,7 +24476,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -23824,7 +24544,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -23890,7 +24612,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -23956,7 +24680,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -24022,7 +24748,9 @@
         "delitos_sexuales": 468.0,
         "pct_no_oficial": 77.55,
         "n_sedes_total": 98,
-        "n_sedes_no_oficial": 76
+        "n_sedes_no_oficial": 76,
+        "pct_docentes_postgrado": 0.8596,
+        "total_docentes": 1118
       }
     },
     {
@@ -24088,7 +24816,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24154,7 +24884,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24220,7 +24952,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24286,7 +25020,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24352,7 +25088,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24418,7 +25156,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24484,7 +25224,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24550,7 +25292,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24616,7 +25360,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24682,7 +25428,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24748,7 +25496,9 @@
         "delitos_sexuales": 1387.0,
         "pct_no_oficial": 80.22,
         "n_sedes_total": 364,
-        "n_sedes_no_oficial": 292
+        "n_sedes_no_oficial": 292,
+        "pct_docentes_postgrado": 0.8304,
+        "total_docentes": 3042
       }
     },
     {
@@ -24814,7 +25564,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -24880,7 +25632,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -24946,7 +25700,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -25012,7 +25768,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -25078,7 +25836,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -25144,7 +25904,9 @@
         "delitos_sexuales": 602.0,
         "pct_no_oficial": 78.79,
         "n_sedes_total": 132,
-        "n_sedes_no_oficial": 104
+        "n_sedes_no_oficial": 104,
+        "pct_docentes_postgrado": 0.8648,
+        "total_docentes": 969
       }
     },
     {
@@ -25210,7 +25972,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -25276,7 +26040,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -25342,7 +26108,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -25408,7 +26176,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -25474,7 +26244,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -25540,7 +26312,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -25606,7 +26380,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -25672,7 +26448,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -25738,7 +26516,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -25804,7 +26584,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -25870,7 +26652,9 @@
         "delitos_sexuales": 1159.0,
         "pct_no_oficial": 55.7,
         "n_sedes_total": 149,
-        "n_sedes_no_oficial": 83
+        "n_sedes_no_oficial": 83,
+        "pct_docentes_postgrado": 0.7833,
+        "total_docentes": 3960
       }
     },
     {
@@ -25936,7 +26720,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26002,7 +26788,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26068,7 +26856,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26134,7 +26924,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26200,7 +26992,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26266,7 +27060,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26332,7 +27128,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26398,7 +27196,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26464,7 +27264,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26530,7 +27332,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26596,7 +27400,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26662,7 +27468,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26728,7 +27536,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26794,7 +27604,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -26860,7 +27672,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -26926,7 +27740,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -26992,7 +27808,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -27058,7 +27876,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -27124,7 +27944,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -27190,7 +28012,9 @@
         "delitos_sexuales": 923.0,
         "pct_no_oficial": 33.03,
         "n_sedes_total": 109,
-        "n_sedes_no_oficial": 36
+        "n_sedes_no_oficial": 36,
+        "pct_docentes_postgrado": 0.7304,
+        "total_docentes": 2756
       }
     },
     {
@@ -27256,7 +28080,9 @@
         "delitos_sexuales": 514.0,
         "pct_no_oficial": 44.83,
         "n_sedes_total": 29,
-        "n_sedes_no_oficial": 13
+        "n_sedes_no_oficial": 13,
+        "pct_docentes_postgrado": 0.8055,
+        "total_docentes": 401
       }
     },
     {
@@ -27322,7 +28148,9 @@
         "delitos_sexuales": 1433.0,
         "pct_no_oficial": 44.59,
         "n_sedes_total": 148,
-        "n_sedes_no_oficial": 66
+        "n_sedes_no_oficial": 66,
+        "pct_docentes_postgrado": 0.7563,
+        "total_docentes": 3796
       }
     },
     {
@@ -27388,7 +28216,9 @@
         "delitos_sexuales": 275.0,
         "pct_no_oficial": 61.9,
         "n_sedes_total": 63,
-        "n_sedes_no_oficial": 39
+        "n_sedes_no_oficial": 39,
+        "pct_docentes_postgrado": 0.8643,
+        "total_docentes": 582
       }
     },
     {
@@ -27454,7 +28284,9 @@
         "delitos_sexuales": 196.0,
         "pct_no_oficial": 69.05,
         "n_sedes_total": 42,
-        "n_sedes_no_oficial": 29
+        "n_sedes_no_oficial": 29,
+        "pct_docentes_postgrado": 0.8519,
+        "total_docentes": 439
       }
     }
   ]

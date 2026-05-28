@@ -1,6 +1,6 @@
 # Matching Escolar – Bogotá
 
-Código de reproducción del paper *"Señales Visuales y Mecanismos de Asignación Escolar en Bogotá"*. Estima un índice visual de ~558 colegios oficiales a partir de imágenes de Google Street View, lo incorpora en un modelo de utilidad de hogares y compara tres mecanismos de asignación (Boston, Deferred Acceptance, SED-lex) sobre datos reales y una población sintética calibrada.
+Código de reproducción del paper *"Señales Visuales y Mecanismos de Asignación Escolar en Bogotá"*. Construye un índice visual de 382 colegios oficiales urbanos a partir de imágenes de Google Street View, lo incorpora en un modelo estructural de demanda (BLP con micro-momentos), y compara mecanismos de asignación escolar sobre datos reales y población sintética calibrada.
 
 ---
 
@@ -55,7 +55,7 @@ Las imágenes GSV y Mapillary no se incluyen en el repositorio. Ver `scripts/gsv
 Los scripts están numerados y deben correrse en orden desde la raíz del repositorio:
 
 ```powershell
-# Fase 0 — Descarga y limpieza (independientes entre sí, excepto 00_download_gsv_colegios.py)
+# ── Fase 0 — Descarga y limpieza ──────────────────────────────────────────
 python scripts/00_fetch_geodata.py
 python scripts/00_fetch_saber11_bogota.py
 python scripts/00_fetch_em2021_variables.py
@@ -70,78 +70,109 @@ python scripts/00_clean_delitos.py
 python scripts/00_build_competencia_privada.py
 python scripts/00_download_gsv_colegios.py      # requiere GSV_API_TOKEN
 
-# Fase 1 — Dataset maestro
+# ── Fase 1 — Dataset maestro ──────────────────────────────────────────────
 python scripts/01_build_dataset.py
 
-# Fase 2-3 — Features visuales (GPU recomendado para 02c y 03c)
+# ── Fase 2-3 — Features visuales (GPU recomendado) ────────────────────────
 python scripts/02a_extract_embeddings.py
 python scripts/02b_diagnose_embeddings.py
 python scripts/02c_seg_cityscapes.py
-python scripts/03b_nmf_topics.py                # modelo principal (K=8)
+python scripts/03b_nmf_topics.py                # NMF K=8 (modelo principal)
 python scripts/03c_clip_features.py
 python scripts/03d_imputacion_espacial.py
 
-# Fase 4 — Regresión, atractivo, BLP estructural
-python scripts/04a_regresion.py
-python scripts/04a_berry_ols.py              # Berry inversion + logit OLS (point estimates)
-python scripts/04b_blp.py                    # BLP-GMM: baseline (Z=X) + IV-BLP (BLP instruments)
-python scripts/04b_build_capacidad.py
-python scripts/04c_decompose_aj.py
-python scripts/05c_visual_index_validation.py
+# ── Fase 4 — Estimación de demanda ────────────────────────────────────────
+python scripts/04a_berry_ols.py              # Berry inversion + OLS (6 specs M1-M6)
+python scripts/04b_blp.py                    # BLP-GMM: baseline + IV-BLP
+python scripts/04c_build_capacidad.py        # capacidad escolar
 
-# Fase 5-6 — Simulación de familias y preferencias
+# ── Fase 5 — Validación visual + simulación de familias ───────────────────
 python scripts/05a_simular_distancias.py
-python scripts/05b_expandir_familias.py
-python scripts/06_preferencias.py
+python scripts/05b_expandir_familias.py      # expansión FEX_C + ruido en distancias
+python scripts/05c_visual_index_validation.py  # figura top/bottom 5 (fotos curadas)
 
-# Fase 7 — Matching sobre datos reales
+# ── Fase 6 — Preferencias (utilidad BLP) ──────────────────────────────────
+python scripts/06_preferencias.py            # u_ij = δ_j + π₁·y_i·seg_z + λ₀·log1p(d) + λ₁·y_i·log1p(d) + ε
+
+# ── Fase 7 — Mecanismos de matching (datos reales) ────────────────────────
 python scripts/07_boston_mechanism.py
 python scripts/07_da_mechanism.py
 python scripts/07_sed_lex.py
 python scripts/compare_mechanisms.py
 
-# Fase 8 — Experimento sintético y robustez
+# ── Fase 8 — Experimento sintético y robustez ─────────────────────────────
 python scripts/08_datos_sinteticos.py
 python scripts/09a_matching_sinteticos.py
 python scripts/09b_robustez_gamma.py
 ```
 
-> `03a_lda_topics.py` (LDA) está superado por NMF en la práctica; no es necesario para reproducir los resultados del paper.
+> `03a_lda_topics.py` (LDA) está superado por NMF; no es necesario para reproducir resultados.
 
 ---
 
 ## Arquitectura
 
 ```
-data/raw/        →  00_* scripts  →  data/processed/
-data/processed/  →  01_build_dataset  →  data/primary/colegios_features.geojson
-GSV images       →  02-03 scripts →  embeddings, segmentación, scores CLIP
-colegios_features →  04a_regresion →  models/  (Ridge seleccionado)
-                  →  04b           →  colegios_capacidad.parquet  (índice a_j)
-families + a_j   →  05-06         →  utilidades_familias.parquet
-                  →  07_*          →  data/results/matching_*.parquet
+data/raw/          →  00_* scripts     →  data/processed/
+data/processed/    →  01_build_dataset →  data/primary/colegios_features.geojson
+GSV images         →  02-03 scripts    →  embeddings, segmentación, scores CLIP
+colegios_features  →  04a_berry_ols    →  berry_delta_j.parquet (inversión Berry)
+                   →  04b_blp          →  blp_delta_j.parquet (δ_j BLP, preferido)
+                   →  04c              →  colegios_capacidad.parquet
+familias + δ_j BLP →  05-06            →  preferencias_familias.parquet
+                   →  07_*             →  data/results/matching_*.parquet
 ```
 
-**Módulos compartidos:**
-- `matching_utils.py` — algoritmos `boston_mechanism` y `deferred_acceptance` como funciones puras con `priority_fn` configurable; también `compute_metrics` para evaluar eficiencia, equidad y sesgo visual.
-- `gsv_config.py` — parámetros de descarga GSV (N_HEADINGS, IMG_SIZE, FOV). Modificar aquí, no en scripts individuales.
-- `scripts/deeplabv3/` — implementación local DeepLabV3+ (backbone ResNet-101). No modificar salvo actualización del modelo de segmentación.
+### Módulos compartidos
 
-**Variables clave:**
-- `a_j` — atractivo del colegio (variable dependiente en regresión, construida como log(sobredemanda))
-- `v_j` — sub-índice visual (componente NMF + CLIP de `a_j`)
-- `δ_j` — mean utility BLP (contraction mapping); guardado en `data/primary/blp_delta_j.parquet`
-- `ξ_j` — unobserved quality (residuo BLP); `δ_j - X·β`
-- `FEX_C` — factor de expansión EM2021; siempre ponderar agregaciones con esta columna
-- `id_establecimiento` — identificador primario de colegio en todos los datasets
-- `γ (gamma)` — parámetro de sesgo visual en experimento sintético; rango {0.25, 0.5, 0.75, 1.0, 1.25, 1.5}
+- **`matching_utils.py`** — Algoritmos `boston_mechanism` y `deferred_acceptance` como funciones puras con `priority_fn` configurable. También `compute_metrics` para evaluar eficiencia, equidad y sesgo visual.
+- **`gsv_config.py`** — Parámetros de descarga GSV (N_HEADINGS=10, IMG_SIZE=640×640, FOV=90°).
+- **`scripts/deeplabv3/`** — Implementación local DeepLabV3+ (backbone ResNet-101).
 
-**Modelo estructural BLP:**
-- `04a_berry_ols.py` — Berry (1994) inversion: `δ_j = log(s_j) - log(s_0)`, luego OLS de δ_j sobre X
-- `04b_blp.py` — BLP con micro-momentos (ingreso × distancia), contraction mapping, GMM
-  - Baseline: Z = X (sin instrumentos)
-  - IV-BLP: instrumenta `q_j` con `mean_q_rivals_z` + `n_competitors_z` (BLP instruments)
-  - First-stage F = 10.23; resultados robustos — β de señales visuales estables entre specs
-  - Resultado clave: seguridad percibida (+0.154) importa; calidad académica q_j (-0.183) no atrae demanda
+### Modelo estructural
 
-Resultados, tablas y figuras se guardan en `reports/`. Las decisiones metodológicas están documentadas en `reports/paper/notas_metodologicas.md`.
+**Berry OLS** (`04a`): inversión de Berry δ_j = log(s_j) − log(s₀), luego OLS con 6 especificaciones (M1–M6) que testean features visuales incrementalmente.
+
+**BLP con micro-momentos** (`04b`):
+```
+u_ij = δ_j + π₁·yᵢ·seg_z_j + λ₀·log(1+d_ij) + λ₁·yᵢ·log(1+d_ij) + ε_ij
+```
+- θ = (π₁, λ₀, λ₁) estimados por GMM
+- yᵢ = ingreso normalizado (N_ingpc / media)
+- seg_z_j = seguridad percibida estandarizada (score CLIP)
+- Dos specs: Baseline (Z=X) e IV-BLP (instrumentos BLP para q_j endógeno)
+- First-stage F = 10.70; resultados robustos entre specs
+- **Resultado clave:** seguridad percibida (+0.12) significativa; calidad académica q_j (−0.18) NO atrae demanda
+
+**Preferencias** (`06`): usa directamente δ_j y θ del BLP. Genera rankings top-20 para 537K familias expandidas.
+
+### Variables clave
+
+| Variable | Descripción |
+|---|---|
+| `δ_j` | Utilidad media BLP (contraction mapping) |
+| `v_j` | Sub-índice visual = β_seg · seg_z (único beta visual significativo en Berry M3) |
+| `ξ_j` | Calidad no observada (δ_j − X·β) |
+| `FEX_C` | Factor de expansión EM2021; siempre ponderar con esta columna |
+| `id_establecimiento` | Identificador primario de colegio (código DANE) |
+| `N_ingpc` | Ingreso per cápita del hogar (continuo) |
+| `γ` | Parámetro de sesgo visual en experimento sintético; rango {0.25, ..., 1.5} |
+
+### Pendiente: WP-Rule (Weighted Polytope Rule)
+
+Diseño de mecanismos vía StructSVM (Narasimhan, Agarwal & Parkes, 2016). Aprende pesos λ_ij sobre el politopo de matchings estables para aproximar un target de equidad. Documentado en:
+- `reports/paper/maching_learning_matching.md` — teoría y resultados Wake County
+- `reports/paper/notas_metodologicas.md` (Tarea 4) — plan de implementación para Bogotá
+
+### Outputs
+
+Resultados, tablas y figuras en `reports/`. Decisiones metodológicas documentadas en `reports/paper/notas_metodologicas.md`.
+
+---
+
+## Notas
+
+- Todos los scripts y comentarios están en español.
+- Archivos grandes (imágenes >50 MB, matrices de embeddings) están en `.gitignore`.
+- 382 colegios urbanos tras filtros (el dataset original incluye ~558 con rurales).
+- `05c` usa selección manual curada de fotos (headings elegidos por inspección visual).

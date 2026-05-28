@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-02c_clip_features.py
+03c_clip_features.py
 ====================
 Extracción de características perceptuales de imágenes GSV usando CLIP (ViT-B/32).
 
@@ -12,7 +12,7 @@ Extracción de características perceptuales de imágenes GSV usando CLIP (ViT-B
              − cosine_similarity(imagen, frase_negativa)
      → > 0 : la imagen se parece más a la descripción positiva
      → < 0 : la imagen se parece más a la descripción negativa
-  4. Promedia los scores de todas las fotos (headings) del mismo establecimiento
+  4. Toma el máximo de los scores de todas las fotos (headings) del mismo establecimiento
   5. Guarda los resultados como .parquet listo para regresión
 
 Las 4 dimensiones capturan: mantenimiento físico, vegetación percibida,
@@ -402,14 +402,15 @@ def main():
     df = pd.DataFrame(records)
     # Cada fila = una imagen, con sus 4 scores dimensionales
 
-    # ── Paso 7: Agregar por establecimiento (promedio de todos los headings)
+    # ── Paso 7: Agregar por establecimiento (máximo sobre todos los headings)
     # Cada establecimiento tiene hasta 10 fotos desde ángulos distintos
-    # (headings 0°, 36°, …, 324°). Promediar da un vector perceptual estable
-    # y reduce la varianza asociada a oclusiones puntuales.
+    # (headings 0°, 36°, …, 324°). El máximo preserva la señal perceptual
+    # más fuerte: si la fachada aparece en un solo heading, su score no
+    # se diluye con los ángulos que muestran el entorno deteriorado.
     df_est = (
         df
         .groupby('id_establecimiento')[DIMENSIONES]
-        .mean()
+        .max()
         .reset_index()
     )
 

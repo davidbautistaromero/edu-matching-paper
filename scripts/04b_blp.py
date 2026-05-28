@@ -9,7 +9,7 @@ Estima interacciones ingreso x senales visuales (CLIP) e ingreso x distancia.
 Ref: reports/paper/blp_contexto_paper.md
 
 Modelo:
-  u_ij = delta_j + pi1*y_i*seg_j + pi2*y_i*veg_j + lam0*d_ij + lam1*y_i*d_ij + eps_ij
+  u_ij = delta_j + pi1*y_i*seg_j + lam0*d_ij + lam1*y_i*d_ij + eps_ij
 
 Micro-momentos (BLP 2004, Petrin 2002):
   m_j_obs = ingreso medio ponderado por proximidad (1/d_ij)
@@ -45,7 +45,7 @@ OUTSIDE_SHARE = 0.05
 N_SAMPLE_LOC  = 300
 SEED          = 42
 
-CLIP_VARS = ['seguridad_percibida', 'vegetacion_percibida']
+CLIP_VARS = ['seguridad_percibida']
 CTRL_CONT = ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficial']
 CTRL_BIN  = ['es_tecnico']
 
@@ -97,27 +97,40 @@ for col in CLIP_VARS + ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficia
 CLIP_Z = [f'{c}_z' for c in CLIP_VARS]
 CTRL_Z = [f'{c}_z' for c in ['q_j', 'log_homicidios', 'log_dist_sitp', 'pct_no_oficial']] + CTRL_BIN
 
-# BLP instruments for q_j
-df['_loc_key_iv'] = df['codigo_localidad'].apply(
-    lambda x: str(int(float(x))).zfill(2) if pd.notna(x) and str(x).strip() != '' else None
-)
-_rival_q = []
-_n_comp = []
-for idx, row in df.iterrows():
-    loc = row['_loc_key_iv']
-    others = df[(df['_loc_key_iv'] == loc) & (df.index != idx)]
-    _rival_q.append(others['q_j_z'].mean() if len(others) > 0 else 0.0)
-    _n_comp.append(len(others))
-df['mean_q_rivals'] = _rival_q
-df['n_competitors'] = _n_comp
-for col in ['mean_q_rivals', 'n_competitors']:
-    mu, sd = df[col].mean(), df[col].std()
-    df[f'{col}_z'] = (df[col] - mu) / sd if sd > 0 else 0.0
+# BLP instruments for q_j: calidad de rivales ponderada por 1/distancia (por localidad)
+from sklearn.metrics import pairwise_distances
 
-# First-stage: q_j_z ~ mean_q_rivals_z + n_competitors_z + other exogenous
+_coords = np.deg2rad(df[['lat', 'lon']].values.astype(float))
+_dist_km = pairwise_distances(_coords, metric='haversine') * 6371.0
+np.fill_diagonal(_dist_km, np.inf)
+
+_locs = df['codigo_localidad'].apply(
+    lambda x: str(int(float(x))).zfill(2) if pd.notna(x) and str(x).strip() != '' else None
+).values
+_q_vals = df['q_j_z'].values
+
+_rival_q_w = []
+for i in range(len(df)):
+    mask = (_locs == _locs[i])
+    mask[i] = False
+    others_idx = np.where(mask)[0]
+    if len(others_idx) > 0:
+        d = _dist_km[i, others_idx]
+        w = 1.0 / np.maximum(d, 0.1)
+        w = w / w.sum()
+        _rival_q_w.append(np.dot(w, _q_vals[others_idx]))
+    else:
+        _rival_q_w.append(0.0)
+
+df['mean_q_rivals'] = _rival_q_w
+mu, sd = df['mean_q_rivals'].mean(), df['mean_q_rivals'].std()
+df['mean_q_rivals_z'] = (df['mean_q_rivals'] - mu) / sd if sd > 0 else 0.0
+
+# First-stage: q_j_z ~ mean_q_rivals_z + other exogenous
 import statsmodels.api as sm
-_fs_X = sm.add_constant(df[['mean_q_rivals_z', 'n_competitors_z',
-                             'log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
+_iv_vars = ['mean_q_rivals_z']
+_fs_X = sm.add_constant(df[_iv_vars +
+                             ['log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
                             + CLIP_Z])
 _fs_y = df['q_j_z']
 _fs_mod = sm.OLS(_fs_y, _fs_X).fit()
@@ -125,8 +138,8 @@ _fs_F = _fs_mod.fvalue
 print(f"\n  FIRST STAGE: q_j_z ~ instruments + controls")
 print(f"    F-statistic: {_fs_F:.2f}  (>10 = strong)")
 print(f"    R2: {_fs_mod.rsquared:.4f}")
-print(f"    mean_q_rivals_z coef: {_fs_mod.params['mean_q_rivals_z']:+.4f} (p={_fs_mod.pvalues['mean_q_rivals_z']:.4f})")
-print(f"    n_competitors_z coef: {_fs_mod.params['n_competitors_z']:+.4f} (p={_fs_mod.pvalues['n_competitors_z']:.4f})")
+for iv in _iv_vars:
+    print(f"    {iv}: coef={_fs_mod.params[iv]:+.4f} (p={_fs_mod.pvalues[iv]:.4f})")
 
 print("\nEstadisticos variables estandarizadas (colegios):")
 for v in CLIP_Z + CTRL_Z[:-1]:
@@ -238,7 +251,6 @@ for t, fam_t in fam_sample.groupby('COD_LOCALIDAD'):
     # Arrays de colegio alineados por j_ids via .loc
     df_t_al   = df_idx.loc[j_ids]
     seg_z_arr = df_t_al['seguridad_percibida_z'].values
-    veg_z_arr = df_t_al['vegetacion_percibida_z'].values
     s_obs_arr = df_t_al['s_j'].values
     delta_arr = df_t_al['delta_j'].values
 
@@ -248,7 +260,6 @@ for t, fam_t in fam_sample.groupby('COD_LOCALIDAD'):
     market_data[t] = dict(
         J_ids      = j_ids,
         seg_z      = seg_z_arr,
-        veg_z      = veg_z_arr,
         s_obs      = s_obs_arr,
         delta_init = delta_arr,
         fam_y      = fam_y_arr,
@@ -272,25 +283,23 @@ def compute_shares(theta, market_data):
     """
     Para cada mercado t, calcula cuotas predichas S_hat_j = mean_i(s_ij).
 
-    theta = (pi1, pi2, lam0, lam1)
+    theta = (pi1, lam0, lam1)
       pi1  : y_i * seg_z_j
-      pi2  : y_i * veg_z_j
       lam0 : log(1 + d_ij)
       lam1 : y_i * log(1 + d_ij)
 
     Returns dict {market -> S_hat array shape (J,)}
     """
-    pi1, pi2, lam0, lam1 = theta
+    pi1, lam0, lam1 = theta
     shares = {}
     for t, md in market_data.items():
         delta  = md['delta_init']          # (J,)
         seg_z  = md['seg_z']               # (J,)
-        veg_z  = md['veg_z']               # (J,)
         log_d  = md['dist_log']            # (I, J)
         y_i    = md['fam_y'][:, None]      # (I, 1)
 
         # mu_ij: (I, J)
-        mu = pi1 * y_i * seg_z + pi2 * y_i * veg_z + lam0 * log_d + lam1 * y_i * log_d
+        mu = pi1 * y_i * seg_z + lam0 * log_d + lam1 * y_i * log_d
 
         # clip antes de exp para evitar overflow
         exponents = np.clip(delta + mu, -500, 500)  # (I, J)
@@ -340,14 +349,14 @@ def contraction_mapping(theta, market_data, tol=1e-8, max_iter=200):
 
 
 # =============================================================================
-# TEST: contraction con theta=(0, 0, -0.5, 0)
+# TEST: contraction con theta=(0, -0.5, 0)
 # =============================================================================
 
 print("\n" + "=" * 60)
-print("TEST contraction_mapping — theta=(0, 0, -0.5, 0)")
+print("TEST contraction_mapping — theta=(0, -0.5, 0)")
 print("=" * 60)
 
-theta_test   = (0.0, 0.0, -0.5, 0.0)
+theta_test   = (0.0, -0.5, 0.0)
 delta_conv, n_it = contraction_mapping(theta_test, market_data)
 print(f"  Convergido en {n_it} iteraciones")
 
@@ -371,21 +380,19 @@ def compute_micro_moments_pred(theta, market_data, delta_dict=None):
     if delta_dict is None:
         delta_dict, _ = contraction_mapping(theta, market_data)
 
-    pi1, pi2, lam0, lam1 = theta
+    pi1, lam0, lam1 = theta
     m_pred = {}
     d_pred = {}
 
     for t, md in market_data.items():
         delta  = delta_dict[t]           # (J,)
         seg_z  = md['seg_z']             # (J,)
-        veg_z  = md['veg_z']             # (J,)
         log_d  = md['dist_log']          # (I, J)
         d_raw  = md['dist_km']           # (I, J)
         y_1d   = md['fam_y']             # (I,)
         j_ids  = md['J_ids']
 
         mu        = (pi1 * y_1d[:, None] * seg_z
-                     + pi2 * y_1d[:, None] * veg_z
                      + lam0 * log_d
                      + lam1 * y_1d[:, None] * log_d)
         exp_ij    = np.exp(np.clip(delta + mu, -500, 500))   # (I, J)
@@ -481,7 +488,7 @@ print(f"  Total escuelas en market_data: {len(school_ids):,}")
 df_ord = df.set_index('id_establecimiento').loc[school_ids].reset_index()
 
 # X_mat: constante + 7 variables de colegio (mismas que en 04a_berry_ols)
-_X_cols = ['seguridad_percibida_z', 'vegetacion_percibida_z',
+_X_cols = ['seguridad_percibida_z',
            'q_j_z', 'log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
 
 X_mat = np.column_stack([np.ones(len(df_ord))] + [df_ord[c].values for c in _X_cols])
@@ -489,16 +496,16 @@ X_mat = np.column_stack([np.ones(len(df_ord))] + [df_ord[c].values for c in _X_c
 # Z_baseline: Z = X (no instruments)
 Z_baseline = X_mat.copy()
 
-# Z_iv: replace q_j_z with mean_q_rivals_z + n_competitors_z
-_Z_iv_cols = ['seguridad_percibida_z', 'vegetacion_percibida_z',
-              'mean_q_rivals_z', 'n_competitors_z',
+# Z_iv: replace q_j_z with mean_q_rivals_z (1/d weighted, by localidad)
+_Z_iv_cols = ['seguridad_percibida_z',
+              'mean_q_rivals_z',
               'log_homicidios_z', 'log_dist_sitp_z', 'pct_no_oficial_z', 'es_tecnico']
 Z_iv = np.column_stack([np.ones(len(df_ord))] + [df_ord[c].values for c in _Z_iv_cols])
 
 # s_obs_all alineado con school_ids
 s_obs_all = df.set_index('id_establecimiento').loc[school_ids, 's_j'].values
 
-print(f"  X_mat shape: {X_mat.shape}  (J x 8: const + 7 vars)")
+print(f"  X_mat shape: {X_mat.shape}  (J x {X_mat.shape[1]}: const + {X_mat.shape[1]-1} vars)")
 print(f"  Z_baseline shape: {Z_baseline.shape}  (Z = X)")
 print(f"  Z_iv shape: {Z_iv.shape}  (Z with BLP instruments)")
 
@@ -521,7 +528,7 @@ _call_count = [0]
 
 def gmm_objective(theta, market_data, m_obs_dict, d_obs_dict, X_mat, Z_mat, s_obs_all, school_ids):
     _call_count[0] += 1
-    pi1, pi2, lam0, lam1 = theta
+    pi1, lam0, lam1 = theta
     delta_dict, n_it = contraction_mapping(theta, market_data)
     delta_vec = np.array([
         delta_dict[_school_to_pos[jid][0]][_school_to_pos[jid][1]]
@@ -540,7 +547,7 @@ def gmm_objective(theta, market_data, m_obs_dict, d_obs_dict, X_mat, Z_mat, s_ob
     total = agg_moment + micro_moment
     if _call_count[0] <= 5:
         print(f"  [eval {_call_count[0]:>3}] theta=({theta[0]:+.4f}, {theta[1]:+.4f}, "
-              f"{theta[2]:+.4f}, {theta[3]:+.4f})  "
+              f"{theta[2]:+.4f})  "
               f"agg={agg_moment:.6f}  micro={micro_moment:.6f}  total={total:.6f}"
               f"  (CM iters={n_it})")
     return total
@@ -560,8 +567,8 @@ def run_blp_estimation(Z_mat, label, market_data, m_obs_dict, d_obs_dict,
     print(f"ESTIMACION: {label}")
     print("=" * 60)
 
-    _bounds = [(-3.0, 3.0), (-3.0, 3.0), (-5.0, 5.0), (-3.0, 3.0)]
-    _x0     = np.array([0.0, 0.0, -0.5, 0.0])
+    _bounds = [(-3.0, 3.0), (-5.0, 5.0), (-3.0, 3.0)]
+    _x0     = np.array([0.0, -0.5, 0.0])
     print(f"  x0     = {_x0.tolist()}")
     print(f"  Z shape: {Z_mat.shape}")
 
@@ -573,11 +580,11 @@ def run_blp_estimation(Z_mat, label, market_data, m_obs_dict, d_obs_dict,
     )
 
     theta_hat = tuple(result.x)
-    pi1, pi2, lam0, lam1 = result.x
+    pi1, lam0, lam1 = result.x
 
     print(f"\n  Convergencia: {result.success}")
     print(f"  Evaluaciones: {result.nfev}  |  Objetivo: {result.fun:.6f}")
-    print(f"  theta: pi1={pi1:+.4f}  pi2={pi2:+.4f}  lam0={lam0:+.4f}  lam1={lam1:+.4f}")
+    print(f"  theta: pi1={pi1:+.4f}  lam0={lam0:+.4f}  lam1={lam1:+.4f}")
 
     # Contraction final + OLS
     delta_dict, n_it = contraction_mapping(theta_hat, market_data)
@@ -636,7 +643,7 @@ print("\n" + "=" * 70)
 print("COMPARACION: BASELINE vs IV-BLP")
 print("=" * 70)
 
-_theta_labels = ['pi1  (y_i x seg_z)', 'pi2  (y_i x veg_z)',
+_theta_labels = ['pi1  (y_i x seg_z)',
                  'lam0 (log_d)', 'lam1 (y_i x log_d)']
 
 print(f"  {'':40s} {'Baseline':>12} {'IV-BLP':>12}")
@@ -665,7 +672,7 @@ print("\nGuardando resultados...")
 
 _rows = []
 for spec, res in [('baseline', res_base), ('iv_blp', res_iv)]:
-    for pname, pval in zip(['pi1', 'pi2', 'lam0', 'lam1'], res['theta']):
+    for pname, pval in zip(['pi1', 'lam0', 'lam1'], res['theta']):
         _rows.append({'spec': spec, 'parametro': pname, 'estimacion': pval, 'tipo': 'no_lineal'})
     for bname, bval in zip(res['beta_names'], res['beta']):
         _rows.append({'spec': spec, 'parametro': f'beta_{bname}', 'estimacion': bval, 'tipo': 'lineal'})
