@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-02c_clip_features.py
+03c_clip_features.py
 ====================
 Extracción de características perceptuales de imágenes GSV usando CLIP (ViT-B/32).
 
@@ -12,7 +12,7 @@ Extracción de características perceptuales de imágenes GSV usando CLIP (ViT-B
              − cosine_similarity(imagen, frase_negativa)
      → > 0 : la imagen se parece más a la descripción positiva
      → < 0 : la imagen se parece más a la descripción negativa
-  4. Promedia los scores de todas las fotos (headings) del mismo establecimiento
+  4. Toma el máximo de los scores de todas las fotos (headings) del mismo establecimiento
   5. Guarda los resultados como .parquet listo para regresión
 
 Las 4 dimensiones capturan: mantenimiento físico, vegetación percibida,
@@ -68,6 +68,9 @@ IMAGES_DIR = r'C:\paper-AI\data\images\gsv'
 # Carpeta donde se guardarán los outputs (se crea automáticamente si no existe)
 OUT_DIR = r'C:\paper-AI\data\images\clip'
 
+# CSV con IDs de escuelas rurales a excluir del análisis
+EXCLUSION_PATH = 'data/raw/excluded_schools.csv'
+
 # Modo de ejecución:
 #   'sample' → procesa solo los primeros 10 establecimientos (para probar)
 #   'full'   → procesa todos los establecimientos de la carpeta
@@ -119,9 +122,9 @@ PARES = {
         "a school surrounded by trees and green areas",
         "a school with no vegetation or green spaces around it",
     ),
-    'accesibilidad': (
-        "a school with a welcoming and open entrance",
-        "a school with a closed, walled-off and unwelcoming entrance",
+    'modernidad': (
+        "a modern and recently built school building",
+        "an old and outdated school building",
     ),
     'seguridad_percibida': (
         "a school in a safe and calm street environment",
@@ -353,6 +356,16 @@ def main():
         log.warning('No se encontraron imágenes. Verificar IMAGES_DIR.')
         return
 
+    # ── Excluir escuelas rurales ───────────────────────────────────────────
+    excluded = pd.read_csv(EXCLUSION_PATH, dtype={'id_establecimiento': str})
+    excluded_ids = set(excluded['id_establecimiento'].str.strip())
+    catalog['id_establecimiento'] = catalog['id_establecimiento'].astype(str).str.strip()
+    mask = catalog['id_establecimiento'].isin(excluded_ids)
+    n_excluded_imgs = mask.sum()
+    n_excluded_schools = catalog.loc[mask, 'id_establecimiento'].nunique()
+    catalog = catalog[~mask].copy()
+    log.info(f'Excluded {n_excluded_imgs} images from {n_excluded_schools} rural schools, {len(catalog)} images remaining')
+
     # ── Paso 2: Cargar el modelo CLIP ─────────────────────────────────────
     model, preprocess = load_clip_model()
 
@@ -389,14 +402,15 @@ def main():
     df = pd.DataFrame(records)
     # Cada fila = una imagen, con sus 4 scores dimensionales
 
-    # ── Paso 7: Agregar por establecimiento (promedio de todos los headings)
+    # ── Paso 7: Agregar por establecimiento (máximo sobre todos los headings)
     # Cada establecimiento tiene hasta 10 fotos desde ángulos distintos
-    # (headings 0°, 36°, …, 324°). Promediar da un vector perceptual estable
-    # y reduce la varianza asociada a oclusiones puntuales.
+    # (headings 0°, 36°, …, 324°). El máximo preserva la señal perceptual
+    # más fuerte: si la fachada aparece en un solo heading, su score no
+    # se diluye con los ángulos que muestran el entorno deteriorado.
     df_est = (
         df
         .groupby('id_establecimiento')[DIMENSIONES]
-        .mean()
+        .max()
         .reset_index()
     )
 

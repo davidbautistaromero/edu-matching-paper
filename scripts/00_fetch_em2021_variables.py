@@ -51,15 +51,32 @@ Tabla 3 — Personas en edad escolar (nivel persona, mismo CSV que Tabla 1):
     FEX_C                       → factor de expansión (primer valor del hogar)
     n_hijos_oficial             → conteo de hijos en institución oficial
 
+Tabla 4 — Capítulo H educación, nivel persona (mismo CSV que Tabla 1):
+  Personas 5-17 años que estudian actualmente en Bogotá (localidades 1-20),
+  tanto en institución oficial como no oficial. Necesario para calcular la
+  participación del sector privado (outside share) en el mercado escolar.
+  Columnas seleccionadas:
+    DIRECTORIO  → llave de vivienda / cruce con encuesta principal
+    ORDEN       → orden de la persona dentro del hogar
+    NPCEP4      → edad en años
+    COD_UPZ_GRUPO, COD_LOCALIDAD, NVCBP11AA, FEX_C  → del cruce con Tabla 1
+    NPCHP2      → ¿estudia actualmente? 1=Sí 2=No
+    NPCHP6      → nivel en el que está matriculado
+    NPCHP12     → tipo de institución: 1=oficial, 2=no oficial
+    NPCHP15     → medio de transporte al colegio
+    NPCHP16     → tiempo de desplazamiento (minutos)
+  Filtros:
+    NPCHP2 == '1'   (estudia actualmente)
+    NPCEP4 numérico entre 5 y 17 inclusive
+    COD_LOCALIDAD numérico entre 1 y 20 (Bogotá)
+
 Outputs:
   data/raw/em2021_encuesta_principal.csv
   data/raw/em2021_variables_adicionales.csv
   data/raw/em2021_familias_escolar.csv
-
 Fuente: https://datosabiertos.bogota.gov.co/dataset/encuesta-multiproposito-2021-sdp
 """
 
-import io
 import requests
 import pandas as pd
 from pathlib import Path
@@ -76,14 +93,58 @@ ENCUESTA_URL = (
     "20240430_em_2021.csv"
 )
 ENCUESTA_COLS = [
-    "DIRECTORIO",     # llave de cruce
-    "COD_UPZ_GRUPO",  # UPZ de residencia
-    "COD_LOCALIDAD",  # localidad de residencia
-    "ESTRATO2021",    # estrato de muestreo
-    "NVCBP11AA",      # estrato para tarifa (real)
-    "FEX_C",          # factor de expansión
-    "NPCHP4",         # nivel educativo jefe del hogar
-    "NPCJP9AI",       # satisfacción con su educación (0-10)
+    # ── A. Identificación ──
+    "DIRECTORIO",      # llave de cruce (vivienda)
+    "ORDEN",           # orden de la persona en el hogar
+    "COD_UPZ_GRUPO",   # UPZ de residencia
+    "COD_LOCALIDAD",   # localidad de residencia
+    "ESTRATO2021",     # estrato de muestreo (NO es estrato socioeconómico)
+    "NVCBP11AA",       # estrato para tarifa servicios (= estrato socioeconómico 1-6)
+    "FEX_C",           # factor de expansión
+    # ── E. Demografía ──
+    "NPCEP4",          # edad en años cumplidos
+    "NPCEP5",          # sexo al nacer: 1=Hombre, 2=Mujer, 3=Intersexual
+    "NPCEP6",          # parentesco con jefe: 1=Jefe, 2=Pareja, 3=Hijo...
+    # ── H. Educación ──
+    "NPCHP1",          # ¿sabe leer y escribir? 1=Sí, 2=No
+    "NPCHP2",          # ¿estudia actualmente? 1=Sí, 2=No
+    "NPCHP3",          # razón de no estudiar (si NPCHP2=2)
+    "NPCHP4",          # nivel educativo más alto alcanzado
+    "NPCHP6",          # nivel en el que está matriculado
+    "NPCHP6A",         # grado o año que cursa
+    "NPCHP9A",         # beneficiario transporte SED: 1=Sí, 2=No
+    "NPCHP10",         # ¿paga pensión? 1=Sí, 2=No
+    "NPCHP10A",        # valor mensual pensión
+    "NPCHP11",         # ¿paga transporte escolar? 1=Sí, 2=No
+    "NPCHP11A",        # valor mensual transporte escolar
+    "NPCHP12",         # tipo institución: 1=Oficial, 2=No oficial
+    "NPCHP12A",        # no oficial: 1=Con subsidio, 2=Sin subsidio
+    "NPCHP13",         # ubicación colegio: 1=Este municipio, 2=Fuera
+    "NPCHP14",         # localidad donde está el colegio
+    "NPCHP16",         # ubicación: 1=Centro urbano, 2=Corregimiento/vereda
+    "NPCHP17",         # jornada: 1=Mañana, 2=Tarde, 3=Nocturna, 4=Única
+    # ── H. Transporte al colegio (preg. 17, dummies) ──
+    "NPCHP18AA",       # TransMilenio
+    "NPCHP18AB",       # Buses SITP
+    "NPCHP18AC",       # Bus, buseta o colectivo
+    "NPCHP18AD",       # Automóvil particular
+    "NPCHP18AE",       # Taxi
+    "NPCHP18AF",       # Motocicleta
+    "NPCHP18AG",       # Bicicleta
+    "NPCHP18AH",       # Ruta escolar
+    "NPCHP18AI",       # A pie
+    "NPCHP18AI1",      # Bus intermunicipal
+    "NPCHP18AJ",       # Bicitaxi o mototaxi
+    "NPCHP18AK",       # Plataformas/apps (vehículo particular)
+    "NPCHP18AL",       # Vehículo/patineta/bici eléctrico
+    "NPCHP18AM",       # Caballo (rural)
+    "NPCHP18AN",       # Otro
+    "NPCHP18AO",       # No se desplaza
+    # ── H. Tiempo y alimentación ──
+    "NPCHP19",         # tiempo viaje de ida al colegio (minutos)
+    "NPCHP20",         # ¿recibe alimentos en el colegio gratis/simbólico? 1=Sí, 2=No
+    # ── J. Satisfacción ──
+    "NPCJP9AI",        # satisfacción con su educación (0-10)
 ]
 ENCUESTA_OUT = RAW_DIR / "em2021_encuesta_principal.csv"
 
@@ -111,43 +172,53 @@ PAGE_SIZE = 10_000
 PERSONAS_COLS = [
     "DIRECTORIO",  # llave de vivienda
     "ORDEN",       # orden de la persona en el hogar
-    "NPCEP4",      # edad en años (demografía)
-    "NPCHP2",      # ¿estudia actualmente? 1=Sí 2=No
+    "NPCEP4",      # edad en años cumplidos
+    "NPCEP5",      # sexo al nacer: 1=Hombre, 2=Mujer
+    "NPCHP2",      # ¿estudia actualmente? 1=Sí, 2=No
     "NPCHP6",      # nivel matriculado
-    "NPCHP12",     # tipo institución: 1=oficial, 2=no oficial
+    "NPCHP12",     # tipo institución: 1=Oficial, 2=No oficial
+    "NPCHP14",     # localidad del colegio
+    "NPCHP17",     # jornada: 1=Mañana, 2=Tarde, 3=Nocturna, 4=Única
+    "NPCHP19",     # tiempo viaje de ida (minutos)
 ]
 FAMILIAS_OUT = RAW_DIR / "em2021_familias_escolar.csv"
 
 
+
+
 # ── Tabla 1: encuesta principal ───────────────────────────────────────────────
 
-def fetch_encuesta_principal() -> None:
+def download_csv() -> Path:
     """
-    Descarga el CSV en streaming y filtra columnas en memoria por chunks.
-    El archivo completo (~1.2GB) nunca se escribe a disco — solo el resultado filtrado.
+    Descarga el CSV una sola vez directamente a disco como archivo temporal.
+    Retorna el path al archivo temporal.
     """
-    print("Descargando encuesta principal (streaming + filtro en memoria)...")
+    raw_path = RAW_DIR / "em2021_raw_temp.csv"
+    print("Descargando CSV de encuesta principal (una sola vez)...")
     resp = requests.get(ENCUESTA_URL, timeout=300, stream=True)
     resp.raise_for_status()
 
     total = int(resp.headers.get("content-length", 0))
     if total:
-        print(f"  Tamaño total: {total/1e6:.1f} MB (solo se guardan las columnas necesarias)")
+        print(f"  Tamaño total: {total/1e6:.1f} MB")
 
-    # Stream → buffer en memoria → leer con pandas en chunks
-    # Acumulamos el stream completo pero filtramos de inmediato por chunk
-    buf = io.BytesIO()
     downloaded = 0
-    for chunk in resp.iter_content(chunk_size=2 * 1024 * 1024):
-        buf.write(chunk)
-        downloaded += len(chunk)
-        if total:
-            print(f"  Descargados {downloaded/1e6:.1f} / {total/1e6:.1f} MB...", end="\r")
+    with open(raw_path, "wb") as f:
+        for chunk in resp.iter_content(chunk_size=2 * 1024 * 1024):
+            f.write(chunk)
+            downloaded += len(chunk)
+            if total:
+                print(f"  Descargados {downloaded/1e6:.1f} / {total/1e6:.1f} MB...", end="\r")
     print(f"\n  Descarga completa: {downloaded/1e6:.1f} MB")
+    return raw_path
 
-    buf.seek(0)
-    # Separador: coma (confirmado inspeccionando el header)
-    sep = ","
+
+def fetch_encuesta_principal(raw_path: Path) -> None:
+    """
+    Filtra el CSV descargado para obtener columnas de encuesta principal.
+    El archivo completo nunca se escribe a disco — solo el resultado filtrado.
+    """
+    print("\nProcesando encuesta principal (streaming + filtro en memoria)...")
 
     chunks_df = []
     cols_to_keep = None
@@ -155,8 +226,8 @@ def fetch_encuesta_principal() -> None:
     total_rows = 0
 
     for chunk in pd.read_csv(
-        buf,
-        sep=sep,
+        raw_path,
+        sep=",",
         encoding="latin-1",
         dtype=str,
         low_memory=False,
@@ -253,31 +324,14 @@ def fetch_variables_adicionales() -> None:
 
 # ── Tabla 3: personas en edad escolar en institución oficial ──────────────────
 
-def fetch_personas_escolar() -> None:
+def fetch_personas_escolar(raw_path: Path) -> None:
     """
-    Reutiliza el mismo CSV de la encuesta principal (streaming) para extraer
-    columnas de demografía y educación a nivel persona.  Filtra niños 5-17 años
-    que estudian actualmente en institución oficial, cruza con
-    em2021_encuesta_principal.csv y agrega a nivel hogar (DIRECTORIO).
+    Reutiliza el archivo CSV descargado para extraer columnas de demografía
+    y educación a nivel persona. Filtra niños 5-17 años que estudian actualmente
+    en institución oficial, cruza con em2021_encuesta_principal.csv y agrega
+    a nivel hogar (DIRECTORIO).
     """
-    print("\nDescargando familias con hijos en edad escolar (streaming + filtro en memoria)...")
-    resp = requests.get(ENCUESTA_URL, timeout=300, stream=True)
-    resp.raise_for_status()
-
-    total = int(resp.headers.get("content-length", 0))
-    if total:
-        print(f"  Tamaño total: {total/1e6:.1f} MB")
-
-    buf = io.BytesIO()
-    downloaded = 0
-    for chunk in resp.iter_content(chunk_size=2 * 1024 * 1024):
-        buf.write(chunk)
-        downloaded += len(chunk)
-        if total:
-            print(f"  Descargados {downloaded/1e6:.1f} / {total/1e6:.1f} MB...", end="\r")
-    print(f"\n  Descarga completa: {downloaded/1e6:.1f} MB")
-
-    buf.seek(0)
+    print("\nProcesando familias con hijos en edad escolar (desde archivo)...")
 
     chunks_df = []
     cols_to_keep = None
@@ -285,7 +339,7 @@ def fetch_personas_escolar() -> None:
     total_rows = 0
 
     for chunk in pd.read_csv(
-        buf,
+        raw_path,
         sep=",",
         encoding="latin-1",
         dtype=str,
@@ -362,11 +416,12 @@ def fetch_personas_escolar() -> None:
 
 def main():
     RAW_DIR.mkdir(parents=True, exist_ok=True)
-    fetch_encuesta_principal()
-    fetch_variables_adicionales()
-    fetch_personas_escolar()
-    print("\n✓ Listo. Archivos en data/raw/")
-
+    raw_path = download_csv()          # download once to disk
+    fetch_encuesta_principal(raw_path)
+    fetch_variables_adicionales()      # uses API, unchanged
+    fetch_personas_escolar(raw_path)
+    raw_path.unlink(missing_ok=True)   # delete temp file after all extractions
+    print("✓ Listo. Temp file eliminado.")
 
 if __name__ == "__main__":
     main()

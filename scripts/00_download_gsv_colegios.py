@@ -69,10 +69,11 @@ import pandas as pd
 # ---------------------------------------------------------------------------
 # Constantes
 # ---------------------------------------------------------------------------
-API_KEY      = os.getenv("GSV_API_TOKEN", "")
-BASE_URL     = "https://maps.googleapis.com/maps/api/streetview"
-RUTA_SEDES   = _ROOT / "data" / "processed" / "colegios_dataset.geojson"
-RUTA_SALIDA  = _ROOT / "data" / "images" / "gsv"
+API_KEY        = os.getenv("GSV_API_TOKEN", "")
+BASE_URL       = "https://maps.googleapis.com/maps/api/streetview"
+RUTA_SEDES     = _ROOT / "data" / "processed" / "colegios_dataset.geojson"
+RUTA_GEOCODED  = _ROOT / "data" / "raw" / "colegios_coordenadas_google.csv"
+RUTA_SALIDA    = _ROOT / "data" / "images" / "gsv"
 _sfx         = "_muestra" if MODO_MUESTRA else ""
 RUTA_CATALOGO = RUTA_SALIDA / f"gsv_catalog{_sfx}.csv"
 
@@ -86,8 +87,80 @@ COLUMNAS_CSV = [
 HEADINGS = [int(360 / N_HEADINGS * i) for i in range(N_HEADINGS)]
 
 # ---------------------------------------------------------------------------
+# Reemplazo de coordenadas con Google Geocoding
+# ---------------------------------------------------------------------------
+
+def aplicar_coordenadas_google(gdf: "gpd.GeoDataFrame") -> "gpd.GeoDataFrame":
+    """
+    Reemplaza la geometría de cada sede con las coordenadas de Google
+    cuando están disponibles en RUTA_GEOCODED (status == 'OK').
+    Las sedes sin match conservan su geometría original.
+    """
+    from shapely.geometry import Point
+
+    if not RUTA_GEOCODED.exists():
+        print("  [coords] colegios_coordenadas_google.csv no encontrado — usando coordenadas originales")
+        return gdf
+
+    geo_df = pd.read_csv(RUTA_GEOCODED, dtype={"id_establecimiento": str})
+    ok = geo_df[geo_df["status"] == "OK"].set_index("id_establecimiento")
+    lookup = {idx: (row["lat_google"], row["lon_google"]) for idx, row in ok.iterrows()}
+
+    gdf = gdf.copy()
+    reemplazados = 0
+    for i, row in gdf.iterrows():
+        id_est = str(row["id_establecimiento"]).strip()
+        if id_est in lookup:
+            lat, lon = lookup[id_est]
+            gdf.at[i, "geometry"] = Point(lon, lat)
+            reemplazados += 1
+
+    print(f"  [coords] {reemplazados}/{len(gdf)} sedes con coordenadas Google "
+          f"({len(gdf) - reemplazados} conservan coordenadas originales)")
+    return gdf
+
+
+# ---------------------------------------------------------------------------
 # Catálogo (carga / inicializa)
 # ---------------------------------------------------------------------------
+
+UMBRAL_COORD = 0.001  # ~100 m; si la diferencia supera esto se re-descarga
+
+
+def invalidar_coords_cambiadas(gdf: "gpd.GeoDataFrame", catalogo: dict) -> tuple[dict, int]:
+    """
+    Elimina del catálogo las entradas cuyas coordenadas difieren de las
+    actuales en más de UMBRAL_COORD grados. Esas imágenes se re-descargarán
+    con la posición corregida por Google.
+    Devuelve el catálogo limpio y el número de entradas invalidadas.
+    """
+    # Índice id_sede → (lat, lon) nuevos
+    coord_nuevas: dict[str, tuple[float, float]] = {}
+    for _, row in gdf.iterrows():
+        id_sede = str(row["id_sede"]).strip()
+        coord_nuevas[id_sede] = (row.geometry.y, row.geometry.x)
+
+    invalidadas = 0
+    claves_a_borrar = []
+    for clave, entrada in catalogo.items():
+        id_sede = str(entrada.get("id_sede", "")).strip()
+        if id_sede not in coord_nuevas:
+            continue
+        try:
+            lat_cat = float(entrada["lat"])
+            lon_cat = float(entrada["lon"])
+        except (KeyError, ValueError, TypeError):
+            continue
+        lat_new, lon_new = coord_nuevas[id_sede]
+        if abs(lat_cat - lat_new) > UMBRAL_COORD or abs(lon_cat - lon_new) > UMBRAL_COORD:
+            claves_a_borrar.append(clave)
+            invalidadas += 1
+
+    for clave in claves_a_borrar:
+        del catalogo[clave]
+
+    return catalogo, invalidadas
+
 
 def cargar_catalogo() -> dict:
     """Devuelve dict {ruta_archivo: row_dict} de imágenes ya descargadas."""
@@ -248,6 +321,7 @@ def main():
     # Cargar sedes
     gdf = gpd.read_file(RUTA_SEDES)
     print(f"  {len(gdf)} sedes cargadas | CRS: {gdf.crs.to_string()}")
+    gdf = aplicar_coordenadas_google(gdf)
 
     if MODO_MUESTRA:
         gdf = gdf.sample(min(N_MUESTRA, len(gdf)), random_state=42).reset_index(drop=True)
@@ -255,7 +329,12 @@ def main():
 
     # Catálogo existente
     catalogo = cargar_catalogo()
-    print(f"  Catálogo previo: {sum(1 for r in catalogo.values() if str(r.get('descargada','')).lower()=='true')} imágenes ya descargadas")
+    ya_descargadas = sum(1 for r in catalogo.values() if str(r.get("descargada", "")).lower() == "true")
+    print(f"  Catálogo previo: {ya_descargadas} imágenes ya descargadas")
+
+    catalogo, invalidadas = invalidar_coords_cambiadas(gdf, catalogo)
+    if invalidadas:
+        print(f"  [coords] {invalidadas} entradas invalidadas por cambio de coordenadas (>{UMBRAL_COORD}°)")
 
     # Plan
     tareas = construir_plan(gdf, catalogo)

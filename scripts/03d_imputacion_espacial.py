@@ -13,6 +13,7 @@ Fundamento metodológico:
   estructura espacial mejor que la mediana global, reduciendo el sesgo de
   atenuación en las regresiones de la sección empírica.
 """
+import os
 
 import logging
 from pathlib import Path
@@ -34,6 +35,30 @@ OUTPUT_PATH = r'C:\paper-AI\data\primary\colegios_features_imputed.geojson'
 
 EARTH_RADIUS_KM = 6371.0
 
+# DANE → [ICFES codes] — matches manuales verificados con fuzzy matching
+DANE_TO_ICFES = {
+    '111001011975': [53926],           # GRAN COLOMBIA → CENT EDUC DIST GRAN COLOMBIANO
+    '111001016772': [70037],           # SAN FRANCISCO DE ASIS → COLEGIO ANEXO SAN FRANCISCO DE ASIS
+    '111001027405': [665208],          # JAIRO ANIBAL NIÑO → CENT EDUC DIST JAIRO ANIBAL NIÑO
+    '111001104035': [85589],           # BOLIVIA → LIC PSICOPEDAG BOLIVIA
+    '111001801047': [815597],          # GLORIA VALENCIA DE CASTAÑO
+    '111001801055': [817593],          # ABEL RODRIGUEZ CESPEDES
+    '111001801071': [818534],          # LUCILA RUBIO DE LAVERDE
+    '111001801241': [820936],          # FELIZA BURSZTYN
+    '111001801250': [820399],          # JAIME NIÑO DIEZ
+    '111001801268': [820332],          # TERESA MARTINEZ DE VARELA
+    '111001801314': [820886],          # AGUDELO RESTREPO
+    '111001801349': [821835],          # ELISA MUJICA VELASQUEZ
+    '311001105944': [106625],          # UNAD BACHILLERATO
+    # Ambiguos — múltiples jornadas, se promedia:
+    '111001104345': [109645, 102749],  # DIEGO MONTAÑA CUELLAR (2 jornadas)
+    '111001107786': [218099, 218107],  # NICOLAS BUENAVENTURA (2 jornadas)
+    '111001801098': [815035, 815043],  # CIUDADELA EL RECREO SONIA OSORIO (2 jornadas)
+    '111001801101': [818450, 818468],  # LAURA HERRERA DE VARELA (2 jornadas)
+    '111001013242': [129205],          # AULAS COLOMBIANAS SAN LUIS → EL CONSUELO
+    '111001092983': [665679],          # VISTA BELLA → CAFAM BELLAVISTA
+}
+
 # Columnas que no deben imputarse: identificadores, coordenadas y categóricas.
 # Todo lo demás se detecta automáticamente como numérico.
 EXCLUIR = {
@@ -41,6 +66,7 @@ EXCLUIR = {
     'lon', 'lat', 'geometry',
     'nombre_establecimiento', 'nombre_localidad', 'nombre_upz',
     'zona', 'caracter_media',
+    'n_hogares_muestra',  # metadata muestral EM2021, no es feature
 }
 
 # =============================================================================
@@ -85,6 +111,70 @@ def main():
     log.info(f'Leyendo: {INPUT_PATH}')
     gdf = gpd.read_file(INPUT_PATH)
     log.info(f'  {len(gdf):,} establecimientos, {gdf.shape[1]} columnas')
+
+    # ── Filtrar colegios rurales excluidos ────────────────────────────────────
+    excl_path = os.path.join(os.path.dirname(INPUT_PATH), '..', 'raw', 'excluded_schools.csv')
+    if os.path.exists(excl_path):
+        excl_df = pd.read_csv(excl_path, dtype={'id_establecimiento': str})
+        excl_ids = set(excl_df['id_establecimiento'].str.strip())
+        gdf['id_establecimiento'] = gdf['id_establecimiento'].astype(str).str.strip()
+        mask_rural = gdf['id_establecimiento'].isin(excl_ids)
+        n_rural = int(mask_rural.sum())
+        gdf = gdf[~mask_rural].reset_index(drop=True)
+        log.info(f'  Excluidos {n_rural} colegios rurales, quedan {len(gdf):,}')
+
+    # ── Paso 1b: Rellenar q_j y puntuaciones históricas desde GIP Saber 11 ───
+    gip_path = os.path.join(os.path.dirname(INPUT_PATH), '..', 'raw', 'icfes_historicos_bogota.csv')
+    if os.path.exists(gip_path):
+        gip_df = pd.read_csv(gip_path, dtype={'codigo_icfes': int})
+        anio_col = gip_df.columns[3]  # año tiene problemas de encoding; usar por posición
+
+        def _get_gip_score(icfes_codes, target_year):
+            sub = gip_df[gip_df['codigo_icfes'].isin(icfes_codes)]
+            if sub.empty:
+                return None
+            sub_yr = sub[sub[anio_col] == target_year]
+            return float(sub_yr['global'].mean()) if not sub_yr.empty else None
+
+        def _best_gip_score(icfes_codes):
+            sub = gip_df[gip_df['codigo_icfes'].isin(icfes_codes)]
+            if sub.empty:
+                return None
+            for yr in [2023, 2022, 2024]:
+                s = _get_gip_score(icfes_codes, yr)
+                if s is not None:
+                    return s
+            most_recent = int(sub[anio_col].max())
+            return _get_gip_score(icfes_codes, most_recent)
+
+        n_qj = n_2020 = n_2022 = 0
+        for idx, row in gdf.iterrows():
+            dane = str(row['id_establecimiento'])
+            if dane not in DANE_TO_ICFES:
+                continue
+            codes = DANE_TO_ICFES[dane]
+
+            if pd.isna(row['q_j']):
+                score = _best_gip_score(codes)
+                if score is not None:
+                    gdf.at[idx, 'q_j'] = score
+                    n_qj += 1
+
+            if 'punt_global_2020' in gdf.columns and pd.isna(row['punt_global_2020']):
+                score = _get_gip_score(codes, 2020)
+                if score is not None:
+                    gdf.at[idx, 'punt_global_2020'] = score
+                    n_2020 += 1
+
+            if 'punt_global_2022' in gdf.columns and pd.isna(row['punt_global_2022']):
+                score = _get_gip_score(codes, 2022)
+                if score is not None:
+                    gdf.at[idx, 'punt_global_2022'] = score
+                    n_2022 += 1
+
+        log.info(f'  GIP Saber 11 → q_j: {n_qj}, punt_global_2020: {n_2020}, punt_global_2022: {n_2022}')
+    else:
+        log.warning(f'  GIP Saber 11 no encontrado: {gip_path}')
 
     # Trabajar sobre una vista plana (sin geometría) para detectar tipos y NaN.
     # Mantenemos gdf como contenedor principal para el GeoJSON de salida.
@@ -154,11 +244,40 @@ def main():
         n_espaciales = 0
         n_fallback   = 0
 
+        # Pre-computar medianas por UPZ y por localidad para fallback jerárquico
+        upz_col = 'codigo_upz' if 'codigo_upz' in df_attrs.columns else None
+        loc_col = 'nombre_localidad' if 'nombre_localidad' in df_attrs.columns else None
+
+        mediana_upz = {}
+        mediana_loc = {}
+        if upz_col:
+            for upz, group in df_attrs.groupby(upz_col):
+                med = group[col].median()
+                if not np.isnan(med):
+                    mediana_upz[upz] = med
+        if loc_col:
+            for loc, group in df_attrs.groupby(loc_col):
+                med = group[col].median()
+                if not np.isnan(med):
+                    mediana_loc[loc] = med
+
+        n_upz_fb = 0
+        n_loc_fb = 0
+
         for i in missing_idx:
-            # Escuelas sin coordenadas: fallback directo, sin consultar el árbol
+            # Escuelas sin coordenadas: fallback jerárquico directo
             if not mask_valid_coords[i]:
-                valores[i] = mediana_global
-                n_fallback += 1
+                fb = None
+                if upz_col and df_attrs[upz_col].iloc[i] in mediana_upz:
+                    fb = mediana_upz[df_attrs[upz_col].iloc[i]]
+                    n_upz_fb += 1
+                elif loc_col and df_attrs[loc_col].iloc[i] in mediana_loc:
+                    fb = mediana_loc[df_attrs[loc_col].iloc[i]]
+                    n_loc_fb += 1
+                else:
+                    fb = mediana_global
+                    n_fallback += 1
+                valores[i] = fb
                 continue
 
             # query_radius devuelve índices relativos al sub-árbol (valid_indices)
@@ -181,15 +300,23 @@ def main():
                 valores[i] = float(np.mean(valores[valid_neighbors]))
                 n_espaciales += 1
             else:
-                # Fallback: sin vecinos con dato en el radio (zona periférica
-                # o columna con alta densidad de NaN concentrada geográficamente)
-                valores[i] = mediana_global
-                n_fallback += 1
+                # Fallback jerárquico: UPZ → localidad → mediana global
+                fb = None
+                if upz_col and df_attrs[upz_col].iloc[i] in mediana_upz:
+                    fb = mediana_upz[df_attrs[upz_col].iloc[i]]
+                    n_upz_fb += 1
+                elif loc_col and df_attrs[loc_col].iloc[i] in mediana_loc:
+                    fb = mediana_loc[df_attrs[loc_col].iloc[i]]
+                    n_loc_fb += 1
+                else:
+                    fb = mediana_global
+                    n_fallback += 1
+                valores[i] = fb
 
         # Escribir los valores imputados de vuelta al GeoDataFrame
         gdf[col] = valores
-        reporte.append((col, n_espaciales, n_fallback))
-        log.info(f'  {col}: {n_espaciales} espaciales + {n_fallback} fallback')
+        reporte.append((col, n_espaciales, n_upz_fb, n_loc_fb, n_fallback))
+        log.info(f'  {col}: {n_espaciales} espacial + {n_upz_fb} UPZ + {n_loc_fb} localidad + {n_fallback} global')
 
     # ── Paso 5: Verificar que no queden NaN en columnas numéricas ─────────────
     df_post = pd.DataFrame(gdf.drop(columns='geometry', errors='ignore'))
@@ -213,14 +340,16 @@ def main():
     # ── Paso 7: Reporte resumen ────────────────────────────────────────────────
     log.info('=' * 65)
     log.info('RESUMEN DE IMPUTACIÓN')
-    log.info(f"  {'Columna':<38} {'Espacial':>9} {'Fallback':>9}")
-    log.info('  ' + '-' * 58)
-    for col, n_esp, n_fb in reporte:
-        log.info(f'  {col:<38} {n_esp:>9,} {n_fb:>9,}')
-    log.info('  ' + '-' * 58)
+    log.info(f"  {'Columna':<32} {'Espacial':>9} {'UPZ':>9} {'Localidad':>9} {'Global':>9}")
+    log.info('  ' + '-' * 72)
+    for col, n_esp, n_upz, n_loc, n_fb in reporte:
+        log.info(f'  {col:<32} {n_esp:>9,} {n_upz:>9,} {n_loc:>9,} {n_fb:>9,}')
+    log.info('  ' + '-' * 72)
     total_esp = sum(r[1] for r in reporte)
-    total_fb  = sum(r[2] for r in reporte)
-    log.info(f"  {'TOTAL':<38} {total_esp:>9,} {total_fb:>9,}")
+    total_upz = sum(r[2] for r in reporte)
+    total_loc = sum(r[3] for r in reporte)
+    total_fb  = sum(r[4] for r in reporte)
+    log.info(f"  {'TOTAL':<32} {total_esp:>9,} {total_upz:>9,} {total_loc:>9,} {total_fb:>9,}")
     log.info('=' * 65)
 
 

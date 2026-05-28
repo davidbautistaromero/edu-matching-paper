@@ -11,7 +11,7 @@ en Cityscapes (19 clases urbanas).
   3. Pasa cada imagen por DeepLabV3+ → cada píxel recibe una etiqueta
      (road, building, vegetation, sky, person, car, etc.)
   4. Cuenta qué proporción de píxeles pertenece a cada categoría
-  5. Promedia las proporciones de todas las fotos del mismo establecimiento
+  5. Toma el máximo de las proporciones de todas las fotos del mismo establecimiento
   6. Guarda los resultados como .parquet listo para regresión
 
 Formato esperado del nombre de archivo:
@@ -56,6 +56,9 @@ IMAGES_DIR = r'C:\paper-AI\data\images\gsv'
 
 # Carpeta donde se guardarán los outputs (se crea automáticamente si no existe)
 OUT_DIR = r'C:\paper-AI\data\images\segmentation'
+
+# CSV con IDs de escuelas rurales a excluir del análisis
+EXCLUSION_PATH = r'C:\paper-AI\data\raw\excluded_schools.csv'
 
 # Ruta al checkpoint del modelo preentrenado en Cityscapes (449 MB, no se mueve)
 CKPT_PATH = r'C:\paper-AI\checkpoints\best_deeplabv3plus_resnet101_cityscapes_os16.pth'
@@ -236,6 +239,16 @@ def build_catalog(images_dir: str, mode: str) -> pd.DataFrame:
     df = pd.DataFrame(registros)
     log.info(f'Imágenes encontradas:       {len(df):,}')
     log.info(f'Establecimientos únicos:    {df["id_establecimiento"].nunique():,}')
+
+    # Excluir escuelas rurales
+    if os.path.exists(EXCLUSION_PATH):
+        excluded = pd.read_csv(EXCLUSION_PATH, dtype={'id_establecimiento': str})
+        excluded_ids = set(excluded['id_establecimiento'].str.strip())
+        mask = df['id_establecimiento'].isin(excluded_ids)
+        n_excluded_imgs = mask.sum()
+        n_excluded_schools = df.loc[mask, 'id_establecimiento'].nunique()
+        df = df[~mask].copy()
+        log.info(f'Excluded {n_excluded_imgs} images from {n_excluded_schools} rural schools, {len(df)} images remaining')
 
     # En modo sample, quedarse solo con los primeros 10 establecimientos
     if mode == 'sample':
@@ -468,14 +481,17 @@ def main():
     df = pd.DataFrame(records)
     # Cada fila = una imagen, con sus 7 proporciones de categorías
 
-    # ── Paso 5: Agregar por establecimiento (promedio de todas sus fotos) ─
+    # ── Paso 5: Agregar por establecimiento (máximo sobre todas sus fotos) ──
     # Un establecimiento puede tener varias fotos desde distintos ángulos.
-    # Promediamos las proporciones de todas sus fotos para obtener
-    # un solo vector representativo por establecimiento.
+    # Tomamos el máximo por categoría: si una sola foto muestra fachada moderna
+    # o alta cobertura verde, esa señal se preserva en lugar de diluirse con
+    # el promedio de fotos del entorno.
+    # Nota: las proporciones ya no suman 1 entre grupos (cada una viene de la
+    # foto que maximiza esa categoría), pero son válidas como features separadas.
     df_est = (
         df
         .groupby('id_establecimiento')[GRUPO_NAMES]
-        .mean()
+        .max()
         .reset_index()
     )
 
@@ -494,7 +510,7 @@ def main():
     log.info('RESUMEN')
     log.info(f'  Imágenes procesadas:        {len(df):,}')
     log.info(f'  Establecimientos con datos: {len(df_est):,}')
-    log.info('  Proporciones medias por grupo:')
+    log.info('  Máximos medios por grupo (promedio del max entre establecimientos):')
     for g in GRUPO_NAMES:
         log.info(f'    {g:<25} {df_est[g].mean():.3f}')
     log.info(f'  Archivos guardados en: {OUT_DIR}')
