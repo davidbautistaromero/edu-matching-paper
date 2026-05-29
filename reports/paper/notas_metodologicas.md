@@ -573,6 +573,63 @@ Todos los paths en 09c/09d/09e están hardcodeados a `/content/edu-matching-pape
 
 **Orden de ejecución:** 4b.8 (limpieza) → 4b.4 (DGP) → 4b.1 (target) → 4b.2 (features) → 4b.6 (acceso garantizado) → 4b.3 (baselines) → 4b.5 (escala) → 4b.7 (unicidad SED).
 
+---
+
+### Resultados 4b — implementación y verificación (Jhoan Fuentes, 2026-05-29)
+
+> Esta subsección documenta los resultados de ejecutar el plan 4b anterior. Todo
+> el código quedó en `scripts/09c_wp_rule.py` (4b.1–4b.4, 4b.6, 4b.8),
+> `scripts/09g_uniqueness_sed.py` (4b.7) y `scripts/09h_escala_reticulo.py` (4b.5).
+> El orden de ejecución se reordenó: 4b.7 se corrió primero por ser el único
+> experimento capaz de cambiar la conclusión (mueve el conjunto factible, no solo
+> el objetivo).
+
+**4b.1 + 4b.2 (objetivo de 3 términos + 4ª feature).** Implementados en 09c. El
+StructSVM aprende d₂ < 0 (compensación por calidad) y la métrica corr(ingreso, q)
+se acerca a 0 bajo el objetivo corregido. Pero el *matching* no cambia: WP coincide
+con DA. Razón: el objetivo vive sobre el politopo de estables; si el politopo es
+casi un punto, el argmax es invariante a la función que se maximice encima.
+
+**4b.3 (baselines).** WP equal-weights (a=b=1, d=0, sin entrenar), WP paper-original
+(d=0) y WP full coinciden con DA (≠DA ≈ 0, BP=0) en el mundo ortogonal. Que la WP
+*sin entrenar* ya sea DA prueba que la coincidencia es geometría del politopo, no
+producto del entrenamiento.
+
+**4b.4 (DGP alineado con BLP).** El mercado de entrenamiento de 09c ahora muestrea
+colegios/familias reales y usa la utilidad estructural del IV-BLP
+(δ_j + π₁·y·seg_z + λ₀·log1p(d) + λ₁·y·log1p(d) + Gumbel). El resultado no depende
+de los betas (corrobora 09f): WP = DA con cualquier parametrización del entrenamiento.
+
+**4b.5 (escala — 09h).** Diámetro exacto del retículo (DA familia-opt vs colegio-opt,
+método de 09e) sobre cientos de mercados. El diámetro *absoluto* crece con N
+(0.53 → 1.15 → 2.28 en 24×6, 100×20, 500×50) pero el *relativo* (gap/N) se contrae
+(2.21% → 1.15% → 0.46%). El colapso del retículo no es artefacto de N=24. En Bogotá
+real (537k, ver 09e/09g) el diámetro es 0.0158% (18/113857).
+
+**4b.6 (acceso garantizado SISBEN).** Implementadas ambas variantes en 09c: hard
+(restricción Σ_j x_ij = 1 para SISBEN A/B en el ILP) y soft (feature e·1[SISBEN∈A/B]).
+La hard es estable (BP=0, 0 infeasible) en el DGP de entrenamiento, pero su efecto es
+nulo porque hay holgura de cupos (acc_AB = 1.000 ya sin la restricción). La restricción
+solo mordería bajo escasez — que es el caso de los datos reales, no del entrenamiento.
+
+**4b.7 (unicidad bajo prioridades SED — 09g).** El experimento decisivo. Bajo
+prioridad-distancia el ancho del retículo es 18; bajo SED (SISBEN + distancia) es 12.
+El retículo **no se abre**: se contrae. Ningún mecanismo estable redistribuye el sesgo
+visual ni siquiera reordenando las prioridades a favor de los pobres. Hallazgo
+adicional bajo escasez (120k cupos, 537k familias): cambiar la prioridad de distancia
+a SED **reemplaza el 70% de quién obtiene cupo** (solo 30% de las familias asignadas
+reciben cupo bajo ambos sistemas; 79.952 pierden y 79.952 ganan).
+
+**Síntesis (M1, lectura de Jhoan).** Dado un sistema de prioridad fijo, los cuatro
+mecanismos (BM/DA/SED/WP) colapsan al mismo punto: el retículo de estables es
+proporcionalmente despreciable y la WP, estable por construcción, no puede alejarse
+de DA aunque se le dé un objetivo de equidad completo. Cambiar el *sistema de
+prioridad* sí reasigna masivamente (70% de los cupos). Conclusión de política: la
+palanca está en a quién se prioriza (distancia vs vulnerabilidad), no en qué algoritmo
+de matching se usa. El sesgo visual vive en las preferencias declaradas; ningún
+mecanismo estable lo deshace.
+
+
 ### Tarea 5. Integración y paper
 
 - Comparativa final de 4 mecanismos (BM/DA/SED/WP) con IC
