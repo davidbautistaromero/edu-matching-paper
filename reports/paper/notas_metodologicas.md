@@ -473,6 +473,106 @@ Casos especiales: `a` domina → DA student-optimal; `b` domina → DA school-op
 
 **Referencia:** Narasimhan, H., Agarwal, S. y Parkes, D. (2016). Automated Mechanism Design without Money via Machine Learning. Documentación en `reports/paper/maching_learning_matching.md`.
 
+---
+
+### Tarea 4b. Ajustes a WP-Rule (post implementación Jhoan, 2026-05-28)
+
+**Contexto:** La rama `jhoan-svm` implementa 09c (WP-Rule + StructSVM), 09d (unicidad sintéticos), 09e (unicidad datos reales). Resultado principal: el retículo de matchings estables colapsa a un punto (brecha = 18-25 de 113,857 asignadas en datos reales), por lo que DA ≈ SED ≈ WP bajo prioridad-distancia. El sesgo vive en las preferencias, no en el mecanismo.
+
+**Ajustes pendientes (en orden):**
+
+#### 4b.1 Función objetivo corregida
+
+La función target actual solo penaliza `corr(ingreso, v_j)`:
+
+```
+w_ij = q_j − μ · y_i^c · v_j
+```
+
+La función correcta incorpora tres objetivos:
+
+```
+w_ij = q_j − μ₁ · y_i^c · v_j − μ₂ · y_i^c · q_j
+```
+
+| Término | Objetivo | Meta |
+|---|---|---|
+| q_j | Maximizar calidad total asignada | ↑ |
+| −μ₁ · y_i^c · v_j | Romper sesgo visual | corr(ingreso, v_j) → 0 |
+| −μ₂ · y_i^c · q_j | Equidad compensatoria en calidad | corr(ingreso, q_j) ≤ 0 |
+
+**Justificación:** el diagnóstico es el sesgo visual, pero el daño se mide en calidad. Ambas correlaciones importan. La equidad en calidad permite valores negativos (familias pobres accediendo a mejores colegios = compensación).
+
+**Calibración de μ₁, μ₂:** no son arbitrarios. Calibrar μ₁ tal que corr(ingreso, v_j) ≈ 0 en el matching ideal, y μ₂ tal que corr(ingreso, q_j) alcance un target de equidad compensatoria. Complementar con análisis de sensibilidad barriendo (μ₁, μ₂) para mostrar la frontera eficiencia-equidad.
+
+#### 4b.2 Features de pesos WP expandidos
+
+Actual: `λ_ij(W) = a·rank_i + b·rank_j + d·(y_i^c · v_j)` (3 pesos)
+
+Corregido: `λ_ij(W) = a·rank_i + b·rank_j + d₁·(y_i^c · v_j) + d₂·(y_i^c · q_j)` (4 pesos)
+
+El StructSVM aprende (a, b, d₁, d₂) para acercarse al target corregido.
+
+#### 4b.3 Baselines WP
+
+Agregar a la comparativa:
+- **WP equal-weights** (a=1, b=1, d₁=0, d₂=0): baseline sin entrenar. Si DA = WP-equal, confirma retículo trivial.
+- **WP paper-original** (a, b aprendidos, d₁=d₂=0): especificación del paper de Narasimhan sin features de equidad. Baseline teórico.
+
+#### 4b.4 Parámetros del DGP alineados con BLP
+
+Actual: `ALPHA_HAT = 0.088, GAMMA0 = 1.0` (constantes ad-hoc, utilidad tipo power-law por estrato).
+
+Corregido: usar los θ estimados del BLP:
+- π₁ = −0.028 (interacción ingreso × seguridad percibida)
+- λ₀ = +0.024 (penalización base distancia)
+- λ₁ = −0.094 (interacción ingreso × distancia)
+
+La utilidad sintética debe ser: `u_ij = δ_j + π₁·y_i·seg_z_j + λ₀·log(1+d_ij) + λ₁·y_i·log(1+d_ij) + ε_ij`, consistente con 06_preferencias.py.
+
+#### 4b.5 Escala de entrenamiento
+
+Actual: 24 familias × 6 colegios (puede ser insuficiente para generalizar).
+
+Probar: 100×20 como mínimo, idealmente 500×50. Los pesos aprendidos en mercados pequeños pueden no transferir a 537K×382.
+
+#### 4b.6 Restricción de acceso garantizado para bajos ingresos
+
+Análogo al proxy SED que prioriza por grupo SISBEN: agregar una restricción dura al LP de WP que **garantice** asignación a familias vulnerables.
+
+**Implementación (constraint adicional en el politopo):**
+```
+∀ i con SISBEN ∈ {A, B}: Σ_j x_ij = 1
+```
+
+Toda familia de grupo SISBEN A o B **debe** ser asignada. No es un peso aprendible — es una garantía de acceso.
+
+**Variante soft (feature en los pesos):**
+```
+λ_ij(W) = a·rank_i + b·rank_j + d₁·(y_i^c · v_j) + d₂·(y_i^c · q_j) + e·𝟙[SISBEN_i ∈ {A,B}]
+```
+El StructSVM aprende e > 0 → prioriza asignar a SISBEN bajo. Pero la versión hard es preferida para el paper porque refleja la política real de la SED.
+
+**Nota:** esta restricción interactúa con 4b.6 (unicidad bajo SISBEN). Si el acceso garantizado cambia la estructura del politopo, puede abrir el retículo.
+
+#### 4b.7 Unicidad bajo prioridades SED
+
+09e solo verifica unicidad con prioridad-distancia pura. Correr también con prioridad SED (grupo SISBEN + distancia). Si bajo prioridad SISBEN el retículo se abre (múltiples matchings estables), WP tendría espacio para optimizar — cambiando el resultado principal.
+
+Grupos SISBEN calculados a partir de ingreso (umbrales DANE ya implementados en 09c):
+```
+A: ingreso < 227,220
+B: 227,220 ≤ ingreso < 460,198
+C: 460,198 ≤ ingreso < 897,987
+D: ingreso ≥ 897,987
+```
+
+#### 4b.8 Paths y limpieza
+
+Todos los paths en 09c/09d/09e están hardcodeados a `/content/edu-matching-paper/` (Colab). Cambiar a paths relativos con `Path(__file__).resolve().parent.parent` como el resto del repo.
+
+**Orden de ejecución:** 4b.8 (limpieza) → 4b.4 (DGP) → 4b.1 (target) → 4b.2 (features) → 4b.6 (acceso garantizado) → 4b.3 (baselines) → 4b.5 (escala) → 4b.7 (unicidad SED).
+
 ### Tarea 5. Integración y paper
 
 - Comparativa final de 4 mecanismos (BM/DA/SED/WP) con IC
