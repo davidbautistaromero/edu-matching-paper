@@ -630,6 +630,34 @@ de matching se usa. El sesgo visual vive en las preferencias declaradas; ningún
 mecanismo estable lo deshace.
 
 
+
+**Análisis de redistribución (09i).** ¿La redistribución por ingreso (pasar de
+prioridad-distancia a prioridad-SED) mueve el sesgo visual, y a qué costo de
+eficiencia? Medido sobre los datos reales, comparando ambas prioridades:
+
+| métrica | prioridad-distancia | prioridad-SED | Δ |
+|---|---|---|---|
+| corr(ingreso, v_j) — sesgo visual | +0.048 | +0.003 | −0.045 |
+| corr(ingreso, q_j) — equidad calidad | +0.178 | +0.110 | −0.068 |
+| rank medio — eficiencia (1 = 1ª opción) | 8.80 | 3.85 | −4.95 |
+
+La redistribución por ingreso NO empeora el sesgo visual: lo **neutraliza** (la
+correlación ingreso–visual cae a ≈0). Y mejora equidad en calidad y eficiencia
+(rank) a la vez — no hay trade-off eficiencia-equidad bajo SED.
+
+Control de composición (clave, porque SED reasigna el 70% de los cupos): sobre
+las 33.905 familias asignadas en **ambos** escenarios —misma gente, sin sesgo de
+selección— el rank también mejora (8.62 → 4.45); 18.102 mejoran su rank vs 477 que
+empeoran (38:1). La mejora de eficiencia es real, no artefacto de composición.
+
+Interpretación de la mejora de rank: la prioridad-distancia penaliza fuerte el
+rank porque choca con las preferencias declaradas (las familias prefieren calidad,
+no cercanía; al priorizar cercanía quedan en opciones que no querían). SED, menos
+correlacionada con la distancia, deja a la gente en mejor posición de su propia
+lista. No es que SED sea "mejor mecanismo" —sigue siendo DA— sino que la
+prioridad-distancia es particularmente costosa en rank. Refuerza la tesis: la
+palanca de equidad (y aquí también de eficiencia) es la PRIORIDAD, no el mecanismo.
+
 ### Tarea 5. Integración y paper
 
 - Comparativa final de 4 mecanismos (BM/DA/SED/WP) con IC
