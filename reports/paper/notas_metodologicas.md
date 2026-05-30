@@ -658,6 +658,18 @@ lista. No es que SED sea "mejor mecanismo" —sigue siendo DA— sino que la
 prioridad-distancia es particularmente costosa en rank. Refuerza la tesis: la
 palanca de equidad (y aquí también de eficiencia) es la PRIORIDAD, no el mecanismo.
 
+
+**Acceso bajo escasez real (09j).** La restriccion de acceso (4b.6) resulto inocua
+en el sintetico por holgura de cupos; evaluada sobre los datos reales (escasez:
+~21% asignadas) revela una tension. Bajo prioridad-SED, las familias A+B sin cupo
+bajan de 233.872 a 183.071 — pero el desagregado muestra que SED no ayuda parejo:
+SISBEN A pasa de 20.9% a 89.1% de acceso, mientras B CAE de 21.2% a 7.4%, y C/D
+casi desaparecen (0.3% / 0.0%). La prioridad SED redistribuye *dentro* de los
+vulnerables, hacia los mas pobres (A), a costa de expulsar a B/C/D. No es
+Pareto-mejor para los vulnerables: una restriccion de acceso con piso para B
+tendria un rol que la prioridad pura no cumple. Tension de politica real:
+priorizar a los mas pobres cuesta acceso de los pobres del medio.
+
 ### Tarea 5. Integración y paper
 
 - Comparativa final de 4 mecanismos (BM/DA/SED/WP) con IC
