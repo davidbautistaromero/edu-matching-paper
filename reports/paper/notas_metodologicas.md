@@ -473,6 +473,203 @@ Casos especiales: `a` domina → DA student-optimal; `b` domina → DA school-op
 
 **Referencia:** Narasimhan, H., Agarwal, S. y Parkes, D. (2016). Automated Mechanism Design without Money via Machine Learning. Documentación en `reports/paper/maching_learning_matching.md`.
 
+---
+
+### Tarea 4b. Ajustes a WP-Rule (post implementación Jhoan, 2026-05-28)
+
+**Contexto:** La rama `jhoan-svm` implementa 09c (WP-Rule + StructSVM), 09d (unicidad sintéticos), 09e (unicidad datos reales). Resultado principal: el retículo de matchings estables colapsa a un punto (brecha = 18-25 de 113,857 asignadas en datos reales), por lo que DA ≈ SED ≈ WP bajo prioridad-distancia. El sesgo vive en las preferencias, no en el mecanismo.
+
+**Ajustes pendientes (en orden):**
+
+#### 4b.1 Función objetivo corregida
+
+La función target actual solo penaliza `corr(ingreso, v_j)`:
+
+```
+w_ij = q_j − μ · y_i^c · v_j
+```
+
+La función correcta incorpora tres objetivos:
+
+```
+w_ij = q_j − μ₁ · y_i^c · v_j − μ₂ · y_i^c · q_j
+```
+
+| Término | Objetivo | Meta |
+|---|---|---|
+| q_j | Maximizar calidad total asignada | ↑ |
+| −μ₁ · y_i^c · v_j | Romper sesgo visual | corr(ingreso, v_j) → 0 |
+| −μ₂ · y_i^c · q_j | Equidad compensatoria en calidad | corr(ingreso, q_j) ≤ 0 |
+
+**Justificación:** el diagnóstico es el sesgo visual, pero el daño se mide en calidad. Ambas correlaciones importan. La equidad en calidad permite valores negativos (familias pobres accediendo a mejores colegios = compensación).
+
+**Calibración de μ₁, μ₂:** no son arbitrarios. Calibrar μ₁ tal que corr(ingreso, v_j) ≈ 0 en el matching ideal, y μ₂ tal que corr(ingreso, q_j) alcance un target de equidad compensatoria. Complementar con análisis de sensibilidad barriendo (μ₁, μ₂) para mostrar la frontera eficiencia-equidad.
+
+#### 4b.2 Features de pesos WP expandidos
+
+Actual: `λ_ij(W) = a·rank_i + b·rank_j + d·(y_i^c · v_j)` (3 pesos)
+
+Corregido: `λ_ij(W) = a·rank_i + b·rank_j + d₁·(y_i^c · v_j) + d₂·(y_i^c · q_j)` (4 pesos)
+
+El StructSVM aprende (a, b, d₁, d₂) para acercarse al target corregido.
+
+#### 4b.3 Baselines WP
+
+Agregar a la comparativa:
+- **WP equal-weights** (a=1, b=1, d₁=0, d₂=0): baseline sin entrenar. Si DA = WP-equal, confirma retículo trivial.
+- **WP paper-original** (a, b aprendidos, d₁=d₂=0): especificación del paper de Narasimhan sin features de equidad. Baseline teórico.
+
+#### 4b.4 Parámetros del DGP alineados con BLP
+
+Actual: `ALPHA_HAT = 0.088, GAMMA0 = 1.0` (constantes ad-hoc, utilidad tipo power-law por estrato).
+
+Corregido: usar los θ estimados del BLP:
+- π₁ = −0.028 (interacción ingreso × seguridad percibida)
+- λ₀ = +0.024 (penalización base distancia)
+- λ₁ = −0.094 (interacción ingreso × distancia)
+
+La utilidad sintética debe ser: `u_ij = δ_j + π₁·y_i·seg_z_j + λ₀·log(1+d_ij) + λ₁·y_i·log(1+d_ij) + ε_ij`, consistente con 06_preferencias.py.
+
+#### 4b.5 Escala de entrenamiento
+
+Actual: 24 familias × 6 colegios (puede ser insuficiente para generalizar).
+
+Probar: 100×20 como mínimo, idealmente 500×50. Los pesos aprendidos en mercados pequeños pueden no transferir a 537K×382.
+
+#### 4b.6 Restricción de acceso garantizado para bajos ingresos
+
+Análogo al proxy SED que prioriza por grupo SISBEN: agregar una restricción dura al LP de WP que **garantice** asignación a familias vulnerables.
+
+**Implementación (constraint adicional en el politopo):**
+```
+∀ i con SISBEN ∈ {A, B}: Σ_j x_ij = 1
+```
+
+Toda familia de grupo SISBEN A o B **debe** ser asignada. No es un peso aprendible — es una garantía de acceso.
+
+**Variante soft (feature en los pesos):**
+```
+λ_ij(W) = a·rank_i + b·rank_j + d₁·(y_i^c · v_j) + d₂·(y_i^c · q_j) + e·𝟙[SISBEN_i ∈ {A,B}]
+```
+El StructSVM aprende e > 0 → prioriza asignar a SISBEN bajo. Pero la versión hard es preferida para el paper porque refleja la política real de la SED.
+
+**Nota:** esta restricción interactúa con 4b.6 (unicidad bajo SISBEN). Si el acceso garantizado cambia la estructura del politopo, puede abrir el retículo.
+
+#### 4b.7 Unicidad bajo prioridades SED
+
+09e solo verifica unicidad con prioridad-distancia pura. Correr también con prioridad SED (grupo SISBEN + distancia). Si bajo prioridad SISBEN el retículo se abre (múltiples matchings estables), WP tendría espacio para optimizar — cambiando el resultado principal.
+
+Grupos SISBEN calculados a partir de ingreso (umbrales DANE ya implementados en 09c):
+```
+A: ingreso < 227,220
+B: 227,220 ≤ ingreso < 460,198
+C: 460,198 ≤ ingreso < 897,987
+D: ingreso ≥ 897,987
+```
+
+#### 4b.8 Paths y limpieza
+
+Todos los paths en 09c/09d/09e están hardcodeados a `/content/edu-matching-paper/` (Colab). Cambiar a paths relativos con `Path(__file__).resolve().parent.parent` como el resto del repo.
+
+**Orden de ejecución:** 4b.8 (limpieza) → 4b.4 (DGP) → 4b.1 (target) → 4b.2 (features) → 4b.6 (acceso garantizado) → 4b.3 (baselines) → 4b.5 (escala) → 4b.7 (unicidad SED).
+
+---
+
+### Resultados 4b — implementación y verificación (Jhoan Fuentes, 2026-05-29)
+
+> Esta subsección documenta los resultados de ejecutar el plan 4b anterior. Todo
+> el código quedó en `scripts/09c_wp_rule.py` (4b.1–4b.4, 4b.6, 4b.8),
+> `scripts/09g_uniqueness_sed.py` (4b.7) y `scripts/09h_escala_reticulo.py` (4b.5).
+> El orden de ejecución se reordenó: 4b.7 se corrió primero por ser el único
+> experimento capaz de cambiar la conclusión (mueve el conjunto factible, no solo
+> el objetivo).
+
+**4b.1 + 4b.2 (objetivo de 3 términos + 4ª feature).** Implementados en 09c. El
+StructSVM aprende d₂ < 0 (compensación por calidad) y la métrica corr(ingreso, q)
+se acerca a 0 bajo el objetivo corregido. Pero el *matching* no cambia: WP coincide
+con DA. Razón: el objetivo vive sobre el politopo de estables; si el politopo es
+casi un punto, el argmax es invariante a la función que se maximice encima.
+
+**4b.3 (baselines).** WP equal-weights (a=b=1, d=0, sin entrenar), WP paper-original
+(d=0) y WP full coinciden con DA (≠DA ≈ 0, BP=0) en el mundo ortogonal. Que la WP
+*sin entrenar* ya sea DA prueba que la coincidencia es geometría del politopo, no
+producto del entrenamiento.
+
+**4b.4 (DGP alineado con BLP).** El mercado de entrenamiento de 09c ahora muestrea
+colegios/familias reales y usa la utilidad estructural del IV-BLP
+(δ_j + π₁·y·seg_z + λ₀·log1p(d) + λ₁·y·log1p(d) + Gumbel). El resultado no depende
+de los betas (corrobora 09f): WP = DA con cualquier parametrización del entrenamiento.
+
+**4b.5 (escala — 09h).** Diámetro exacto del retículo (DA familia-opt vs colegio-opt,
+método de 09e) sobre cientos de mercados. El diámetro *absoluto* crece con N
+(0.53 → 1.15 → 2.28 en 24×6, 100×20, 500×50) pero el *relativo* (gap/N) se contrae
+(2.21% → 1.15% → 0.46%). El colapso del retículo no es artefacto de N=24. En Bogotá
+real (537k, ver 09e/09g) el diámetro es 0.0158% (18/113857).
+
+**4b.6 (acceso garantizado SISBEN).** Implementadas ambas variantes en 09c: hard
+(restricción Σ_j x_ij = 1 para SISBEN A/B en el ILP) y soft (feature e·1[SISBEN∈A/B]).
+La hard es estable (BP=0, 0 infeasible) en el DGP de entrenamiento, pero su efecto es
+nulo porque hay holgura de cupos (acc_AB = 1.000 ya sin la restricción). La restricción
+solo mordería bajo escasez — que es el caso de los datos reales, no del entrenamiento.
+
+**4b.7 (unicidad bajo prioridades SED — 09g).** El experimento decisivo. Bajo
+prioridad-distancia el ancho del retículo es 18; bajo SED (SISBEN + distancia) es 12.
+El retículo **no se abre**: se contrae. Ningún mecanismo estable redistribuye el sesgo
+visual ni siquiera reordenando las prioridades a favor de los pobres. Hallazgo
+adicional bajo escasez (120k cupos, 537k familias): cambiar la prioridad de distancia
+a SED **reemplaza el 70% de quién obtiene cupo** (solo 30% de las familias asignadas
+reciben cupo bajo ambos sistemas; 79.952 pierden y 79.952 ganan).
+
+**Síntesis (M1, lectura de Jhoan).** Dado un sistema de prioridad fijo, los cuatro
+mecanismos (BM/DA/SED/WP) colapsan al mismo punto: el retículo de estables es
+proporcionalmente despreciable y la WP, estable por construcción, no puede alejarse
+de DA aunque se le dé un objetivo de equidad completo. Cambiar el *sistema de
+prioridad* sí reasigna masivamente (70% de los cupos). Conclusión de política: la
+palanca está en a quién se prioriza (distancia vs vulnerabilidad), no en qué algoritmo
+de matching se usa. El sesgo visual vive en las preferencias declaradas; ningún
+mecanismo estable lo deshace.
+
+
+
+**Análisis de redistribución (09i).** ¿La redistribución por ingreso (pasar de
+prioridad-distancia a prioridad-SED) mueve el sesgo visual, y a qué costo de
+eficiencia? Medido sobre los datos reales, comparando ambas prioridades:
+
+| métrica | prioridad-distancia | prioridad-SED | Δ |
+|---|---|---|---|
+| corr(ingreso, v_j) — sesgo visual | +0.048 | +0.003 | −0.045 |
+| corr(ingreso, q_j) — equidad calidad | +0.178 | +0.110 | −0.068 |
+| rank medio — eficiencia (1 = 1ª opción) | 8.80 | 3.85 | −4.95 |
+
+La redistribución por ingreso NO empeora el sesgo visual: lo **neutraliza** (la
+correlación ingreso–visual cae a ≈0). Y mejora equidad en calidad y eficiencia
+(rank) a la vez — no hay trade-off eficiencia-equidad bajo SED.
+
+Control de composición (clave, porque SED reasigna el 70% de los cupos): sobre
+las 33.905 familias asignadas en **ambos** escenarios —misma gente, sin sesgo de
+selección— el rank también mejora (8.62 → 4.45); 18.102 mejoran su rank vs 477 que
+empeoran (38:1). La mejora de eficiencia es real, no artefacto de composición.
+
+Interpretación de la mejora de rank: la prioridad-distancia penaliza fuerte el
+rank porque choca con las preferencias declaradas (las familias prefieren calidad,
+no cercanía; al priorizar cercanía quedan en opciones que no querían). SED, menos
+correlacionada con la distancia, deja a la gente en mejor posición de su propia
+lista. No es que SED sea "mejor mecanismo" —sigue siendo DA— sino que la
+prioridad-distancia es particularmente costosa en rank. Refuerza la tesis: la
+palanca de equidad (y aquí también de eficiencia) es la PRIORIDAD, no el mecanismo.
+
+
+**Acceso bajo escasez real (09j).** La restriccion de acceso (4b.6) resulto inocua
+en el sintetico por holgura de cupos; evaluada sobre los datos reales (escasez:
+~21% asignadas) revela una tension. Bajo prioridad-SED, las familias A+B sin cupo
+bajan de 233.872 a 183.071 — pero el desagregado muestra que SED no ayuda parejo:
+SISBEN A pasa de 20.9% a 89.1% de acceso, mientras B CAE de 21.2% a 7.4%, y C/D
+casi desaparecen (0.3% / 0.0%). La prioridad SED redistribuye *dentro* de los
+vulnerables, hacia los mas pobres (A), a costa de expulsar a B/C/D. No es
+Pareto-mejor para los vulnerables: una restriccion de acceso con piso para B
+tendria un rol que la prioridad pura no cumple. Tension de politica real:
+priorizar a los mas pobres cuesta acceso de los pobres del medio.
+
 ### Tarea 5. Integración y paper
 
 - Comparativa final de 4 mecanismos (BM/DA/SED/WP) con IC
