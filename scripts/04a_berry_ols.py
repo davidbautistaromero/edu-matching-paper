@@ -3,17 +3,19 @@
 """
 04a_berry_ols.py
 ================
-Paso 1 del modelo de demanda escolar: inversion de Berry (1994) + OLS.
+Paso 1 del modelo de demanda escolar: inversion de Berry (1994) + IV/2SLS.
 Construye el indice visual v_j como combinacion lineal de features visuales
 estimados en la especificacion completa (M3).
 """
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
+from scipy.stats import norm
 
 # =============================================================================
 # RUTAS
@@ -170,15 +172,59 @@ IV_VARS = ['mean_q_rivals_z']
 print(f"\n  Instrumentos: {IV_VARS}")
 
 # =============================================================================
-# PASO 4: CUATRO ESPECIFICACIONES OLS
+# PASO 4: CUATRO ESPECIFICACIONES IV/2SLS
 # =============================================================================
 
-def run_ols(y, X_vars, df, localidad_arr):
-    X = sm.add_constant(df[X_vars].copy())
-    modelo = sm.OLS(y, X).fit()
-    res_hc1    = modelo.get_robustcov_results(cov_type='HC1')
-    res_clust  = modelo.get_robustcov_results(cov_type='cluster', groups=localidad_arr)
-    return modelo, res_hc1, res_clust
+def adj_r2_iv(model):
+    n = int(model.nobs)
+    k = len(model.params) - 1
+    return 1 - (1 - model.rsquared) * (n - 1) / max(n - k - 1, 1)
+
+
+def run_2sls(y, X_vars, df):
+    endog_vars = ['q_j_z'] if 'q_j_z' in X_vars else []
+    exog_vars = [v for v in X_vars if v not in endog_vars]
+
+    dep = pd.Series(y, name='delta_j').astype(float)
+    exog = sm.add_constant(df[exog_vars].copy()).astype(float)
+    endog = df[endog_vars].copy().astype(float) if endog_vars else pd.DataFrame(index=df.index)
+    instr = df[IV_VARS].copy().astype(float) if endog_vars else pd.DataFrame(index=df.index)
+
+    X_df = pd.concat([exog, endog], axis=1)
+    Z_df = pd.concat([exog, instr], axis=1)
+
+    X = X_df.to_numpy()
+    Z = Z_df.to_numpy()
+    yy = dep.to_numpy()
+    n, k = X.shape
+
+    ztz_inv = np.linalg.pinv(Z.T @ Z)
+    xzpz = X.T @ Z @ ztz_inv @ Z.T @ X
+    beta = np.linalg.pinv(xzpz) @ (X.T @ Z @ ztz_inv @ Z.T @ yy)
+    resid = yy - X @ beta
+
+    meat = Z.T @ (resid[:, None] ** 2 * Z)
+    cov = (
+        np.linalg.pinv(xzpz)
+        @ X.T @ Z @ ztz_inv @ meat @ ztz_inv @ Z.T @ X
+        @ np.linalg.pinv(xzpz)
+    )
+    cov *= n / max(n - k, 1)
+    se = np.sqrt(np.diag(cov))
+    tvals = beta / se
+    pvals = 2 * (1 - norm.cdf(np.abs(tvals)))
+
+    ssr = float(np.sum(resid ** 2))
+    tss = float(np.sum((yy - yy.mean()) ** 2))
+    rsq = 1 - ssr / tss
+
+    return SimpleNamespace(
+        params=pd.Series(beta, index=X_df.columns),
+        std_errors=pd.Series(se, index=X_df.columns),
+        pvalues=pd.Series(pvals, index=X_df.columns),
+        rsquared=rsq,
+        nobs=n,
+    )
 
 specs = {
     'M0': CTRL_Z,
@@ -189,9 +235,9 @@ specs = {
 
 resultados = {}
 for nombre, vars_spec in specs.items():
-    mod, hc1, clust = run_ols(y, vars_spec, df, localidad_arr)
-    resultados[nombre] = {'mod': mod, 'hc1': hc1, 'clust': clust, 'vars': vars_spec}
-    print(f"\n{nombre}: N={len(df):,}  R²={mod.rsquared:.4f}  R²_adj={mod.rsquared_adj:.4f}")
+    mod = run_2sls(y, vars_spec, df)
+    resultados[nombre] = {'mod': mod, 'vars': vars_spec}
+    print(f"\n{nombre}: N={int(mod.nobs):,}  R2={mod.rsquared:.4f}  R2_adj={adj_r2_iv(mod):.4f}")
 
 # =============================================================================
 # PASO 5: TABLA COMPARATIVA
@@ -205,12 +251,11 @@ filas = []
 for var in ['const'] + CLIP_Z + CS_Z + CTRL_Z:
     fila = {'variable': var}
     for nombre, res in resultados.items():
-        hc1 = res['hc1']
-        idx = list(res['hc1'].model.exog_names).index(var) if var in res['hc1'].model.exog_names else None
-        if idx is not None:
-            fila[f'{nombre}_coef'] = hc1.params[idx]
-            fila[f'{nombre}_se']   = hc1.bse[idx]
-            fila[f'{nombre}_pval'] = hc1.pvalues[idx]
+        mod = res['mod']
+        if var in mod.params.index:
+            fila[f'{nombre}_coef'] = mod.params[var]
+            fila[f'{nombre}_se']   = mod.std_errors[var]
+            fila[f'{nombre}_pval'] = mod.pvalues[var]
         else:
             fila[f'{nombre}_coef'] = np.nan
             fila[f'{nombre}_se']   = np.nan
@@ -225,8 +270,8 @@ r2adj_fila = {'variable': 'R2_adj'}
 n_fila = {'variable': 'N'}
 for nombre, res in resultados.items():
     r2_fila[f'{nombre}_coef']    = res['mod'].rsquared
-    r2adj_fila[f'{nombre}_coef'] = res['mod'].rsquared_adj
-    n_fila[f'{nombre}_coef']     = len(df)
+    r2adj_fila[f'{nombre}_coef'] = adj_r2_iv(res['mod'])
+    n_fila[f'{nombre}_coef']     = int(res['mod'].nobs)
     for suf in ['_se', '_pval']:
         r2_fila[f'{nombre}{suf}']    = np.nan
         r2adj_fila[f'{nombre}{suf}'] = np.nan
@@ -236,14 +281,14 @@ tabla = pd.concat([tabla, pd.DataFrame([r2_fila, r2adj_fila, n_fila])], ignore_i
 
 # Imprimir tabla
 print('\n' + '=' * 90)
-print('RESULTADOS OLS — CUATRO ESPECIFICACIONES (SE HC1)')
+print('RESULTADOS IV/2SLS -- CUATRO ESPECIFICACIONES (SE robustos)')
 print('=' * 90)
 print(f"{'Variable':<35} {'M0':>12} {'M1':>12} {'M2':>12} {'M3':>12}")
 print('-' * 90)
 
 def fmt_cell(coef, pval):
     if np.isnan(coef):
-        return '—'
+        return '--'
     sig = '***' if pval < 0.01 else ('**' if pval < 0.05 else ('*' if pval < 0.1 else ''))
     return f'{coef:.4f}{sig}'
 
@@ -254,7 +299,7 @@ def fmt_se(se):
 
 for _, row in tabla.iterrows():
     if row['variable'] in ('R2', 'R2_adj', 'N'):
-        vals = [f"{row[f'{n}_coef']:.4f}" if not np.isnan(row[f'{n}_coef']) else '—'
+        vals = [f"{row[f'{n}_coef']:.4f}" if not np.isnan(row[f'{n}_coef']) else '--'
                 for n in specs]
         print(f"{row['variable']:<35} {vals[0]:>12} {vals[1]:>12} {vals[2]:>12} {vals[3]:>12}")
     else:
@@ -264,19 +309,19 @@ for _, row in tabla.iterrows():
         print(f"{'':35} {ses[0]:>12} {ses[1]:>12} {ses[2]:>12} {ses[3]:>12}")
 
 print('=' * 90)
-print('Nota: *** p<0.01, ** p<0.05, * p<0.1. SE HC1 robustos.')
+print('Nota: *** p<0.01, ** p<0.05, * p<0.1. SE robustos.')
 
+tabla.to_csv(OUT_TABLES / 'berry_iv_specs.csv', index=False, encoding='utf-8-sig')
 tabla.to_csv(OUT_TABLES / 'berry_ols_specs.csv', index=False, encoding='utf-8-sig')
-print(f'\nTabla guardada: {OUT_TABLES / "berry_ols_specs.csv"}')
+print(f'\nTabla guardada: {OUT_TABLES / "berry_iv_specs.csv"}')
+print(f'Copia compatible guardada: {OUT_TABLES / "berry_ols_specs.csv"}')
 
 # =============================================================================
-# PASO 5b: 2SLS — M3 con q_j instrumentada
+# PASO 5b: diagnostico M3-IV con q_j instrumentada
 # =============================================================================
-
-from linearmodels.iv import IV2SLS
 
 print('\n' + '=' * 90)
-print('2SLS — M3 CON q_j INSTRUMENTADA')
+print('2SLS -- M3 CON q_j INSTRUMENTADA')
 print('=' * 90)
 
 # Variables exógenas en M3 (todo menos q_j_z)
@@ -286,20 +331,16 @@ _exog_vars = [v for v in (CLIP_Z + CS_Z + CTRL_Z) if v != 'q_j_z']
 _fs_X = sm.add_constant(df[IV_VARS + _exog_vars])
 _fs_y = df['q_j_z']
 _fs_mod = sm.OLS(_fs_y, _fs_X).fit()
+_fs_robust = _fs_mod.get_robustcov_results(cov_type='HC1')
+_fs_names = list(_fs_mod.params.index)
 print(f"\n  FIRST STAGE: q_j_z ~ instruments + controls")
-print(f"    F-statistic: {_fs_mod.fvalue:.2f}  (>10 = strong)")
 print(f"    R2: {_fs_mod.rsquared:.4f}")
 for iv in IV_VARS:
-    print(f"    {iv}: coef={_fs_mod.params[iv]:+.4f} (p={_fs_mod.pvalues[iv]:.4f})")
+    _idx = _fs_names.index(iv)
+    _f_excl = float(_fs_robust.tvalues[_idx] ** 2)
+    print(f"    {iv}: coef={_fs_mod.params[iv]:+.4f} (p={_fs_robust.pvalues[_idx]:.4f}, F_excl={_f_excl:.2f})")
 
-# 2SLS
-_dep = df[['delta_j']].copy()
-_dep.columns = ['y']
-_endog = df[['q_j_z']]
-_exog  = sm.add_constant(df[_exog_vars])
-_instr = df[IV_VARS]
-
-iv_model = IV2SLS(_dep['y'], _exog, _endog, _instr).fit(cov_type='robust')
+iv_model = resultados['M3']['mod']
 
 print(f"\n  2SLS Results (M3-IV):")
 print(f"  {'Variable':<35} {'Coef':>10} {'SE':>10} {'p-val':>8}")
@@ -310,17 +351,6 @@ for vname in iv_model.params.index:
     p = iv_model.pvalues[vname]
     sig = '***' if p < 0.01 else ('**' if p < 0.05 else ('*' if p < 0.1 else ''))
     print(f"  {vname:<35} {c:>+10.4f} {s:>10.4f} {p:>8.4f} {sig}")
-
-# Comparación OLS vs 2SLS para q_j_z
-_m3_hc1 = resultados['M3']['hc1']
-_m3_names = list(_m3_hc1.model.exog_names)
-_ols_q = _m3_hc1.params[_m3_names.index('q_j_z')] if 'q_j_z' in _m3_names else np.nan
-_iv_q  = iv_model.params.get('q_j_z', np.nan)
-print(f"\n  q_j_z:  OLS = {_ols_q:+.4f}  ->  2SLS = {_iv_q:+.4f}")
-if not np.isnan(_ols_q) and not np.isnan(_iv_q):
-    print(f"  Cambio: {_iv_q - _ols_q:+.4f}")
-    if np.sign(_ols_q) != np.sign(_iv_q):
-        print("  *** CAMBIO DE SIGNO — endogeneidad corregida ***")
 
 # Hansen J test (sobreidentificación)
 if hasattr(iv_model, 'wooldridge_overid'):
