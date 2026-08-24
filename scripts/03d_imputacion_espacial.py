@@ -23,6 +23,11 @@ import numpy as np
 import pandas as pd
 from sklearn.neighbors import BallTree
 
+# Raiz del repositorio, derivada de la ubicacion de este script.
+# Evita rutas absolutas y hace el pipeline reproducible en cualquier maquina.
+_ROOT = Path(__file__).resolve().parent.parent
+
+
 # =============================================================================
 # CONFIGURACIÓN
 # Las únicas líneas que deberías cambiar si se mueven los archivos o si
@@ -30,8 +35,8 @@ from sklearn.neighbors import BallTree
 # =============================================================================
 
 RADIO_KM    = 2.0
-INPUT_PATH  = r'C:\paper-AI\data\primary\colegios_features.geojson'
-OUTPUT_PATH = r'C:\paper-AI\data\primary\colegios_features_imputed.geojson'
+INPUT_PATH  = str(_ROOT / 'data' / 'primary' / 'colegios_features.geojson')
+OUTPUT_PATH = str(_ROOT / 'data' / 'primary' / 'colegios_features_imputed.geojson')
 
 EARTH_RADIUS_KM = 6371.0
 

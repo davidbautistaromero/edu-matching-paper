@@ -56,6 +56,11 @@ from tqdm import tqdm
 import torch
 import clip  # pip install git+https://github.com/openai/CLIP.git
 
+# Raiz del repositorio, derivada de la ubicacion de este script.
+# Evita rutas absolutas y hace el pipeline reproducible en cualquier maquina.
+_ROOT = Path(__file__).resolve().parent.parent
+
+
 
 # =============================================================================
 # BLOQUE 2: CONFIGURACIÓN
@@ -63,13 +68,13 @@ import clip  # pip install git+https://github.com/openai/CLIP.git
 # =============================================================================
 
 # Carpeta raíz con subdirectorios por establecimiento, cada uno con .jpg
-IMAGES_DIR = r'C:\paper-AI\data\images\gsv'
+IMAGES_DIR = str(_ROOT / 'data' / 'images' / 'gsv')
 
 # Carpeta donde se guardarán los outputs (se crea automáticamente si no existe)
-OUT_DIR = r'C:\paper-AI\data\images\clip'
+OUT_DIR = str(_ROOT / 'data' / 'images' / 'clip')
 
 # CSV con IDs de escuelas rurales a excluir del análisis
-EXCLUSION_PATH = 'data/raw/excluded_schools.csv'
+EXCLUSION_PATH = str(_ROOT / 'data' / 'raw' / 'excluded_schools.csv')
 
 # Modo de ejecución:
 #   'sample' → procesa solo los primeros 10 establecimientos (para probar)
