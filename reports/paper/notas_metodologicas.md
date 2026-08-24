@@ -578,8 +578,11 @@ Todos los paths en 09c/09d/09e están hardcodeados a `/content/edu-matching-pape
 ### Resultados 4b — implementación y verificación (Jhoan Fuentes, 2026-05-29)
 
 > Esta subsección documenta los resultados de ejecutar el plan 4b anterior. Todo
-> el código quedó en `scripts/09c_wp_rule.py` (4b.1–4b.4, 4b.6, 4b.8),
-> `scripts/09g_uniqueness_sed.py` (4b.7) y `scripts/09h_escala_reticulo.py` (4b.5).
+> el código quedó en `scripts/diagnostics/09c_wp_rule.py` (4b.1–4b.4, 4b.6, 4b.8),
+> `scripts/diagnostics/09g_uniqueness_sed.py` (4b.7) y
+> `scripts/diagnostics/09h_escala_reticulo.py` (4b.5). Estos scripts sólo escriben a
+> consola: son verificaciones metodológicas, no parte del pipeline que produce las
+> tablas del short paper (ver README, "Correspondencia con las tablas del paper").
 > El orden de ejecución se reordenó: 4b.7 se corrió primero por ser el único
 > experimento capaz de cambiar la conclusión (mueve el conjunto factible, no solo
 > el objetivo).

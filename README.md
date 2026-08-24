@@ -46,7 +46,7 @@ Estos archivos deben descargarse manualmente y colocarse en `data/raw/` antes de
 | `poblacion-localidad-upz-bogota-2018-2024.xlsx` | DANE – Proyecciones de población |
 | `upz/upz.shp` (+ `.dbf`, `.prj`, `.shx`) | Datos Abiertos Bogotá – IDECA |
 
-Las imágenes GSV y Mapillary no se incluyen en el repositorio. Ver `scripts/gsv_config.py` y `scripts/mapillary_filtros.py` para configurar las descargas.
+Las imagenes GSV no se incluyen en el repositorio. Ver `scripts/gsv_config.py` para configurar la descarga. La rama Mapillary quedo descartada (el paper usa solo GSV) y esta archivada en `scripts/legacy/`; `MAPILLARY_TOKEN` solo hace falta para ejecutarla.
 
 ---
 
@@ -73,16 +73,13 @@ python scripts/00_download_gsv_colegios.py      # requiere GSV_API_TOKEN
 # ── Fase 1 — Dataset maestro ──────────────────────────────────────────────
 python scripts/01_build_dataset.py
 
-# ── Fase 2-3 — Features visuales (GPU recomendado) ────────────────────────
-python scripts/02a_extract_embeddings.py
-python scripts/02b_diagnose_embeddings.py
-python scripts/02c_seg_cityscapes.py
-python scripts/03b_nmf_topics.py                # NMF K=8 (modelo principal)
-python scripts/03c_clip_features.py
-python scripts/03d_imputacion_espacial.py
+# ── Fase 2-3 — Features visuales (GPU recomendado) ────────────────────
+python scripts/02c_seg_cityscapes.py         # DeepLabV3+ Cityscapes -> proporciones semanticas
+python scripts/03c_clip_features.py          # CLIP ViT-B/32 -> scores de prompts calibrados
+python scripts/03d_imputacion_espacial.py    # imputacion espacial -> features_imputed
 
 # ── Fase 4 — Estimación de demanda ────────────────────────────────────────
-python scripts/04a_berry_ols.py              # Berry inversion + OLS (6 specs M1-M6)
+python scripts/04a_berry_ols.py              # inversion de Berry + OLS/2SLS (M0-M3)
 python scripts/04b_blp.py                    # BLP-GMM: baseline + IV-BLP
 python scripts/04c_build_capacidad.py        # capacidad escolar
 
@@ -94,19 +91,42 @@ python scripts/05c_visual_index_validation.py  # figura top/bottom 5 (fotos cura
 # ── Fase 6 — Preferencias (utilidad BLP) ──────────────────────────────────
 python scripts/06_preferencias.py            # u_ij = δ_j + π₁·y_i·seg_z + λ₀·log1p(d) + λ₁·y_i·log1p(d) + ε
 
-# ── Fase 7 — Mecanismos de matching (datos reales) ────────────────────────
-python scripts/07_boston_mechanism.py
-python scripts/07_da_mechanism.py
-python scripts/07_sed_lex.py
-python scripts/compare_mechanisms.py
+# ── Fase 7 — WP-Rule: calibración de θ* y aprendizaje de W ───────────
+python scripts/07_WP_rule.py                 # -> reports/wp_calibracion.json
 
-# ── Fase 8 — Experimento sintético y robustez ─────────────────────────────
-python scripts/08_datos_sinteticos.py
-python scripts/09a_matching_sinteticos.py
-python scripts/09b_robustez_gamma.py
+# ── Fase 8 — Mecanismos en mercados sintéticos calibrados ────────────
+python scripts/08_simulacion_mecanismos.py   # -> wp_rule_results.csv, wp_rho_sweep.csv
+
+# ── Fase 9 — Mecanismos en datos reales ─────────────────────────────
+python scripts/09_mecanismos_reales.py       # -> mecanismos_reales_results.csv
 ```
 
-> `03a_lda_topics.py` (LDA) está superado por NMF; no es necesario para reproducir resultados.
+### Correspondencia con las tablas del paper
+
+`reports/paper/short-paper.tex` tiene sus tablas escritas a mano. Cada una proviene de:
+
+| Tabla | Archivo de resultados | Script |
+|---|---|---|
+| T1 · Berry IV (M0–M3) | `reports/tables/berry_iv_specs.csv` | `04a_berry_ols.py` |
+| T1 · columna IV-BLP | `reports/tables/blp_results.csv` (fila `iv_blp`) | `04b_blp.py` |
+| T2 · mecanismos sintéticos | `reports/tables/wp_rule_results.csv` | `08_simulacion_mecanismos.py` |
+| T3 · mecanismos reales | `reports/tables/mecanismos_reales_results.csv` | `09_mecanismos_reales.py` |
+
+Correr las fases 0–9 en orden reproduce estos cuatro archivos. `07_WP_rule.py` es
+obligatorio antes de las fases 8 y 9: ambas leen `reports/wp_calibracion.json`.
+
+### `scripts/legacy/` y `scripts/diagnostics/`
+
+- **`legacy/`** — ramas superadas o abandonadas, conservadas por trazabilidad y
+  porque reproducen figuras de `ppt.tex`: mecanismos v1 (`07_boston_mechanism`,
+  `07_da_mechanism`, `07_sed_lex`, `compare_mechanisms`), sintéticos v1
+  (`08_datos_sinteticos`, `09a_matching_sinteticos`, `09b_robustez_gamma`,
+  `09d_uniqueness_check`), BLP v1 (`10_blp_utility_estimation`), rama VGG19/NMF
+  (`02a`, `02b`, `03a_lda_topics`, `03b_nmf_topics`, `topic_viz`) y rama Mapillary.
+  **Ninguno alimenta el short paper.**
+- **`diagnostics/`** — chequeos que sólo escriben a consola y respaldan
+  `notas_metodologicas.md` (unicidad del retículo estable, redistribución, acceso
+  SISBEN, escala del retículo). No producen artefactos del pipeline.
 
 ---
 
@@ -115,12 +135,14 @@ python scripts/09b_robustez_gamma.py
 ```
 data/raw/          →  00_* scripts     →  data/processed/
 data/processed/    →  01_build_dataset →  data/primary/colegios_features.geojson
-GSV images         →  02-03 scripts    →  embeddings, segmentación, scores CLIP
+GSV images         →  02c, 03c         →  segmentación Cityscapes, scores CLIP
 colegios_features  →  04a_berry_ols    →  berry_delta_j.parquet (inversión Berry)
                    →  04b_blp          →  blp_delta_j.parquet (δ_j BLP, preferido)
                    →  04c              →  colegios_capacidad.parquet
 familias + δ_j BLP →  05-06            →  preferencias_familias.parquet
-                   →  07_*             →  data/results/matching_*.parquet
+                   →  07_WP_rule       →  reports/wp_calibracion.json (θ*, W)
+                   →  08_simulacion    →  wp_rule_results.csv (sintéticos)
+                   →  09_mecanismos    →  matching_real_*.parquet + tabla real
 ```
 
 ### Módulos compartidos
@@ -131,7 +153,7 @@ familias + δ_j BLP →  05-06            →  preferencias_familias.parquet
 
 ### Modelo estructural
 
-**Berry OLS** (`04a`): inversión de Berry δ_j = log(s_j) − log(s₀), luego OLS con 6 especificaciones (M1–M6) que testean features visuales incrementalmente.
+**Berry IV** (`04a`): inversion de Berry d_j = log(s_j) - log(s_0), luego OLS y 2SLS con cuatro especificaciones (M0-M3) que introducen las senales visuales de forma incremental. `q_j` se instrumenta con la calidad media de rivales ponderada por 1/d dentro de la localidad. La Tabla 1 del paper usa las columnas IV.
 
 **BLP con micro-momentos** (`04b`):
 ```
@@ -141,10 +163,10 @@ u_ij = δ_j + π₁·yᵢ·seg_z_j + λ₀·log(1+d_ij) + λ₁·yᵢ·log(1+d_i
 - yᵢ = ingreso normalizado (N_ingpc / media)
 - seg_z_j = seguridad percibida estandarizada (score CLIP)
 - Dos specs: Baseline (Z=X) e IV-BLP (instrumentos BLP para q_j endógeno)
-- First-stage F = 10.70; resultados robustos entre specs
+- First-stage F ~ 18.8 en IV-BLP y 43-47 en Berry IV (instrumento excluido); SE por bootstrap
 - **Resultado clave:** seguridad percibida (+0.12) significativa; calidad académica q_j (−0.18) NO atrae demanda
 
-**Preferencias** (`06`): usa directamente δ_j y θ del BLP. Genera rankings top-20 para 537K familias expandidas.
+**Preferencias** (`06`): usa directamente d_j y theta del BLP. Genera rankings top-20 para las 537.031 familias expandidas por FEX_C. En `09_mecanismos_reales.py` el universo efectivo se restringe a las 99.890 familias que buscan cupo de primer ingreso, sobre 380 colegios con senal visual observada y 113.857 cupos: son las cifras que reporta el paper.
 
 ### Variables clave
 
@@ -158,11 +180,22 @@ u_ij = δ_j + π₁·yᵢ·seg_z_j + λ₀·log(1+d_ij) + λ₁·yᵢ·log(1+d_i
 | `N_ingpc` | Ingreso per cápita del hogar (continuo) |
 | `γ` | Parámetro de sesgo visual en experimento sintético; rango {0.25, ..., 1.5} |
 
-### Pendiente: WP-Rule (Weighted Polytope Rule)
+### WP-Rule (Weighted Polytope Rule) - implementada
 
-Diseño de mecanismos vía StructSVM (Narasimhan, Agarwal & Parkes, 2016). Aprende pesos λ_ij sobre el politopo de matchings estables para aproximar un target de equidad. Documentado en:
-- `reports/paper/maching_learning_matching.md` — teoría y resultados Wake County
-- `reports/paper/notas_metodologicas.md` (Tarea 4) — plan de implementación para Bogotá
+Diseno de mecanismos via StructSVM (Narasimhan, Agarwal & Parkes, 2016). Aprende
+pesos lambda_ij sobre el politopo de matchings estables para aproximar un target
+de equidad.
+
+- `07_WP_rule.py` calibra la prioridad theta* (ingreso-distancia-visual) y aprende
+  W = (a, b, d_v). Escribe `reports/wp_calibracion.json`, insumo obligatorio de las
+  fases 8 y 9.
+- `08_simulacion_mecanismos.py` evalua BM / DA / SED-lex / WP_learned en mercados
+  sinteticos calibrados a Bogota, generados internamente (semilla 123).
+- `09_mecanismos_reales.py` aplica la version escalable DA-P^theta* en datos reales;
+  el LP global de WP no se resuelve a escala de 99.890 familias.
+
+Documentacion: `reports/paper/maching_learning_matching.md` (teoria, Wake County) y
+`reports/paper/notas_metodologicas.md`.
 
 ### Outputs
 
@@ -176,3 +209,7 @@ Resultados, tablas y figuras en `reports/`. Decisiones metodológicas documentad
 - Archivos grandes (imágenes >50 MB, matrices de embeddings) están en `.gitignore`.
 - 382 colegios urbanos tras filtros (el dataset original incluye ~558 con rurales).
 - `05c` usa selección manual curada de fotos (headings elegidos por inspección visual).
+- `data/processed/poblacion_upz_2024.parquet` (de `00_fetch_poblacion_upz.py`) no lo
+  consume ningun script del pipeline; se conserva como fuente de referencia.
+- `models/*.joblib` provienen de un `04a_regresion.py` que ya no existe en el repo y
+  ningun script los carga; se conservan solo como registro historico.
