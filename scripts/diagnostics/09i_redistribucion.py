@@ -30,12 +30,17 @@
 #  su propia lista. Confirma la tesis: la palanca de equidad es la PRIORIDAD, no el
 #  mecanismo, y bajo SED no hay trade-off eficiencia-equidad.
 # =============================================================================
+# Este script fue movido a un subdirectorio; ROOT y matching_utils
+# se resuelven relativos a scripts/ para que siga siendo ejecutable.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 import sys, time, importlib.util
 from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts")); sys.path.insert(0, ".")
 import matching_utils as mu
 

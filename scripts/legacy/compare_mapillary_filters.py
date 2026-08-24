@@ -72,7 +72,7 @@ import pandas as pd
 # PARÁMETROS — edita solo esta sección
 # =============================================================================
 
-_ROOT         = Path(__file__).resolve().parents[1]
+_ROOT         = Path(__file__).resolve().parents[2]
 RUTA_CATALOGO = _ROOT / "data" / "images" / "mapillary" / "mapillary_catalog.csv"
 RUTA_SALIDA   = _ROOT / "data" / "images" / "mapillary" / "comparacion_filtros"
 

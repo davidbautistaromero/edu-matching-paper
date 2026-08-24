@@ -61,7 +61,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # Cargar variables del archivo .env si existe (sin dependencias externas)
-_env_path = Path(__file__).resolve().parents[1] / ".env"
+_env_path = Path(__file__).resolve().parents[2] / ".env"
 if _env_path.exists():
     for _line in _env_path.read_text(encoding="utf-8").splitlines():
         _line = _line.strip()
@@ -119,7 +119,7 @@ MAX_CONCURRENT = 20
 LIMIT_POR_PAGINA = 2000
 
 # Rutas del proyecto (relativas a este script para portabilidad).
-_ROOT         = Path(__file__).resolve().parents[1]
+_ROOT         = Path(__file__).resolve().parents[2]
 RUTA_GEOJSON  = _ROOT / "data" / "processed" / "colegios_dataset.geojson"
 RUTA_SALIDA   = _ROOT / "data" / "images" / "mapillary"
 _sfx          = "_muestra" if MODO_MUESTRA else ""

@@ -33,14 +33,14 @@ import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cdist
 
-os.chdir(Path(__file__).resolve().parent.parent)
+os.chdir(Path(__file__).resolve().parents[2])
 sys.stdout.reconfigure(encoding='utf-8')
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s [%(levelname)s] %(message)s',
                     datefmt='%H:%M:%S')
 log = logging.getLogger(__name__)
 
-ROOT    = Path(__file__).resolve().parent.parent
+ROOT    = Path(__file__).resolve().parents[2]
 COL_P   = ROOT / 'data' / 'primary' / 'colegios_features_imputed.geojson'
 FAM_P   = ROOT / 'data' / 'processed' / 'familias_expandidas.parquet'
 REP_DIR = ROOT / 'reports'

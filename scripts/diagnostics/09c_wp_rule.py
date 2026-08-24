@@ -26,13 +26,18 @@
 #        soft  -> feature extra e*1[SISBEN_i in {A,B}] en los pesos
 #  4b.3  baselines: WP equal-weights (a=b=1, d=0) y WP paper-original (d=0)
 # =============================================================================
+# Este script fue movido a un subdirectorio; ROOT y matching_utils
+# se resuelven relativos a scripts/ para que siga siendo ejecutable.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 import sys
 from pathlib import Path
 import numpy as np
 from scipy.optimize import linprog, milp, LinearConstraint, Bounds
 
 # --- 4b.8: paths relativos --------------------------------------------------
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, ".")
 import matching_utils as mu

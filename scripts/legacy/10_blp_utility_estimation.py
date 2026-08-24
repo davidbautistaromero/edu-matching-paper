@@ -114,7 +114,7 @@ log = logging.getLogger(__name__)
 # CONFIGURACIÓN
 # ══════════════════════════════════════════════════════════════════════
 
-ROOT    = Path(__file__).resolve().parent.parent
+ROOT    = Path(__file__).resolve().parents[2]
 TMP     = Path("/tmp/blp_data")
 OUT_DIR = ROOT / "data" / "results"
 OUT_DIR.mkdir(parents=True, exist_ok=True)

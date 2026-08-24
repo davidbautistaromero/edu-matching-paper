@@ -26,7 +26,7 @@ import contextily as ctx
 from PIL import Image
 
 # ---------------------------------------------------------------------------
-ROOT          = Path(__file__).resolve().parents[1]
+ROOT          = Path(__file__).resolve().parents[2]
 RUTA_SEDES    = ROOT / "data" / "processed" / "colegios_dataset.geojson"
 RUTA_CATALOGO = ROOT / "data" / "images" / "gsv" / "gsv_catalog.csv"
 RUTA_GSV      = ROOT / "data" / "images" / "gsv"

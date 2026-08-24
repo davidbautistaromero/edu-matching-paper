@@ -19,16 +19,16 @@
 #  está colapsado a un punto, y entonces DA, SED y WP coinciden bajo prioridad
 #  fija. Brecha grande => hay margen y la WP podría diferir de DA a escala.
 # =============================================================================
+from pathlib import Path
 import sys, time
 from collections import deque
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, "/content/edu-matching-paper/scripts")
-sys.path.insert(0, ".")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import matching_utils as mu
 
-BASE = "/content/edu-matching-paper/data"
+BASE = str(Path(__file__).resolve().parents[2] / "data")
 
 
 def cargar(world):

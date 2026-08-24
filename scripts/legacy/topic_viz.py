@@ -10,7 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-ROOT    = Path(__file__).resolve().parent.parent
+ROOT    = Path(__file__).resolve().parents[2]
 NMF_P   = ROOT / "data" / "images" / "embeddings" / "gsv_nmf_K6_images.parquet"
 IMG_DIR = ROOT / "data" / "images" / "gsv"
 OUT_DIR = ROOT / "reports" / "figures"

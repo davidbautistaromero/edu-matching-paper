@@ -22,15 +22,16 @@
 #  equidistantes cambian de cupo según el sorteo (racionamiento bajo escasez),
 #  un efecto del desempate, NO evidencia sobre el sesgo en preferencias.
 # =============================================================================
+from pathlib import Path
 import sys, time
 from collections import deque
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, "/content/edu-matching-paper/scripts"); sys.path.insert(0, ".")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import matching_utils as mu
 
-BASE = "/content/edu-matching-paper/data"
+BASE = str(Path(__file__).resolve().parents[2] / "data")
 ARCHIVO_PREF  = f"{BASE}/primary/preferencias_familias.parquet"
 ARCHIVO_CAP   = f"{BASE}/primary/colegios_capacidad.parquet"
 ARCHIVO_COORD = f"{BASE}/processed/familias_ubicadas.parquet"

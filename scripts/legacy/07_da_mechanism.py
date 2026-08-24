@@ -1,34 +1,25 @@
 """
-09_sed_lex.py
-=============
-Aplica el mecanismo de la Secretaría de Educación del Distrito (SED Bogotá)
-con prioridad lexicográfica según la Resolución 1587 de 2025.
-Solo familias de primer ingreso (n_hijos_ingreso > 0).
+08_da_mechanism.py
+==================
+Aplica Deferred Acceptance / Gale-Shapley (DA) sobre la población expandida
+de Bogotá. Solo familias de primer ingreso (n_hijos_ingreso > 0).
 
-Modelo de prioridad
--------------------
-La Resolución 1587/2025 (Art. 19-20) establece un orden lexicográfico de
-categorías priorizadas antes que la población general. Con EM2021 se usan
-los umbrales DANE 2024 sobre N_ingpc (ingreso per cápita mensual):
-  - SISBEN A → N_ingpc < 227,220             (cat = 0, prioridad máxima)
-  - SISBEN B → N_ingpc < 460,198             (cat = 1, prioridad alta)
-  - SISBEN C → N_ingpc < 897,987             (cat = 2, prioridad media)
-  - SISBEN D → N_ingpc ≥ 897,987             (cat = 3, prioridad baja)
-  Fallback: si N_ingpc es nulo → E1→A, E2→B, E3→C, E4-6→D.
+Algoritmo
+---------
+DA opera en rondas con aceptaciones PROVISIONALES:
+  1. Cada familia no asignada propone al siguiente colegio de su lista.
+  2. Cada colegio acepta provisionalmente a los mejores candidatos hasta
+     su cupo (criterio: menor distancia Haversine = mayor prioridad).
+  3. Si llega un candidato con mejor prioridad que el peor provisional,
+     lo desplaza — el expulsado vuelve al mercado.
+  4. El proceso termina cuando nadie es rechazado en una ronda.
 
-Codificación:
-    priority(i, j) = cat(i) × 1e6 + dist_haversine(i, j)
+Propiedades:
+  - Strategy-proof: declarar preferencias verdaderas es estrategia dominante.
+  - Estable: el matching no tiene blocking pairs (DA debería dar BP = 0).
+  - Student-optimal: mejor matching estable posible para los estudiantes.
 
-El multiplicador 1e6 garantiza que el orden de categorías domine sobre
-cualquier distancia plausible (máx ~30 km en Bogotá). Dentro de cada
-categoría, desempata por proximidad geográfica — idéntico al criterio SED.
-
-Comparación
------------
-También corre DA puro por distancia como control para aislar el efecto
-de la priorización lexicográfica sobre las métricas de equidad y eficiencia.
-
-Inputs
+Inputs  (idénticos a 07_boston_mechanism.py)
 ------
   data/primary/preferencias_familias.parquet
   data/processed/familias_expandidas.parquet
@@ -37,12 +28,17 @@ Inputs
 
 Outputs
 -------
-  data/results/matching_sed_lex.parquet      — asignación SED lexicográfico
-  data/results/matching_sed_dist.parquet     — asignación DA puro distancia (control)
-  reports/matching_sed_comparison.csv        — métricas comparativas
-  reports/figures/matching/sed_equidad.png
+  data/results/matching_da.parquet
+  reports/matching_da_summary.csv
+  reports/figures/matching/da_equidad_estrato.png
+  reports/figures/matching/da_distribucion_qj.png
 """
 
+# Este script fue movido a un subdirectorio; ROOT y matching_utils
+# se resuelven relativos a scripts/ para que siga siendo ejecutable.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 import logging
 import time
 from pathlib import Path
@@ -51,7 +47,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from matching_utils import compute_metrics, deferred_acceptance
+from matching_utils import deferred_acceptance, compute_metrics
 
 logging.basicConfig(
     level=logging.INFO,
@@ -60,7 +56,8 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-ROOT    = Path(__file__).resolve().parent.parent
+# ── Paths ──────────────────────────────────────────────────────────────────────
+ROOT    = Path(__file__).resolve().parents[2]
 PREF_P  = ROOT / "data" / "primary"   / "preferencias_familias.parquet"
 FAM_P   = ROOT / "data" / "processed" / "familias_expandidas.parquet"
 DIST_P  = ROOT / "data" / "processed" / "distancias_expandidas.parquet"
@@ -73,7 +70,6 @@ OUT_DIR.mkdir(parents=True, exist_ok=True)
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 CAPACITY_MIN = 5
-CAT_OFFSET   = 1_000_000   # garantiza que categoría domine sobre distancia
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Cargar datos
@@ -94,7 +90,7 @@ fam_df  = fam_df.iloc[:n].reset_index(drop=True)
 pref_df = pref_df.iloc[:n].reset_index(drop=True)
 dist_df = dist_df.iloc[:n].reset_index(drop=True)
 
-# Filtrar: solo familias de primer ingreso
+# Solo familias de primer ingreso
 mask    = (fam_df["n_hijos_ingreso"] > 0).values
 fam_df  = fam_df[mask].reset_index(drop=True)
 pref_df = pref_df[mask].reset_index(drop=True)
@@ -102,20 +98,23 @@ dist_df = dist_df[mask].reset_index(drop=True)
 
 log.info(f"  Familias totales        : {n:,}")
 log.info(f"  Familias primer ingreso : {len(fam_df):,}")
+log.info(f"  Colegios en distancias  : {dist_df.shape[1]}")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 2. Construir school_info y capacidades
+# 2. Construir school_info
 # ─────────────────────────────────────────────────────────────────────────────
-log.info("Paso 2 — Construyendo school_info...")
+log.info("Paso 2 — Construyendo school_info desde colegios_capacidad...")
 
 school_info = cap_df.set_index("id_establecimiento")[[
     "capacidad", "a_j", "a_j_visual", "a_j_nonvisual", "q_j", "sobre_demanda_j", "nombre_localidad"
 ]].copy()
 school_info["capacidad"] = school_info["capacidad"].clip(lower=CAPACITY_MIN).astype(int)
+
 school_cap = school_info["capacidad"].to_dict()
 
-log.info(f"  Capacidad total      : {school_info['capacidad'].sum():,}")
-log.info(f"  Ratio cupos/familias : {school_info['capacidad'].sum() / len(fam_df):.2f}x")
+log.info(f"  Colegios con capacidad  : {len(school_info):,}")
+log.info(f"  Capacidad total         : {school_info['capacidad'].sum():,}")
+log.info(f"  Ratio cupos/familias    : {school_info['capacidad'].sum() / len(fam_df):.2f}x")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 3. Filtrar colegios válidos
@@ -135,7 +134,7 @@ school_col_idx = {sid: k for k, sid in enumerate(dist_df.columns)}
 log.info(f"  Colegios válidos: {len(valid_schools)}")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. Preparar arrays
+# 4. Preparar arrays de trabajo
 # ─────────────────────────────────────────────────────────────────────────────
 log.info("Paso 4 — Preparando arrays...")
 
@@ -143,21 +142,6 @@ estrato_arr = (
     pd.to_numeric(fam_df["estrato_real"], errors="coerce")
     .fillna(3).clip(1, 6).astype(int).values
 )
-
-# Categoría de prioridad SED — leer sisben_cat precalculado en familias_expandidas.parquet
-# Fallback cat=3 (D, no priorizado) si la columna aún no existe (pipeline no recorrido)
-if "sisben_cat" in fam_df.columns:
-    categoria = pd.to_numeric(fam_df["sisben_cat"], errors="coerce").fillna(3).astype(int).values
-else:
-    log.warning("  sisben_cat no encontrado — fallback por estrato (correr 05b primero)")
-    categoria = np.where(estrato_arr <= 1, 0,
-                np.where(estrato_arr <= 2, 1,
-                np.where(estrato_arr <= 3, 2, 3))).astype(int)
-
-SISBEN_LABELS = ["A (pobreza extrema)", "B (pobreza moderada)", "C (vulnerable)", "D (no priorizado)"]
-for cat, label in enumerate(SISBEN_LABELS):
-    n = (categoria == cat).sum()
-    log.info(f"  SISBEN {label}: {n:,} ({n/len(categoria)*100:.1f}%)")
 
 pref_lists = [
     [s for s in row.values if isinstance(s, str) and s in valid_schools]
@@ -167,94 +151,84 @@ pref_lists = [
 log.info(f"  Longitud media lista de prefs: {np.mean([len(p) for p in pref_lists]):.1f}")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 5. Funciones de prioridad
+# 5. Función de prioridad — distancia Haversine
 # ─────────────────────────────────────────────────────────────────────────────
-def priority_lex(student_idx: int, school_id: str) -> float:
-    """Lexicográfico: categoría primero, distancia como desempate."""
-    col = school_col_idx.get(school_id)
-    if col is None:
-        return np.inf
-    return float(categoria[student_idx]) * CAT_OFFSET + float(dist_matrix[student_idx, col])
-
-def priority_dist(student_idx: int, school_id: str) -> float:
-    """Solo distancia Haversine — DA puro (control)."""
+def priority_fn(student_idx: int, school_id: str) -> float:
+    """Distancia en km. Menor = mayor prioridad (replica criterio SED Bogotá)."""
     col = school_col_idx.get(school_id)
     if col is None:
         return np.inf
     return float(dist_matrix[student_idx, col])
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 6. Ejecutar mecanismos
+# 6. Ejecutar DA
 # ─────────────────────────────────────────────────────────────────────────────
 log.info("=" * 60)
-log.info("Paso 5 — Ejecutando DA con prioridad SED lexicográfica...")
-t0 = time.time()
-asgn_lex = deferred_acceptance(pref_lists, school_cap, priority_lex)
-log.info(f"  Completado en {time.time()-t0:.1f}s | asignados: {sum(a is not None for a in asgn_lex):,}")
+log.info("Paso 5 — Ejecutando Deferred Acceptance (Gale-Shapley)...")
 
-log.info("Paso 6 — Ejecutando DA puro distancia (control)...")
 t0 = time.time()
-asgn_dist = deferred_acceptance(pref_lists, school_cap, priority_dist)
-log.info(f"  Completado en {time.time()-t0:.1f}s | asignados: {sum(a is not None for a in asgn_dist):,}")
+da_assignment = deferred_acceptance(pref_lists, school_cap, priority_fn)
+elapsed = time.time() - t0
+
+n_assigned = sum(a is not None for a in da_assignment)
+log.info(f"  Completado en {elapsed:.1f}s")
+log.info(f"  Asignados   : {n_assigned:,} / {len(fam_df):,} ({100*n_assigned/len(fam_df):.1f}%)")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 7. Métricas
 # ─────────────────────────────────────────────────────────────────────────────
-log.info("Paso 7 — Calculando métricas...")
+log.info("Paso 6 — Calculando métricas...")
 
-met_lex = compute_metrics(
-    assignment  = asgn_lex,
-    pref_lists  = pref_lists,
-    school_cap  = school_cap,
-    priority_fn = priority_lex,
-    school_info = school_info,
-    quality_col = "q_j",
-    visual_col  = "a_j_visual",
-    estrato_arr = estrato_arr,
-    label       = "SED-lex",
-)
-
-met_dist = compute_metrics(
-    assignment  = asgn_dist,
-    pref_lists  = pref_lists,
-    school_cap  = school_cap,
-    priority_fn = priority_dist,
-    school_info = school_info,
-    quality_col = "q_j",
-    visual_col  = "a_j_visual",
-    estrato_arr = estrato_arr,
-    label       = "DA-dist",
+da_metrics = compute_metrics(
+    assignment   = da_assignment,
+    pref_lists   = pref_lists,
+    school_cap   = school_cap,
+    priority_fn  = priority_fn,
+    school_info  = school_info,
+    quality_col  = "q_j",
+    visual_col   = "a_j_visual",
+    estrato_arr  = estrato_arr,
+    label        = "DA",
 )
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 8. Guardar resultados
 # ─────────────────────────────────────────────────────────────────────────────
-log.info("Paso 8 — Guardando resultados...")
+log.info("Paso 7 — Guardando resultados...")
 
-def build_df(asgn, label):
-    return pd.DataFrame({
-        "DIRECTORIO"         : fam_df["DIRECTORIO"].values,
-        "estrato_real"       : estrato_arr,
-        "sisben_cat"         : categoria,
-        "id_establecimiento" : asgn,
-    }).merge(
-        school_info[["a_j", "q_j", "sobre_demanda_j", "nombre_localidad"]].reset_index(),
-        on="id_establecimiento", how="left",
-    )
+da_df = pd.DataFrame({
+    "DIRECTORIO"         : fam_df["DIRECTORIO"].values,
+    "estrato_real"       : estrato_arr,
+    "sisben_cat"         : pd.to_numeric(fam_df["sisben_cat"], errors="coerce").fillna(3).astype(int).values if "sisben_cat" in fam_df.columns else np.full(len(fam_df), 3, dtype=int),
+    "id_establecimiento" : da_assignment,
+}).merge(
+    school_info[["a_j", "q_j", "sobre_demanda_j", "nombre_localidad"]].reset_index(),
+    on="id_establecimiento",
+    how="left",
+)
 
-build_df(asgn_lex,  "SED-lex").to_parquet(OUT_DIR / "matching_sed_lex.parquet",  index=False)
-build_df(asgn_dist, "DA-dist").to_parquet(OUT_DIR / "matching_sed_dist.parquet", index=False)
-log.info("  matching_sed_lex.parquet")
-log.info("  matching_sed_dist.parquet")
+da_df.to_parquet(OUT_DIR / "matching_da.parquet", index=False)
+log.info(f"  matching_da.parquet — {len(da_df):,} filas")
 
-comp = pd.DataFrame([met_lex, met_dist])
-comp.to_csv(REP_DIR / "matching_sed_comparison.csv", index=False)
-log.info("  matching_sed_comparison.csv")
+summary_rows = [{"estrato": "TOTAL", **{k: v for k, v in da_metrics.items()}}]
+for s in range(1, 7):
+    mask_s = estrato_arr == s
+    q_s    = [school_info.loc[a, "a_j"] for a, m in zip(da_assignment, mask_s)
+              if m and a is not None and a in school_info.index]
+    summary_rows.append({
+        "estrato"     : s,
+        "n_familias"  : int(mask_s.sum()),
+        "n_asignados" : sum(1 for a, m in zip(da_assignment, mask_s) if m and a is not None),
+        "a_j_media"   : round(float(np.mean(q_s)), 4) if q_s else np.nan,
+    })
+
+pd.DataFrame(summary_rows).to_csv(REP_DIR / "matching_da_summary.csv", index=False)
+log.info("  matching_da_summary.csv")
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9. Figuras: equidad por estrato y por categoría SISBEN
+# 9. Figuras
 # ─────────────────────────────────────────────────────────────────────────────
-log.info("Paso 9 — Generando figuras...")
+log.info("Paso 8 — Generando figuras...")
 
 plt.rcParams.update({
     "font.family": "serif", "font.size": 11,
@@ -264,64 +238,60 @@ plt.rcParams.update({
     "figure.facecolor": "white", "figure.dpi": 150,
 })
 
-w = 0.35
-COLOR_LEX  = "#4292c6"
-COLOR_DIST = "#969696"
+estratos  = list(range(1, 7))
+labels_e  = [f"E{s}" for s in estratos]
+aj_by_s   = [da_metrics.get(f"aj_estrato_{s}", np.nan) for s in estratos]
+qj_by_s   = [da_metrics.get(f"qj_estrato_{s}", np.nan) for s in estratos]
 
-# ── Panel A: por estrato ──────────────────────────────────────────────────────
-estratos = list(range(1, 7))
-labels_e = [f"E{s}" for s in estratos]
-qj_lex_e  = [met_lex.get(f"qj_estrato_{s}",  np.nan) for s in estratos]
-qj_dist_e = [met_dist.get(f"qj_estrato_{s}", np.nan) for s in estratos]
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
 
-# ── Panel B: por categoría SISBEN (calculado directamente desde los matchings) ─
-SISBEN_LABELS_SHORT = ["A\n(ext.)", "B\n(mod.)", "C\n(vuln.)", "D\n(no prior.)"]
-result_lex  = build_df(asgn_lex,  "SED-lex")
-result_dist = build_df(asgn_dist, "DA-dist")
+ax = axes[0]
+ax.bar(estratos, aj_by_s, color="#4292c6", edgecolor="white", linewidth=0.5)
+ax.set_ylim(min(v for v in aj_by_s if not np.isnan(v)) * 0.95,
+            max(v for v in aj_by_s if not np.isnan(v)) * 1.05)
+ax.set_xlabel("Estrato del hogar")
+ax.set_ylabel("Atractivo medio del colegio asignado ($a_j$)")
+ax.set_xticks(estratos); ax.set_xticklabels(labels_e)
+ax.axhline(da_metrics["equidad_aj"], color="#08519c", linestyle="--",
+           linewidth=1.2, label=f"Media = {da_metrics['equidad_aj']:.3f}")
+ax.legend(fontsize=9)
 
-qj_lex_s, qj_dist_s = [], []
-for cat_i in range(4):
-    mask_cat = result_lex["sisben_cat"] == cat_i
-    qj_lex_s.append(pd.to_numeric(result_lex.loc[mask_cat, "q_j"], errors="coerce").mean())
-    mask_cat = result_dist["sisben_cat"] == cat_i
-    qj_dist_s.append(pd.to_numeric(result_dist.loc[mask_cat, "q_j"], errors="coerce").mean())
+ax = axes[1]
+ax.bar(estratos, qj_by_s, color="#74c476", edgecolor="white", linewidth=0.5)
+ax.set_ylim(min(v for v in qj_by_s if not np.isnan(v)) * 0.995,
+            max(v for v in qj_by_s if not np.isnan(v)) * 1.005)
+ax.set_xlabel("Estrato del hogar")
+ax.set_ylabel("Puntaje Saber 11 medio del colegio asignado ($q_j$)")
+ax.set_xticks(estratos); ax.set_xticklabels(labels_e)
+ax.axhline(da_metrics["qj_medio"], color="#238b45", linestyle="--",
+           linewidth=1.2, label=f"Media = {da_metrics['qj_medio']:.1f}")
+ax.legend(fontsize=9)
 
-# ── Figura combinada 1×2 ──────────────────────────────────────────────────────
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-for ax, labels, qj_lex_v, qj_dist_v, xlabel, title in [
-    (axes[0], labels_e,           qj_lex_e, qj_dist_e,
-     "Estrato del hogar",         "(a) Calidad asignada por estrato"),
-    (axes[1], SISBEN_LABELS_SHORT, qj_lex_s, qj_dist_s,
-     "Categoría SISBEN",          "(b) Calidad asignada por categoría SISBEN"),
-]:
-    x = np.arange(len(labels))
-    ax.bar(x - w/2, qj_lex_v,  w, label="SED lexicográfico", color=COLOR_LEX,  edgecolor="white")
-    ax.bar(x + w/2, qj_dist_v, w, label="DA puro distancia", color=COLOR_DIST, edgecolor="white")
-    vals = [v for v in qj_lex_v + qj_dist_v if v is not None and not np.isnan(v)]
-    if vals:
-        ax.set_ylim(min(vals) * 0.995, max(vals) * 1.005)
-    ax.set_xlabel(xlabel, fontsize=10)
-    ax.set_ylabel("$q_j$ medio (Saber 11 estandarizado)", fontsize=9)
-    ax.set_title(title, fontsize=10, loc="left")
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=9)
-    ax.legend(fontsize=8, frameon=False)
-
-fig.suptitle("Equidad en calidad académica asignada — SED lexicográfico vs DA distancia",
-             fontsize=11, fontweight="bold")
 plt.tight_layout()
-fig.savefig(FIG_DIR / "sed_equidad.png", bbox_inches="tight")
+fig.savefig(FIG_DIR / "da_equidad_estrato.png", bbox_inches="tight")
 plt.close(fig)
-log.info("  sed_equidad.png (panel estrato + panel SISBEN)")
+
+q_vals = da_df["q_j"].dropna().values
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.hist(q_vals, bins=40, color="#74c476", edgecolor="white", linewidth=0.3, alpha=0.85)
+ax.axvline(q_vals.mean(), color="#238b45", linestyle="--", linewidth=1.2,
+           label=f"Media = {q_vals.mean():.1f}")
+ax.set_xlabel("Puntaje Saber 11 del colegio asignado ($q_j$)")
+ax.set_ylabel("Familias")
+ax.legend(fontsize=9)
+plt.tight_layout()
+fig.savefig(FIG_DIR / "da_distribucion_qj.png", bbox_inches="tight")
+plt.close(fig)
+
+log.info("  da_equidad_estrato.png")
+log.info("  da_distribucion_qj.png")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 10. Resumen en consola
 # ─────────────────────────────────────────────────────────────────────────────
 log.info("=" * 60)
-log.info("COMPARATIVA SED-lex vs DA-dist")
+log.info("RESUMEN — Deferred Acceptance (población expandida)")
 log.info("=" * 60)
-cols = ["condicion", "n_asignados", "rank_medio", "blocking_pairs",
-        "equidad_aj", "sesgo_visual", "qj_medio", "rechazo_total"]
-print(comp[cols].to_string(index=False))
+for k, v in da_metrics.items():
+    log.info(f"  {k:<25} {v}")
 log.info("Done.")

@@ -51,7 +51,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-ROOT    = Path(__file__).resolve().parent.parent
+ROOT    = Path(__file__).resolve().parents[2]
 COL_P   = ROOT / "data" / "primary" / "colegios_features_imputed.geojson"
 FAM_P   = ROOT / "data" / "processed" / "familias_expandidas.parquet"   # tiene sisben_cat
 OUT_P   = ROOT / "data" / "primary"

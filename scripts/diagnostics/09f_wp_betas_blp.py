@@ -35,18 +35,19 @@
 #     el sesgo vive en las preferencias declaradas. Corrobora M1, ahora tambien
 #     con los parametros estructurales del BLP en el entrenamiento.
 # =============================================================================
+from pathlib import Path
 import numpy as np, time
 from scipy.optimize import linprog, milp, LinearConstraint, Bounds
 import sys, pandas as pd
-sys.path.insert(0, "/content/edu-matching-paper/scripts"); sys.path.insert(0, ".")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import matching_utils as mu
 
-BASE = "/content/edu-matching-paper/data"
+BASE = str(Path(__file__).resolve().parents[2] / "data")
 def snorm(s): return s.astype(str).str.strip().str.replace(r"\.0$", "", regex=True)
 
 # --- betas del IV-BLP (estimados por David) ---
 def cargar_betas():
-    bp = pd.read_csv("reports/tables/blp_results.csv")
+    bp = pd.read_csv(Path(__file__).resolve().parents[2] / "reports" / "tables" / "blp_results.csv")
     iv = bp[bp["spec"] == "iv_blp"].set_index("parametro")["estimacion"]
     return float(iv["pi1"]), float(iv["lam0"]), float(iv["lam1"])
 

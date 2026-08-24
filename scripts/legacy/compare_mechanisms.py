@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-ROOT    = Path(__file__).resolve().parent.parent
+ROOT    = Path(__file__).resolve().parents[2]
 REP_DIR = ROOT / "reports"
 FIG_DIR = ROOT / "reports" / "figures" / "matching"
 FIG_DIR.mkdir(parents=True, exist_ok=True)

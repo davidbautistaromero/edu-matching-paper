@@ -83,7 +83,7 @@ MAX_CONCURRENT = 30
 IMG_FIELD = "thumb_2048_url"
 
 # Rutas del proyecto.
-_ROOT         = Path(__file__).resolve().parents[1]
+_ROOT         = Path(__file__).resolve().parents[2]
 _sfx          = "_muestra" if MODO_MUESTRA else ""
 RUTA_SALIDA   = _ROOT / "data" / "images" / "mapillary"
 RUTA_CATALOGO = RUTA_SALIDA / f"mapillary_catalog{_sfx}.csv"

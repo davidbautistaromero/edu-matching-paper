@@ -49,6 +49,11 @@ Outputs
   reports/figures/matching/sinteticos_b_comparativa.png
 """
 
+# Este script fue movido a un subdirectorio; ROOT y matching_utils
+# se resuelven relativos a scripts/ para que siga siendo ejecutable.
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 import logging
 from pathlib import Path
 
@@ -65,7 +70,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-ROOT    = Path(__file__).resolve().parent.parent
+ROOT    = Path(__file__).resolve().parents[2]
 IN_DIR  = ROOT / "data" / "primary"
 OUT_DIR = ROOT / "data" / "results"
 FIG_DIR = ROOT / "reports" / "figures" / "matching"
