@@ -1,0 +1,590 @@
+% ============================================================
+%  "Señales visuales, estimación de demanda y diseño de
+%   mecanismos en la asignación escolar de Bogotá"
+%  Bautista, Fuentes, Melo (2026)
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[main=spanish]{babel}
+\usepackage[round,authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\setlength{\parskip}{4pt}
+\usepackage{lmodern}
+
+\begin{document}
+
+\title{\textbf{Señales visuales, estimación de demanda y diseño de mecanismos en la asignación de cupos escolares de Bogotá}}
+\author{Bautista, David. \and Fuentes, Jhoan. \and Melo, Jonathan.}
+\date{2026}
+\maketitle
+
+% ============================================================
+\section*{1.\quad Introducción}
+% ============================================================
+
+El sistema de educación pública de Bogotá agrupa 413~instituciones en 740~sedes
+distribuidas en 20~localidades, con más del 40\,\% de las nuevas solicitudes
+concentradas en Kennedy, Bosa y Ciudad~Bolívar
+\citep{SED2023caracterizacion}. La asignación está regulada por una prioridad
+que combina vulnerabilidad socioeconómica y proximidad geográfica
+\citep{Resolucion1587}, formalizable como Deferred Acceptance (DA) con prioridad
+lexicográfica \citep{GaleShapley1962}. Sin embargo, el mecanismo opera sobre
+preferencias que pueden estar sesgadas: cuando la información académica es
+costosa, la apariencia física del colegio puede funcionar como \emph{proxy}
+visible de calidad \citep{Hastings2009,HastingsWeinstein2008,Naik2017,Dubey2016}.
+
+Este trabajo conecta dos literaturas que usualmente avanzan por separado. La
+literatura de \emph{school choice} estudia cómo las reglas de prioridad y los
+mecanismos afectan estabilidad, incentivos y equidad \citep{AbdulSonmez2003}.
+La literatura de visión computacional y percepción urbana muestra que señales
+visuales del entorno predicen valoraciones y decisiones espaciales
+\citep{Naik2017,Dubey2016}. La pregunta abierta es si esas señales visuales
+distorsionan la demanda escolar y si una regla de asignación puede contener esa
+distorsión sin sacrificar estabilidad.
+
+Para responderla, construimos medidas visuales de colegios oficiales urbanos de
+Bogotá usando imágenes de Google Street View (GSV) procesadas con
+CLIP~\citep{Radford2021} y segmentación semántica. Estimamos su efecto sobre la
+demanda mediante Berry IV e IV-BLP con micro-momentos
+\citep{Berry1994,ConlonGortmaker2020}, y usamos las preferencias estimadas para
+evaluar Boston mechanism (BM), DA, SED-lex y una prioridad aprendida en mercados
+sintéticos. La aplicación real considera 99{.}890~familias de primer ingreso y
+380~colegios con señal visual observada.
+
+Encontramos que la seguridad percibida predice significativamente la demanda
+($\hat{\beta}\approx0{,}11$), mientras que la calidad académica no aumenta la
+demanda condicional. En el laboratorio sintético, la regla WP muestra que una
+prioridad ingreso--distancia--visual puede reducir el sorting ingreso--seguridad
+manteniendo estabilidad. En datos reales, sin embargo, SED-lex neutraliza casi
+por completo el canal visual. La contribución central es mostrar que el diseño
+de prioridades, más que la forma fina del objetivo, es la palanca clave para
+contener sesgos visuales en la asignación escolar.
+
+
+% ============================================================
+\section*{2.\quad Datos y metodología}
+% ============================================================
+
+\subsection*{2.1\quad Datos de colegios y demanda}
+
+La unidad de análisis es el \emph{establecimiento educativo}. A partir del
+directorio SED~2024, filtramos el sector oficial, agregamos sedes a
+establecimiento usando la sede principal como punto geográfico, y fusionamos
+matrícula, demanda, puntajes Saber~11 (promedio 2020--2022--2023), controles
+socioeconómicos de la EM2021 por UPZ y señales visuales. La muestra inicial
+contiene 408~establecimientos; excluimos 23~colegios rurales y
+3~establecimientos sin cobertura GSV, para una muestra final de
+\textbf{382~colegios oficiales urbanos}. La exclusión rural evita que la señal
+visual capture solo el contraste rural/urbano, como sugería un análisis
+preliminar con NMF sobre embeddings VGG19~\citep{Simonyan2015}.
+
+Para la estimación de demanda, construimos cuotas de mercado por localidad,
+$s_j=D_j/M_t$, y aplicamos la inversión de \citet{Berry1994}:
+$\delta_j=\ln s_j-\ln s_0$, donde $s_0$ es la outside option local. Los controles
+incluyen Saber~11, homicidios (log), distancia al Sistema Integrado de Transporte Público - SITP (log), competencia privada
+y condición técnica.
+
+\subsection*{2.2\quad Pipeline de visión computacional}
+
+Para cada colegio oficial descargamos imágenes GSV de fachada en 10~ángulos
+($0^\circ,36^\circ,\ldots,324^\circ$; 640$\times$640~px, FOV=90$^\circ$). Las
+señales visuales se extraen con dos métodos. Primero, CLIP ViT-B/32
+\citep{Radford2021} calcula similitudes coseno entre cada imagen y prompts
+calibrados de mantenimiento del entorno, vegetación, modernidad del establecimiento y seguridad percibida; a
+nivel de establecimiento conservamos el máximo observado entre imágenes.
+Segundo, DeepLabV3+ \citep{Chen2018DeepLab}, preentrenado en Cityscapes
+\citep{Cordts2016}, produce proporciones de clases semánticas por imagen; tras
+revisar colinealidad con CLIP, retenemos infraestructura vial y cerramiento.
+
+
+\subsection*{2.3\quad Estimación de demanda}
+
+\paragraph{Modelo agregado: Berry IV.}
+La utilidad media $\delta_j$ obtenida por inversión de Berry se estima por 2SLS
+sobre señales visuales y controles:
+\begin{equation}
+\delta_j =
+\beta_0 + \beta_{\text{seg}}\text{seg}_j
++ \beta_{\text{veg}}\text{veg}_j
++ \beta_{\text{vial}}\text{vial}_j
++ \beta_{\text{cerr}}\text{cerr}_j
++ \beta_q q_j + \mathbf{B}_C\mathbf{c}_j + \xi_j ,
+\label{eq:berry_iv}
+\end{equation}
+donde $\text{seg}_j$ y $\text{veg}_j$ son scores CLIP; $\text{vial}_j$ y
+$\text{cerr}_j$ son proporciones Cityscapes; $q_j$ es calidad académica y
+$\mathbf{c}_j$ agrupa controles de entorno escolar.
+
+\paragraph{Modelo estructural con heterogeneidad: IV-BLP.}
+Para construir preferencias individuales estimamos un BLP con micro-momentos
+\citep{Berry1994,ConlonGortmaker2020}:
+\begin{equation}
+U_{ij} = \delta_j + \pi_1\, y_i\, \text{seg}_j
+  + \lambda_0\,\log(1{+}d_{ij}) + \lambda_1\, y_i\,\log(1{+}d_{ij})
+  + \varepsilon_{ij}.
+\label{eq:blp}
+\end{equation}
+Como no observamos elecciones hogar--colegio individuales, disciplinamos
+$\psi=(\pi_1,\lambda_0,\lambda_1)$ con dos micro-momentos proxy a nivel de
+colegio. Para cada colegio $j$, el modelo predice el ingreso medio y la
+distancia media de sus demandantes:
+\begin{equation}
+m^{y,pred}_j(\psi)=
+\frac{\sum_i y_i p_{ij}(\psi)}{\sum_i p_{ij}(\psi)},
+\qquad
+m^{d,pred}_j(\psi)=
+\frac{\sum_i d_{ij}p_{ij}(\psi)}{\sum_i p_{ij}(\psi)}.
+\label{eq:micro_pred}
+\end{equation}
+Estos momentos se emparejan con proxies construidos a partir de EM2021:
+\[
+m^{y,proxy}_j=\frac{\sum_i y_i/d_{ij}}{\sum_i 1/d_{ij}},
+\qquad
+m^{d,proxy}_j=\frac{\sum_i \omega_i d_{ij}}{\sum_i \omega_i},
+\]
+donde $\omega_i$ son factores de expansión. El componente micro del GMM minimiza:
+\begin{equation}
+Q^{micro}(\psi)=
+\sum_j
+\left(m^{y,pred}_j(\psi)-m^{y,proxy}_j\right)^2
++
+\sum_j
+\left(m^{d,pred}_j(\psi)-m^{d,proxy}_j\right)^2.
+\label{eq:micro_obj}
+\end{equation}
+Así, la heterogeneidad por ingreso se identifica usando dos restricciones
+observables aproximadas: qué ingreso de hogares queda expuesto a cada colegio y
+qué distancia efectiva enfrenta su demanda potencial.
+La calidad $q_j$ se instrumenta con la calidad media de rivales ponderada por
+$1/d$ dentro de la localidad tanto en Berry IV como en BLP.
+
+\subsection*{2.4\quad Familias y utilidades}
+
+La EM2021 permite construir 99{.}890~familias representativas que buscan cupo de
+primer ingreso, tras expandir por $\text{FEX}_C$ y ubicar hogares en manzanas
+coherentes con su estrato y UPZ. A cada familia se le asigna un grupo SISBEN
+($A$--$D$) aproximado a partir del ingreso per~cápita. Las preferencias se
+obtienen ordenando los colegios accesibles por la utilidad de
+\eqref{eq:blp}, usando distancias Haversine. La capacidad escolar se aproxima
+como $\lfloor M_j/13\rceil$ (mínimo~5). En mecanismos reales, el universo efectivo
+queda dado por las listas top-20 con señal visual observada: 380~colegios y
+113{.}857~cupos.
+
+Para entrenar y validar la WP-rule usamos mercados sintéticos calibrados a
+Bogotá. Estos preservan las distribuciones marginales observadas de ingreso,
+SISBEN, calidad académica, seguridad percibida, capacidad y la correlación
+empírica entre calidad y seguridad visual. A diferencia de los datos reales, la
+localización de hogares y colegios se genera aleatoriamente en un plano unitario,
+por lo que el ingreso no queda correlacionado con la ubicación. Así, el ejercicio
+sintético elimina deliberadamente la segregación residencial para aislar el efecto
+del diseño de prioridades sobre el canal ingreso--seguridad; la aplicación real
+reintroduce geografía, restricciones de localidad y capacidades observadas.
+
+\subsection*{2.5\quad Mecanismos de asignación}
+
+Evaluamos BM, DA, SED-lex y una regla aprendida basada en WP. BM asigna de forma
+inmediata con prioridad geográfica, no es estable ni incentivo-compatible; DA usa
+aceptaciones provisionales, es estable e incentivo-compatible para estudiantes
+\citep{AbdulSonmez2003}; SED-lex replica la regla vigente de la SED: DA con
+prioridad lexicográfica SISBEN ($A>B>C>D$) --- aproximada a partir de ingresos
+reportados en EM2021 --- y desempate geográfico \citep{Resolucion1587}.
+
+La regla aprendida sigue el marco WP de \citet{NarasimhanAgarwalParkes2016}: el
+diseñador escoge una asignación dentro del politopo estable
+$\widehat{\Omega}^{\mathrm{st}}(\succ,P)$ \citep{VandeVate1989}. Definimos una
+prioridad continua que favorece menores ingresos, menor distancia y corrige el
+canal visual:
+\begin{equation}
+P^\theta_{ij}
+=
+-\tilde y_i
+- \widetilde d_{ij}
+- \theta\,\tilde y_i v_j ,
+\label{eq:priority_id}
+\end{equation}
+donde $\tilde y_i$ es ingreso estandarizado, $\widetilde d_{ij}$ es distancia
+estandarizada y $v_j$ es seguridad percibida. El parámetro $\theta$ se calibra en
+mercados sintéticos para que la correlación entre ingreso y seguridad percibida
+asignada sea cercana a cero.
+
+Dada esta prioridad, WP resuelve:
+\begin{equation}
+f_{\mathrm{WP}}(\succ;W)
+\in
+\arg\max_{x \in \widehat{\Omega}^{\mathrm{st}}(\succ,P^\theta)}
+\sum_{ij} \lambda_{ij}(W)x_{ij}.
+\label{eq:wp_rule}
+\end{equation}
+Usamos una parametrización parsimoniosa:
+\begin{equation}
+\lambda_{ij}(W)=aR_{ij}+bP^\theta_{ij}+d_v\tilde y_i v_j .
+\label{eq:wp}
+\end{equation}
+El StructSVM aprende $W=(a,b,d_v)$ en mercados sintéticos; como benchmarks usamos
+WP\textsubscript{baseline} ($d_v=0$) y WP\textsubscript{equal}. La estabilidad no
+se relaja: está impuesta por el politopo estable bajo $P^\theta$.
+
+En datos reales no resolvemos el LP global de WP sobre 99{.}890 familias por
+escala computacional. Implementamos la versión escalable DA-$P^{\theta^\star}$:
+DA con la prioridad calibrada. Esta asignación preserva estabilidad exacta bajo
+la prioridad ingreso--distancia--visual, pero evalúa la prioridad aprendida, no
+la solución completa del LP de WP.
+
+
+% ============================================================
+\section*{3.\quad Resultados}
+% ============================================================
+
+\subsection*{3.1\quad Estimación de demanda}
+
+La Tabla~\ref{tab:berry_blp} presenta los resultados de Berry IV y los
+parámetros heterogéneos del IV-BLP.
+
+\begin{table}[h!]
+\centering
+\caption{Estimación de demanda escolar (382 colegios urbanos)}
+\label{tab:berry_blp}
+\footnotesize
+\begin{tabular}{lcccc|c}
+\toprule
+ & \multicolumn{4}{c|}{\textit{Berry IV --- $\delta_j$}} &
+   \textit{IV-BLP} \\
+\textbf{Variable} & M0 & M1 & M2 & M3 &  \\
+\midrule
+\multicolumn{6}{l}{\textit{Señales visuales}} \\
+\quad Seg.\ percibida (CLIP) & --- &
+  0{,}107$^{***}$ & --- & 0{,}108$^{***}$ &
+  0{,}112$^{**}$ \\
+\quad Veg.\ percibida (CLIP) & --- &
+  0{,}016 & --- & 0{,}015 & \\
+\quad Infra.\ vial (CS) & --- & --- &
+  0{,}019 & 0{,}017 & \\
+\quad Cerramiento (CS) & --- & --- &
+  0{,}017 & 0{,}023 & \\
+\addlinespace
+\multicolumn{6}{l}{\textit{Calidad y controles}} \\
+\quad Saber 11 ($q_j$) &
+  $-$0{,}279$^{***}$ & $-$0{,}281$^{**}$ &
+  $-$0{,}275$^{***}$ & $-$0{,}278$^{**}$ &
+  $-$0{,}184$^{***}$ \\
+\quad Homicidios (log) &
+  $-$0{,}441$^{***}$ & $-$0{,}433$^{***}$ &
+  $-$0{,}443$^{***}$ & $-$0{,}436$^{***}$ &
+  $-$0{,}440$^{***}$ \\
+\quad Técnico &
+  0{,}495$^{***}$ & 0{,}453$^{***}$ &
+  0{,}494$^{***}$ & 0{,}451$^{***}$ &
+  0{,}445$^{***}$ \\
+\quad Compet.\ privada &
+  $-$0{,}394$^{***}$ & $-$0{,}405$^{***}$ &
+  $-$0{,}393$^{***}$ & $-$0{,}405$^{***}$ &
+  $-$0{,}417$^{***}$ \\
+\addlinespace
+\multicolumn{6}{l}{\textit{Parámetros heterogéneos (BLP)}} \\
+\quad $\pi_1$ ($y_i \times$ seg) & & & & & $-$0{,}028 \\
+\quad $\lambda_0$ (distancia) & & & & & $+$0{,}024 \\
+\quad $\lambda_1$ ($y_i \times$ dist) & & & & & $-$0{,}094$^{***}$ \\
+\midrule
+R$^2_{\text{adj}}$ & 0{,}448 & 0{,}456 & 0{,}447 & 0{,}455 & --- \\
+First-stage $F$ & 47{,}2 & 44{,}6 & 45{,}6 & 43{,}0 & 18{,}8 \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}
+\vspace{4pt}\footnotesize
+\textit{Nota.} Variables estandarizadas (media~0, DE~1).
+$^{**}$\,$p<0{,}05$; $^{***}$\,$p<0{,}01$.
+Berry IV: variable dependiente $\delta_j = \ln s_j - \ln s_0$.
+Berry IV e IV-BLP instrumentan $q_j$ con calidad media de rivales ponderada por
+$1/d$ en la localidad. First-stage $F$ reporta el instrumento excluido; IV-BLP
+reporta SE mediante Bootstrap.
+CS\,=\,Cityscapes.
+\end{minipage}
+\end{table}
+
+La Tabla~\ref{tab:berry_blp} deja tres resultados. Primero, la seguridad
+percibida es la única señal visual robusta: en Berry IV y en IV-BLP su coeficiente
+es positivo y significativo ($0{,}108$--$0{,}112$), lo que indica que colegios que
+lucen más seguros atraen más demanda condicional a calidad y entorno. Segundo,
+Saber~11 entra con signo negativo ($-0{,}278$ en M3-IV): en estas preferencias
+reveladas, la demanda no se ordena por desempeño académico observable. Tercero,
+la heterogeneidad estimada por BLP aparece principalmente en distancia:
+$\hat{\lambda}_1=-0{,}094$ sugiere que el costo de distancia varía con ingreso,
+mientras que $\hat{\pi}_1=-0{,}028$ no es estadísticamente significativo. Esto
+impide afirmar que la sensibilidad a seguridad percibida difiera por ingreso; una
+explicación plausible es la segregación espacial, que hace que hogares de distinto
+ingreso enfrenten conjuntos de colegios parcialmente distintos.
+
+\subsection*{3.2\quad WP-Rule}
+
+La WP-Rule se evalúa en mercados sintéticos calibrados a Bogotá para probar si
+una prioridad ingreso--distancia--visual puede contener el sorting
+ingreso--seguridad sin perder estabilidad. Primero calibramos
+$P^{\theta^\star}_{ij}$ para que DA bajo esa prioridad produzca una correlación
+ingreso--seguridad cercana a cero; luego el StructSVM aprende los pesos
+$W=(a,b,d_v)$ de la función objetivo WP.
+
+Los tres criterios WP son casi indistinguibles: WP\textsubscript{learned},
+WP\textsubscript{baseline} y WP\textsubscript{equal} entregan
+$\operatorname{corr}(y,v)\approx-0{,}008$, $\operatorname{corr}(y,q)\approx0{,}051$
+y rank promedio cercano a 7, sin pares bloqueantes. Esta similitud es informativa:
+en este diseño, la corrección proviene principalmente de la prioridad que define
+el conjunto estable, no de pequeñas diferencias en los pesos finales del objetivo.
+
+La robustez confirma el patrón. En mercados de test con correlaciones reales se
+obtiene $\operatorname{corr}(y,v)=0{,}0129$ y
+$\operatorname{corr}(y,q)=0{,}1228$; en el escenario ortogonal ($\rho=0$), la WP
+produce $\operatorname{corr}(y,v)=0{,}0288$. Al barrer
+$\rho=\operatorname{corr}(v_j,q_j)$, WP\textsubscript{learned} mantiene cero pares
+bloqueantes y acceso A/B cercano a 0{,}98--0{,}99. Así, WP funciona como
+laboratorio de diseño: permite aprender una prioridad estable orientada a reducir
+el canal visual en mercados controlados.
+
+\subsection*{3.3\quad Comparación de mecanismos}
+
+Comparamos BM, DA, SED-lex y WP en dos ejercicios: mercados sintéticos
+calibrados a Bogotá y datos reales. En datos reales no resolvemos el LP completo
+de WP; aplicamos su versión escalable, DA-$P^{\theta^\star}$, que inserta en DA
+la prioridad ingreso--distancia--visual calibrada en la WP-Rule.
+
+\begin{table}[h!]
+\centering
+\caption{Comparación de mecanismos en mercados sintéticos calibrados a Bogotá}
+\label{tab:wp_comparacion}
+\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+Mecanismo & $\text{corr}(y,v)$ & $\text{corr}(y,q)$ & $\bar q$ & Rank & Acc. A/B & BP \\
+\midrule
+BM                  & $-0{,}033$ & $\mathbf{-0{,}030}$ & $0{,}052$ & \textbf{4{,}58} & 85{,}9\% & 24{,}8 \\
+DA                  & $\mathbf{0{,}002}$ & $-0{,}005$ & $0{,}052$ & 8{,}07 & 86{,}2\% & \textbf{0{,}0} \\
+SED-lex             & $-0{,}077$ & $ 0{,}129$ & $0{,}052$ & 5{,}51 & \textbf{100{,}0\%} & \textbf{0{,}0} \\
+WP\textsubscript{learned} & $ 0{,}018$ & $ 0{,}078$ & $0{,}052$ & 6{,}91 & 98{,}6\% & \textbf{0{,}0} \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}
+\vspace{4pt}\footnotesize
+\textit{Nota.} $\bar q$ se reporta en unidades estandarizadas. Acc. A/B es el
+porcentaje de familias SISBEN A/B asignadas.
+\end{minipage}
+\end{table}
+
+En sintéticos, BM logra el mejor rank promedio, pero genera pares bloqueantes.
+DA, SED-lex y WP son estables. SED-lex mejora el rank frente a DA, pero aumenta
+$\operatorname{corr}(y,q)$: al respetar preferencias declaradas, priorizar hogares
+vulnerables no garantiza mejorar calidad académica si sus opciones están mediadas
+por seguridad percibida, distancia u oferta local. WP\textsubscript{learned}
+mantiene estabilidad y contiene mejor el canal ingreso--seguridad, con costo en
+rank frente a BM y SED-lex.
+
+En datos reales, todos los mecanismos asignan 96{.}022 familias sobre un universo
+efectivo de 99{.}890 hogares, 380 colegios y 113{.}857 cupos; por tanto, la
+comparación relevante es el sorting por ingreso, calidad y seguridad percibida.
+
+\begin{table}[h!]
+\centering
+\caption{Comparación de mecanismos en datos reales}
+\label{tab:wp_real}
+\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+Mecanismo & $\text{corr}(y,v)$ & $\text{corr}(y,q)$ & $\bar q$ & Rank & Acc. A/B & BP \\
+\midrule
+BM                  & $0{,}0188$ & $0{,}1067$ & $-0{,}108$ & \textbf{1{,}83} & 96{,}3\% & 4{.}148 \\
+DA                  & $0{,}0242$ & $0{,}1329$ & $-0{,}108$ & 2{,}63 & 95{,}9\% & \textbf{0} \\
+SED-lex             & $\mathbf{0{,}0016}$ & $\mathbf{0{,}0979}$ & $-0{,}108$ & 1{,}91 & \textbf{100{,}0\%} & \textbf{0} \\
+DA-$P^{\theta^\star}$         & $0{,}0181$ & $0{,}1043$ & $-0{,}108$ & 1{,}92 & \textbf{100{,}0\%} & \textbf{0} \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}
+\vspace{4pt}\footnotesize
+\textit{Nota.} $\bar q$ se reporta en unidades estandarizadas sobre los
+380~colegios efectivos; Acc. A/B es el porcentaje de familias SISBEN A/B asignadas.
+DA-$P^{\theta^\star}$ aplica la prioridad
+ingreso--distancia--visual calibrada en la WP-Rule y corre DA sobre datos reales;
+no resuelve el LP global de WP a escala completa.
+\end{minipage}
+\end{table}
+
+La lectura cambia en datos reales: SED-lex neutraliza casi por completo el canal
+visual ($\operatorname{corr}(y,v)=0{,}0016$), supera a DA-$P^{\theta^\star}$ en
+esa métrica y mantiene estabilidad exacta. Esto sugiere que, con preferencias
+restringidas por localidad, la prioridad lexicográfica por vulnerabilidad y el
+desempate geográfico ya corrigen gran parte del sorting ingreso--seguridad.
+DA-$P^{\theta^\star}$ queda como alternativa estable y continua, pero menos
+redistributiva que SED-lex en la geografía real de Bogotá.
+
+
+% ============================================================
+\section*{4.\quad Conclusiones y limitaciones}
+% ============================================================
+
+Este trabajo documenta que las señales visuales del entorno escolar contienen
+información conductual relevante: la seguridad percibida medida con CLIP predice
+demanda aun controlando por calidad académica y entorno urbano
+($\hat\beta_{\text{seg}}\approx0{,}11$), mientras que Saber~11 no aumenta la
+demanda condicional. Antes de la matrícula, las familias parecen responder más a
+señales visibles y accesibles que a medidas académicas difíciles de observar.
+
+En diseño de mecanismos, WP muestra en mercados sintéticos que una prioridad
+ingreso--distancia--visual puede reducir el sorting ingreso--seguridad manteniendo
+estabilidad. Sin embargo, en datos reales SED-lex neutraliza casi por completo el
+canal visual y garantiza acceso A/B completo. La conclusión central es que, en
+Bogotá, la definición de las prioridades importa más que la forma funcional del objetivo: 
+con preferencias restringidas por localidad, la prioridad lexicográfica por vulnerabilidad y el
+desempate geográfico ya redistribuyen el acceso dentro de conjuntos de elección
+locales. WP sigue siendo útil como laboratorio de diseño, pero la evidencia real
+sugiere que el mecanismo vigente contiene una palanca correctiva potente.
+
+\paragraph{Limitaciones.}
+(i)~La demanda SED no está desagregada por localidad de origen del solicitante, por
+lo que las cuotas de mercado suponen que la demanda de cada colegio proviene de su
+localidad. (ii)~El BLP opera con 19~mercados y micro-momentos proxy construidos
+con EM2021, localidad/UPZ, ingreso y distancia, no con elecciones hogar--colegio
+observadas. (iii)~El sorting residencial reduce la superposición entre conjuntos
+de elección de hogares de distinto ingreso; por tanto, $\pi_1$ puede combinar
+heterogeneidad en preferencias con diferencias de oferta local y exposición
+visual. (iv)~En datos reales aplicamos DA-$P^{\theta^\star}$, no el LP global de
+WP; los resultados evalúan la prioridad aprendida, no todo el politopo estable.
+
+\paragraph{Implicaciones de política.}
+El resultado no es que el mecanismo vigente falle, sino que cumple una función
+correctiva importante. Una reforma orientada a equidad debería preservar la
+prioridad por vulnerabilidad y el desempate geográfico. A la vez, cualquier
+intervención sobre apariencia o infraestructura visual debería complementarse con
+información activa y verificable sobre calidad académica
+\citep{HastingsWeinstein2008,Allende2019}, para que las preferencias familiares
+no dependan únicamente de señales visibles.
+
+
+% ============================================================
+\newpage
+\bibliographystyle{plainnat}
+
+\begin{thebibliography}{99}
+
+\bibitem[Abdulkadiro\u{g}lu y S\"onmez(2003)]{AbdulSonmez2003}
+Abdulkadiro\u{g}lu, A.\ y S\"onmez, T.
+\newblock School choice: A mechanism design approach.
+\newblock \emph{American Economic Review}, 93(3):729--747, 2003.
+
+\bibitem[Allende et~al.(2019)]{Allende2019}
+Allende, C., Gallego, F.~A., y Neilson, C.~A.
+\newblock Approximating the equilibrium effects of informed school choice.
+\newblock \emph{The Review of Economic Studies}, revise and resubmit, 2019.
+
+\bibitem[Berry(1994)]{Berry1994}
+Berry, S.
+\newblock Estimating discrete-choice models of product differentiation.
+\newblock \emph{RAND Journal of Economics}, 25(2):242--262, 1994.
+
+\bibitem[Chen et~al.(2018)]{Chen2018DeepLab}
+Chen, L.-C., Zhu, Y., Papandreou, G., Schroff, F., y Adam, H.
+\newblock Encoder-decoder with atrous separable convolution for semantic image
+  segmentation.
+\newblock En \emph{ECCV~2018}, pp.~801--818, 2018.
+
+\bibitem[Conlon y Gortmaker(2020)]{ConlonGortmaker2020}
+Conlon, C.\ y Gortmaker, J.
+\newblock Best practices for differentiated products demand estimation with {PyBLP}.
+\newblock \emph{RAND Journal of Economics}, 51(4):1108--1161, 2020.
+
+\bibitem[Cordts et~al.(2016)]{Cordts2016}
+Cordts, M., Omran, M., Ramos, S., Rehfeld, T., Enzweiler, M.,
+Benenson, R., Franke, U., Roth, S., y Schiele, B.
+\newblock The {Cityscapes} dataset for semantic urban scene understanding.
+\newblock En \emph{CVPR~2016}, pp.~3213--3223, 2016.
+
+\bibitem[DANE(2021)]{DANE2021EM}
+Departamento Administrativo Nacional de Estadística~(DANE).
+\newblock \emph{Encuesta Multipropósito Bogotá~2021 (EM2021)}.
+\newblock DANE -- Secretaría Distrital de Planeación, 2021.
+
+\bibitem[DANE(2024a)]{DANE2024pobreza}
+Departamento Administrativo Nacional de Estadística~(DANE).
+\newblock \emph{Boletín técnico: Pobreza Monetaria Colombia 2024}.
+\newblock DANE, 2024.
+
+\bibitem[DANE(2024b)]{DANE2024clases}
+Departamento Administrativo Nacional de Estadística~(DANE).
+\newblock \emph{Comunicado de prensa: Clases Sociales 2024}.
+\newblock DANE, 2024.
+
+\bibitem[Radford et~al.(2021)]{Radford2021}
+Radford, A., Kim, J.~W., Hallacy, C., et~al.
+\newblock Learning transferable visual models from natural language supervision.
+\newblock En \emph{ICML~2021}, pp.~8748--8763. PMLR, 2021.
+
+\bibitem[Dubey et~al.(2016)]{Dubey2016}
+Dubey, A., Naik, N., Parikh, D., Raskar, R., y Hidalgo, C.~A.
+\newblock Deep learning the city: Quantifying urban perception at a global scale.
+\newblock En \emph{ECCV~2016}, pp.~196--212. Springer, 2016.
+
+\bibitem[Gale y Shapley(1962)]{GaleShapley1962}
+Gale, D.\ y Shapley, L.~S.
+\newblock College admissions and the stability of marriage.
+\newblock \emph{The American Mathematical Monthly}, 69(1):9--15, 1962.
+
+\bibitem[Hastings et~al.(2009)]{Hastings2009}
+Hastings, J.~S., Kane, T.~J., y Staiger, D.~O.
+\newblock Heterogeneous preferences and the efficacy of public school choice
+(NBER~WP~12145).
+\newblock National Bureau of Economic Research, 2009.
+
+\bibitem[Hastings y Weinstein(2008)]{HastingsWeinstein2008}
+Hastings, J.~S.\ y Weinstein, J.~M.
+\newblock Information, school choice, and academic achievement.
+\newblock \emph{Quarterly Journal of Economics}, 123(4):1373--1414, 2008.
+
+\bibitem[Lee y Seung(2001)]{LeeSeung2001}
+Lee, D.~D.\ y Seung, H.~S.
+\newblock Algorithms for non-negative matrix factorization.
+\newblock En \emph{NeurIPS~2000}, pp.~556--562. MIT Press, 2001.
+
+\bibitem[Naik et~al.(2017)]{Naik2017}
+Naik, N., Raskar, R., y Hidalgo, C.~A.
+\newblock Computer vision uncovers predictors of physical urban change.
+\newblock \emph{PNAS}, 114(29):7571--7576, 2017.
+
+\bibitem[Roth(1984)]{Roth1984}
+Roth, A.~E.
+\newblock The evolution of the labor market for medical interns and residents:
+a case study in game theory.
+\newblock \emph{Journal of Political Economy}, 92(6):991--1016, 1984.
+
+\bibitem[SED(2023)]{SED2023caracterizacion}
+Secretaría de Educación del Distrito~(SED).
+\newblock \emph{I~Informe Caracterización Sector Educativo Bogotá D.C.\ 2023}.
+\newblock Alcaldía Mayor de Bogotá, 2023.
+
+\bibitem[SED(2025)]{Resolucion1587}
+Secretaría de Educación del Distrito~(SED).
+\newblock \emph{Resolución~1587 de 2025: gestión de la cobertura educativa
+  para las vigencias 2025 y~2026}.
+\newblock SED, 2025.
+
+\bibitem[Narasimhan et~al.(2016)]{NarasimhanAgarwalParkes2016}
+Narasimhan, H., Agarwal, S., y Parkes, D.~C.
+\newblock Automated mechanism design without money via machine learning.
+\newblock En \emph{IJCAI~2016}, pp.~433--439. AAAI Press, 2016.
+
+\bibitem[Simonyan y Zisserman(2015)]{Simonyan2015}
+Simonyan, K.\ y Zisserman, A.
+\newblock Very deep convolutional networks for large-scale image recognition.
+\newblock En \emph{ICLR~2015}, 2015.
+
+\bibitem[Vande Vate(1989)]{VandeVate1989}
+Vande Vate, J.~H.
+\newblock Linear programming brings marital bliss.
+\newblock \emph{Operations Research Letters}, 8(3):147--153, 1989.
+
+\end{thebibliography}
+
+\end{document}

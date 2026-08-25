@@ -25,13 +25,18 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+# Raiz del repositorio, derivada de la ubicacion de este script.
+# Evita rutas absolutas y hace el pipeline reproducible en cualquier maquina.
+_ROOT = Path(__file__).resolve().parent.parent
+
+
 SEED = 42
 NOISE_KM = 0.1   # ±100m de perturbación en distancias
 
-FAM_PATH   = Path(r"C:\paper-AI\data\processed\familias_ubicadas.parquet")
-DIST_PATH  = Path(r"C:\paper-AI\data\processed\familias_distancias.parquet")
-FAM_OUT    = Path(r"C:\paper-AI\data\processed\familias_expandidas.parquet")
-DIST_OUT   = Path(r"C:\paper-AI\data\processed\distancias_expandidas.parquet")
+FAM_PATH   = _ROOT / "data" / "processed" / "familias_ubicadas.parquet"
+DIST_PATH  = _ROOT / "data" / "processed" / "familias_distancias.parquet"
+FAM_OUT    = _ROOT / "data" / "processed" / "familias_expandidas.parquet"
+DIST_OUT   = _ROOT / "data" / "processed" / "distancias_expandidas.parquet"
 
 rng = np.random.default_rng(SEED)
 

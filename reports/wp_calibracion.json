@@ -1,0 +1,84 @@
+{
+  "n_students": 100,
+  "m_schools": 20,
+  "n_train": 80,
+  "n_valid": 30,
+  "n_test": 30,
+  "rho_train": 0.11512,
+  "rho_valid": 0.11512,
+  "rho_test": 0.11512,
+  "rho_diagnostic": 0.0,
+  "rho_real": 0.11512,
+  "mu1": 0.05,
+  "theta_priority": -0.1,
+  "theta_grid": [
+    -2.0,
+    -1.0,
+    -0.5,
+    -0.2,
+    -0.1,
+    -0.05,
+    0.0,
+    0.05,
+    0.1,
+    0.2,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "priority_model": "income_distance_visual",
+  "priority_income_weight": 1.0,
+  "priority_distance_weight": 1.0,
+  "target_v_corr": 0.0,
+  "v_bias_weight": 1.0,
+  "mu_reg": 0.001,
+  "svm_iter": 50,
+  "svm_lr": 0.1,
+  "svm_reg": 0.001,
+  "feature_names": [
+    "rank_pref",
+    "priority",
+    "inc_v"
+  ],
+  "feat_scale": [
+    20.40276,
+    8.1112,
+    4.85014
+  ],
+  "seed": 42,
+  "betas_blp": {
+    "pi1": -0.02785,
+    "lam0": 0.024246,
+    "lam1": -0.094132,
+    "beta_const": -2.741078,
+    "beta_seg": 0.111979,
+    "beta_q": -0.184175
+  },
+  "distribuciones": {
+    "mu_q": 258.04345,
+    "std_q": 13.43839,
+    "rho_real": 0.11512,
+    "mean_ingpc": 548294.36,
+    "sisben_dist": {
+      "0": 0.21913,
+      "1": 0.3793,
+      "2": 0.28542,
+      "3": 0.11615
+    }
+  },
+  "w_learned": [
+    0.9987,
+    -0.04439,
+    -0.0251
+  ],
+  "w_baseline": [
+    0.99901,
+    -0.0444,
+    0.0
+  ],
+  "w_equal": [
+    0.70711,
+    0.70711,
+    0.0
+  ]
+}

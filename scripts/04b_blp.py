@@ -668,14 +668,182 @@ print("=" * 70)
 # PASO 12: GUARDAR RESULTADOS (IV-BLP como preferido)
 # =============================================================================
 
+# =============================================================================
+# PASO 12b: BOOTSTRAP PARALELO — SE para theta y beta
+# =============================================================================
+
+N_BOOT = 200
+N_WORKERS = 16  # 20 logical cores, dejar 4 libres
+print(f"\n{'='*70}")
+print(f"BOOTSTRAP — {N_BOOT} réplicas, {N_WORKERS} workers (resample localidades)")
+print(f"{'='*70}")
+
+_loc_ids = sorted(market_data.keys())
+
+# Pre-build mapping: loc -> list of (school_id, position_in_J)
+_loc_to_schools = {}
+for sid, (t, k) in _school_to_pos.items():
+    _loc_to_schools.setdefault(t, []).append((sid, k))
+for t in _loc_to_schools:
+    _loc_to_schools[t].sort(key=lambda x: x[1])
+
+# Pre-build sid -> index in school_ids for fast lookup
+_sid_to_idx = {sid: i for i, sid in enumerate(school_ids)}
+
+# Warm start from IV-BLP
+_theta_init = np.array(list(res_iv['theta']))
+
+
+def _boot_one(seed):
+    """Una réplica de bootstrap: resamplea localidades, re-estima IV-BLP.
+    Completamente self-contained — no modifica globals."""
+    rng = np.random.default_rng(seed)
+    boot_locs = rng.choice(_loc_ids, size=len(_loc_ids), replace=True)
+
+    boot_market = {}
+    boot_m_obs, boot_d_obs = {}, {}
+    boot_X_rows, boot_Z_rows = [], []
+    boot_s_obs, boot_sids = [], []
+    boot_stp = {}  # local school_to_pos
+
+    for new_t, orig_t in enumerate(boot_locs):
+        md = market_data[orig_t]
+        new_key = f"b{new_t}"
+        boot_market[new_key] = {
+            'delta_init': md['delta_init'].copy(),
+            's_obs':      md['s_obs'].copy(),
+            'seg_z':      md['seg_z'].copy(),
+            'fam_y':      md['fam_y'].copy(),
+            'fex_w':      md['fex_w'].copy(),
+            'dist_km':    md['dist_km'].copy(),
+            'dist_log':   md['dist_log'].copy(),
+            'dist_raw':   md['dist_km'].copy(),
+            'J_ids':      [f"{jid}_b{new_t}" for jid in md['J_ids']],
+        }
+
+        for sid, jj in _loc_to_schools.get(orig_t, []):
+            new_sid = f"{sid}_b{new_t}"
+            boot_stp[new_sid] = (new_key, jj)
+            if sid in m_obs_dict:
+                boot_m_obs[new_sid] = m_obs_dict[sid]
+            if sid in d_obs_dict:
+                boot_d_obs[new_sid] = d_obs_dict[sid]
+            boot_sids.append(new_sid)
+            idx = _sid_to_idx[sid]
+            boot_X_rows.append(X_mat[idx])
+            boot_Z_rows.append(Z_iv[idx])
+            boot_s_obs.append(s_obs_all[idx])
+
+    boot_X = np.array(boot_X_rows)
+    boot_Z = np.array(boot_Z_rows)
+    boot_s = np.array(boot_s_obs)
+
+    # GMM objective with local school_to_pos
+    def _gmm_boot(theta):
+        pi1, lam0, lam1 = theta
+        delta_dict, n_it = contraction_mapping(theta, boot_market)
+        delta_vec = np.array([
+            delta_dict[boot_stp[sid][0]][boot_stp[sid][1]]
+            for sid in boot_sids
+        ])
+        XtX_inv = np.linalg.solve(boot_X.T @ boot_X, np.eye(boot_X.shape[1]))
+        beta = XtX_inv @ (boot_X.T @ delta_vec)
+        xi = delta_vec - boot_X @ beta
+        ZtZ_inv = np.linalg.solve(boot_Z.T @ boot_Z, np.eye(boot_Z.shape[1]))
+        agg = xi @ boot_Z @ ZtZ_inv @ boot_Z.T @ xi
+        m_pred, d_pred = compute_micro_moments_pred(theta, boot_market, delta_dict=delta_dict)
+        common = [j for j in boot_sids if j in m_pred and j in boot_m_obs]
+        if len(common) == 0:
+            return 1e12
+        m_diff = np.array([m_pred[j] - boot_m_obs[j] for j in common])
+        d_diff = np.array([d_pred[j] - boot_d_obs[j] for j in common])
+        micro = (m_diff ** 2).sum() + (d_diff ** 2).sum()
+        return agg + micro
+
+    try:
+        bres = optimize.minimize(
+            _gmm_boot, _theta_init,
+            method='L-BFGS-B',
+            bounds=[(-3.0, 3.0), (-5.0, 5.0), (-3.0, 3.0)],
+            options={'maxiter': 300, 'ftol': 1e-8, 'gtol': 1e-5, 'disp': False},
+        )
+        theta_b = bres.x
+
+        # Beta from final delta
+        delta_dict_b, _ = contraction_mapping(tuple(theta_b), boot_market)
+        delta_vec_b = np.array([
+            delta_dict_b[boot_stp[sid][0]][boot_stp[sid][1]]
+            for sid in boot_sids
+        ])
+        XtX_inv_b = np.linalg.solve(boot_X.T @ boot_X, np.eye(boot_X.shape[1]))
+        beta_b = XtX_inv_b @ (boot_X.T @ delta_vec_b)
+
+        return np.concatenate([theta_b, beta_b])
+    except Exception as e:
+        return None
+
+
+import time as _time
+import sys as _sys
+_t0 = _time.time()
+boot_results = []
+_seeds = list(range(1000, 1000 + N_BOOT))
+
+for i, seed in enumerate(_seeds):
+    try:
+        r = _boot_one(seed)
+    except Exception as e:
+        print(f"  Bootstrap {i+1}: CRASHED ({e})", flush=True)
+        r = None
+    if r is not None:
+        boot_results.append(r)
+    if (i + 1) % 10 == 0:
+        elapsed = _time.time() - _t0
+        eta = elapsed / (i + 1) * (N_BOOT - i - 1) / 60
+        print(f"  Bootstrap {i+1}/{N_BOOT} done "
+              f"({len(boot_results)} ok, {elapsed:.0f}s elapsed, ~{eta:.0f}min remaining)",
+              flush=True)
+
+elapsed = _time.time() - _t0
+boot_arr = np.array(boot_results)
+n_success = len(boot_results)
+print(f"  Réplicas exitosas: {n_success}/{N_BOOT} ({elapsed:.0f}s total)")
+
+if n_success >= 30:
+    boot_se = boot_arr.std(axis=0, ddof=1)
+    _all_names = ['pi1', 'lam0', 'lam1'] + [f'beta_{n}' for n in res_iv['beta_names']]
+    _all_point = np.concatenate([res_iv['theta'], res_iv['beta']])
+
+    print(f"\n  {'Parámetro':<40} {'Estimación':>12} {'SE(boot)':>12} {'t':>8}")
+    print(f"  {'-'*40} {'-'*12} {'-'*12} {'-'*8}")
+    for name, pt, se in zip(_all_names, _all_point, boot_se):
+        t_stat = pt / se if se > 1e-9 else np.nan
+        print(f"  {name:<40} {pt:>+12.6f} {se:>12.6f} {t_stat:>8.2f}")
+
+    res_iv['boot_se_theta'] = boot_se[:3]
+    res_iv['boot_se_beta'] = boot_se[3:]
+    res_base['boot_se_theta'] = None
+    res_base['boot_se_beta'] = None
+else:
+    print("  WARNING: insufficient bootstrap replicas for SE")
+    boot_se = None
+
+print(f"{'='*70}")
+
 print("\nGuardando resultados...")
 
 _rows = []
 for spec, res in [('baseline', res_base), ('iv_blp', res_iv)]:
-    for pname, pval in zip(['pi1', 'lam0', 'lam1'], res['theta']):
-        _rows.append({'spec': spec, 'parametro': pname, 'estimacion': pval, 'tipo': 'no_lineal'})
-    for bname, bval in zip(res['beta_names'], res['beta']):
-        _rows.append({'spec': spec, 'parametro': f'beta_{bname}', 'estimacion': bval, 'tipo': 'lineal'})
+    se_theta = res.get('boot_se_theta')
+    se_beta = res.get('boot_se_beta')
+    for i, (pname, pval) in enumerate(zip(['pi1', 'lam0', 'lam1'], res['theta'])):
+        se = float(se_theta[i]) if se_theta is not None else np.nan
+        _rows.append({'spec': spec, 'parametro': pname, 'estimacion': pval,
+                      'se': se, 'tipo': 'no_lineal'})
+    for i, (bname, bval) in enumerate(zip(res['beta_names'], res['beta'])):
+        se = float(se_beta[i]) if se_beta is not None else np.nan
+        _rows.append({'spec': spec, 'parametro': f'beta_{bname}', 'estimacion': bval,
+                      'se': se, 'tipo': 'lineal'})
 
 _df_results = pd.DataFrame(_rows)
 _results_path = OUT_TABLES / 'blp_results.csv'

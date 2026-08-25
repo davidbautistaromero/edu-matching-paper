@@ -38,7 +38,8 @@ data/processed/distancias_expandidas.parquet
 data/processed/familias_distancias.parquet
 data/processed/utilidades_familias.parquet
 
-# Modelos entrenados (pesados, se reproducen con 04_regresion.py)
+# Modelos entrenados: su script productor (04a_regresion.py) ya no existe y ningun
+# script los carga. Ver nota en README.md / CLAUDE.md.
 models/*.joblib
 
 # Claude
